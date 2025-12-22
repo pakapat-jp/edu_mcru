@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เพิ่มบทความใหม่ (New Article) - CMS Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin_style.css">
+    <style>
+        /* Toolbar Actions */
+        .toolbar-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-toolbar {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+        }
+
+        .btn-save {
+            background-color: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .btn-save:hover {
+            background-color: #218838;
+        }
+
+        .btn-cancel {
+            background-color: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .btn-cancel:hover {
+            background-color: #c82333;
+        }
+
+        /* Form Layout */
+        .article-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+        }
+
+        @media (max-width: 992px) {
+            .article-form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Editor Placeholder */
+        .editor-container {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #fff;
+        }
+
+        .editor-toolbar {
+            background: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .editor-btn {
+            background: none;
+            border: 1px solid #ddd;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .editor-content {
+            min-height: 400px;
+            padding: 15px;
+        }
+
+        /* Accordion/Panel Styling */
+        .panel {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .panel-header {
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+            font-weight: 500;
+        }
+
+        .panel-body {
+            padding: 15px;
+        }
+
+        /* Tabs Styling */
+        .nav-tabs-wrapper {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0;
+            gap: 5px;
+            padding: 0 5px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab-item {
+            position: relative;
+        }
+
+        .nav-tab-link {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            background: #f1f3f5;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            text-decoration: none;
+            color: #6c757d;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-tab-link:hover {
+            background: #e9ecef;
+        }
+
+        .nav-tab-link.active {
+            background: #fff;
+            color: #2255a4;
+            font-weight: 500;
+            border-bottom: 1px solid #fff;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav-tab-link input {
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            color: inherit;
+            width: 80px;
+            outline: none;
+        }
+
+        .btn-add-tab {
+            background: #e9ecef;
+            border: 1px solid #ddd;
+            color: #6c757d;
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: 0.2s;
+        }
+
+        .btn-add-tab:hover {
+            background: #dde2e6;
+            color: #495057;
+        }
+
+        .tab-close {
+            margin-left: 8px;
+            font-size: 12px;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: #adb5bd;
+            transition: 0.2s;
+        }
+
+        .tab-close:hover {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        /* Make editor container connect with tabs */
+        .editor-container.with-tabs {
+            border-top-left-radius: 0;
+            margin-top: -1px;
+            z-index: 1;
+            position: relative;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="assets/web_admin_logo.png" alt="Admin Logo"
+                    style="width: 30px; height: auto; margin-right: 10px;">
+                Web Admin
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="admin_dashboard.html"><i class="fa-solid fa-gauge"></i> แดชบอร์ด</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600;">
+                    เนื้อหา</li>
+                <li><a href="news_content.html" class="active"><i class="fa-solid fa-newspaper"></i> บทความ
+                        (Articles)</a></li>
+                <li><a href="news_categories.html"><i class="fa-solid fa-layer-group"></i> หมวดหมู่ (Categories)</a>
+                </li>
+                <li><a href="media.html"><i class="fa-solid fa-images"></i> สื่อ (Media)</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    โครงสร้างเว็บ</li>
+                <li><a href="menus.html"><i class="fa-solid fa-bars"></i> เมนู (Menus)</a></li>
+                <li><a href="header_settings.html"><i class="fa-solid fa-heading"></i> ส่วนหัว (Header)</a></li>
+                <li><a href="footer_settings.html"><i class="fa-solid fa-shoe-prints"></i> ส่วนท้าย (Footer)</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    ผู้ใช้งาน</li>
+                <li><a href="users.html"><i class="fa-solid fa-users"></i> จัดการผู้ใช้</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    ระบบ</li>
+                <li><a href="settings.html"><i class="fa-solid fa-gears"></i> ตั้งค่าทั่วไป</a></li>
+                <li><a href="theme_color.html"><i class="fa-solid fa-palette"></i> ธีมสี (Theme Color)</a></li>
+                <li><a href="fonts.html"><i class="fa-solid fa-font"></i> ฟ้อนต์ (Fonts)</a></li>
+            </ul>
+        </aside>
+
+        <main class="admin-content">
+            <header class="admin-topbar">
+                <button class="toggle-sidebar" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+                <div class="topbar-right">
+                    <div class="user-profile" id="userProfileDropdown" onclick="toggleProfileDropdown()">
+                        <div class="user-avatar">A</div>
+                        <span style="font-size: 0.9rem; font-weight: 500;">Super Admin</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i>
+
+                        <div class="dropdown-menu" id="profileDropdown">
+                            <a href="user_profile.html" class="dropdown-item"><i class="fa-solid fa-user-cog"
+                                    style="margin-right: 8px;"></i> ตั้งค่าผู้ใช้งาน</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="index.html" class="dropdown-item" style="color: #dc3545;"><i
+                                    class="fa-solid fa-sign-out-alt" style="margin-right: 8px;"></i> ออกจากระบบ</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-container">
+                <!-- Toolbar -->
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #fff; padding: 10px 20px; border-radius: 5px; border: 1px solid #e0e0e0;">
+                    <h1 class="page-title" style="margin-bottom: 0; font-size: 1.2rem;">บทความ: เพิ่มข้อมูลใหม่</h1>
+                    <div class="toolbar-actions">
+                        <button class="btn-toolbar btn-save"><i class="fa-solid fa-check"></i> บันทึก</button>
+                        <button class="btn-toolbar btn-save"><i class="fa-solid fa-floppy-disk"></i>
+                            บันทึกและปิด</button>
+                        <a href="news_content.html" class="btn-toolbar btn-cancel"><i class="fa-solid fa-xmark"></i>
+                            ยกเลิก</a>
+                    </div>
+                </div>
+
+                <form class="article-form-grid">
+                    <!-- Left Column (Main Content) -->
+                    <div class="left-col">
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label style="font-weight: 500; font-size: 1.1rem;">หัวข้อ (Title) <span
+                                    style="color: red;">*</span></label>
+                            <input type="text" placeholder="ใส่หัวข้อบทความที่นี่..."
+                                style="width: 100%; padding: 10px; font-size: 1.1rem; border: 1px solid #ccc; border-radius: 4px;">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label style="font-weight: 500;">Slug (Alias)</label>
+                            <input type="text" placeholder="auto-generated-from-title"
+                                style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; background-color: #f9f9f9;">
+                            <div style="font-size: 0.85rem; color: #666; margin-top: 5px; font-style: italic;">
+                                <i class="fa-solid fa-circle-info"></i> คำแนะนำ: ใช้ตัวอักษรภาษาอังกฤษตัวพิมพ์เล็ก
+                                (a-z), ตัวเลข (0-9) และเครื่องหมายขีดกลาง (-) เท่านั้น ห้ามเว้นวรรค
+                            </div>
+                        </div>
+
+                        <!-- TinyMCE-like Editor -->
+                        <!-- Tabbed Editor -->
+                        <div class="form-group">
+                            <label style="font-weight: 500; margin-bottom: 5px; display: block;">รายละเอียด (Details)
+                                <span style="color: red;">*</span></label>
+
+                            <!-- Tab Navigation -->
+                            <div class="nav-tabs-wrapper">
+                                <ul class="nav-tabs" id="articleTabs">
+                                    <!-- Dynamic Tabs -->
+                                </ul>
+                                <button type="button" class="btn-add-tab" onclick="addNewTab()" title="เพิ่มแท็บใหม่"><i
+                                        class="fa-solid fa-plus"></i></button>
+                            </div>
+
+                            <div class="editor-container with-tabs"
+                                style="border: 1px solid #ccc; border-radius: 4px; display: flex; flex-direction: column; background: #fff;">
+
+                                <!-- Shared Toolbar -->
+                                <div class="editor-toolbar"
+                                    style="padding: 5px; display: flex; flex-wrap: wrap; gap: 2px; border-bottom: 1px solid #eee; align-items: center; background: #fff;">
+
+                                    <!-- Format Select -->
+                                    <select
+                                        style="height: 30px; border: 1px solid #fff; border-radius: 3px; font-size: 14px; margin-right: 5px; cursor: pointer; background: transparent; font-weight: 500; color: #333; padding: 0 5px;">
+                                        <option>Normal</option>
+                                        <option>Heading 1</option>
+                                        <option>Heading 2</option>
+                                        <option>Heading 3</option>
+                                    </select>
+                                    <div style="border-left: 1px solid #ccc; height: 18px; margin: 0 4px;"></div>
+
+                                    <!-- Group 1: Text Style -->
+                                    <button type="button" class="editor-btn-tiny" title="Bold"
+                                        onclick="formatDoc('bold')"><i class="fa-solid fa-bold"></i></button>
+                                    <button type="button" class="editor-btn-tiny" title="Italic"
+                                        onclick="formatDoc('italic')"><i class="fa-solid fa-italic"></i></button>
+                                    <button type="button" class="editor-btn-tiny" title="Underline"
+                                        onclick="formatDoc('underline')"><i class="fa-solid fa-underline"></i></button>
+                                    <div style="border-left: 1px solid #ccc; height: 18px; margin: 0 4px;"></div>
+
+                                    <!-- Group 2: Alignment -->
+                                    <button type="button" class="editor-btn-tiny" title="Align Left"
+                                        onclick="formatDoc('justifyLeft')"><i
+                                            class="fa-solid fa-align-left"></i></button>
+                                    <button type="button" class="editor-btn-tiny" title="Align Center"
+                                        onclick="formatDoc('justifyCenter')"><i
+                                            class="fa-solid fa-align-center"></i></button>
+                                    <button type="button" class="editor-btn-tiny" title="Align Right"
+                                        onclick="formatDoc('justifyRight')"><i
+                                            class="fa-solid fa-align-right"></i></button>
+                                    <button type="button" class="editor-btn-tiny" title="Justify"
+                                        onclick="formatDoc('justifyFull')"><i
+                                            class="fa-solid fa-align-justify"></i></button>
+                                    <div style="border-left: 1px solid #ccc; height: 18px; margin: 0 4px;"></div>
+
+                                    <!-- Group 3: Lists & Indent -->
+                                    <button type="button" class="editor-btn-tiny" title="Bullet List"
+                                        onclick="formatDoc('insertUnorderedList')"><i
+                                            class="fa-solid fa-list-ul"></i></button>
+                                    <button type="button" class="editor-btn-tiny" title="Numbered List"
+                                        onclick="formatDoc('insertOrderedList')"><i
+                                            class="fa-solid fa-list-ol"></i></button>
+                                    <button type="button" class="editor-btn-tiny" title="Decrease Indent"
+                                        onclick="formatDoc('outdent')"><i class="fa-solid fa-outdent"></i></button>
+                                    <button type="button" class="editor-btn-tiny" title="Increase Indent"
+                                        onclick="formatDoc('indent')"><i class="fa-solid fa-indent"></i></button>
+                                    <div style="border-left: 1px solid #ccc; height: 18px; margin: 0 4px;"></div>
+
+                                    <!-- Group 4: Quote & Colors -->
+                                    <button type="button" class="editor-btn-tiny" title="Blockquote"
+                                        onclick="formatDoc('formatBlock', 'blockquote')"><i
+                                            class="fa-solid fa-quote-right"></i></button>
+                                    <button type="button" class="editor-btn-tiny" title="Text Color"
+                                        onclick="chooseColor('foreColor')"><i class="fa-solid fa-font"></i><span
+                                            style="border-bottom: 3px solid #000; width: 100%; display: block; height: 0; margin-top: -2px;"></span></button>
+                                    <button type="button" class="editor-btn-tiny" title="Background Color"
+                                        onclick="chooseColor('hiliteColor')"><i
+                                            class="fa-solid fa-pen-nib"></i></button>
+                                    <div style="border-left: 1px solid #ccc; height: 18px; margin: 0 4px;"></div>
+
+                                    <!-- Group 5: Insert & View -->
+                                    <button type="button" class="editor-btn-tiny" title="Link" onclick="insertLink()"><i
+                                            class="fa-solid fa-link"></i></button>
+                                    <button type="button" class="editor-btn-tiny" title="Table"
+                                        onclick="alert('Table insertion not available in this demo.')"><i
+                                            class="fa-solid fa-table"></i></button>
+                                    <button type="button" class="editor-btn-tiny" title="Image"
+                                        onclick="insertImage()"><i class="fa-regular fa-image"></i></button>
+                                    <div style="border-left: 1px solid #ccc; height: 18px; margin: 0 4px;"></div>
+
+                                    <button type="button" class="editor-btn-tiny" title="Fullscreen"
+                                        onclick="alert('Fullscreen mode not available.')"><i
+                                            class="fa-solid fa-expand"></i></button>
+                                    <button type="button" class="editor-btn-tiny" title="Source Code"
+                                        onclick="toggleSource()"><i class="fa-solid fa-code"></i></button>
+                                    <button type="button" class="editor-btn-tiny" title="Preview"
+                                        onclick="alert('Preview not available.')"><i
+                                            class="fa-regular fa-eye"></i></button>
+                                </div>
+
+                                <!-- Content Area -->
+                                <div id="tabContentContainer">
+                                    <!-- Dynamic Panes -->
+                                </div>
+
+                                <!-- Status Bar -->
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; border-top: 1px solid #eee; font-size: 11px; color: #888; background: #fff;">
+                                    <span>P</span>
+                                    <span>POWERED BY TINY</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <style>
+                            .editor-btn-tiny {
+                                background: transparent;
+                                border: none;
+                                border-radius: 3px;
+                                width: 30px;
+                                height: 30px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: #444;
+                                cursor: pointer;
+                                transition: background 0.2s;
+                            }
+
+                            .editor-btn-tiny:hover {
+                                background: #dfe1e5;
+                                color: #000;
+                            }
+
+                            .editor-btn-tiny i {
+                                font-size: 14px;
+                            }
+                        </style>
+
+                    </div>
+
+                    <!-- Right Column (Settings) -->
+                    <div class="right-col">
+                        <div class="panel">
+                            <div class="panel-header">สถานะ & การเผยแพร่</div>
+                            <div class="panel-body">
+                                <div class="form-group" style="margin-bottom: 15px;">
+                                    <label style="display: block; margin-bottom: 5px;">สถานะ</label>
+                                    <select
+                                        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                        <option value="1">เผยแพร่ (Published)</option>
+                                        <option value="0">ไม่เผยแพร่ (Unpublished)</option>
+                                        <option value="-1">ถังขยะ (Trashed)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 15px;">
+                                    <label style="display: block; margin-bottom: 5px;">หมวดหมู่</label>
+                                    <select
+                                        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                        <option value="1">ข่าวประชาสัมพันธ์</option>
+                                        <option value="2">กิจกรรมคณะ</option>
+                                        <option value="3">ทุนการศึกษา</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 15px;">
+                                    <label style="display: block; margin-bottom: 5px;">วันที่เผยแพร่</label>
+                                    <input type="date"
+                                        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="panel">
+                            <div class="panel-header">รูปภาพหน้าปก (Cover Image)</div>
+                            <div class="panel-body">
+                                <div id="coverImageContainer"
+                                    style="text-align: center; border: 2px dashed #ddd; padding: 20px; margin-bottom: 10px; border-radius: 4px;">
+                                    <div style="color: #ccc; margin-bottom: 10px;">ไม่มีรูปภาพ</div>
+                                    <button type="button" onclick="openMediaModal('cover')"
+                                        style="padding: 5px 10px; cursor: pointer;">เลือกรูปภาพ</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </main>
+    </div>
+    <!-- Media Library Modal -->
+    <div id="mediaModal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div
+            style="background: #fff; width: 80%; height: 80%; border-radius: 8px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+            <div
+                style="padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa;">
+                <h3 style="margin: 0; margin-right: 20px;">เลือกรูปภาพ (Select Image)</h3>
+                <button type="button" onclick="closeMediaModal()"
+                    style="border: none; background: transparent; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+
+            <div style="flex-grow: 1; display: flex; flex-direction: column; padding: 20px; overflow-y: auto;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div
+                        style="background: #f1f3f5; padding: 8px 15px; border-radius: 4px; border: 1px solid #e9ecef; color: #555;">
+                        <i class="fa-solid fa-folder-open" style="color: #6c757d; margin-right: 5px;"></i> Path: <span
+                            id="modalBreadcrumb" style="font-weight: 500;">assets</span>
+                    </div>
+                    <div>
+                        <button type="button" onclick="navigateUpModal()"
+                            style="padding: 6px 12px; border: 1px solid #ddd; background: #fff; border-radius: 3px; cursor: pointer;"><i
+                                class="fa-solid fa-arrow-up"></i> กลับ</button>
+                    </div>
+                </div>
+
+                <div id="modalFileList"
+                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px;">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+
+            <div style="padding: 15px 20px; border-top: 1px solid #eee; text-align: right; background: #f8f9fa;">
+                <button type="button" onclick="closeMediaModal()"
+                    style="padding: 8px 15px; border: 1px solid #ddd; background: #fff; border-radius: 4px; cursor: pointer; margin-right: 10px;">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const adminContainer = document.querySelector('.admin-container');
+        sidebarToggle.addEventListener('click', () => { adminContainer.classList.toggle('sidebar-open'); });
+
+        function toggleProfileDropdown() {
+            document.getElementById('profileDropdown').classList.toggle('show');
+        }
+
+        // Close dropdowns if clicked outside
+        window.onclick = function (event) {
+            if (!event.target.closest('.user-profile')) {
+                const dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+
+            // Existing modal close logic (media modal)
+            const mediaModal = document.getElementById('mediaModal');
+            if (event.target == mediaModal) {
+                mediaModal.style.display = 'none';
+            }
+        }
+
+        // --- Editor Functions ---
+        let tabCounter = 0;
+        let activeTabId = null;
+
+        function formatDoc(cmd, value = null) {
+            if (value) {
+                document.execCommand(cmd, false, value);
+            } else {
+                document.execCommand(cmd);
+            }
+        }
+
+        function chooseColor(cmd) {
+            const color = prompt("Enter color code (e.g. #ff0000):", "#000000");
+            if (color) formatDoc(cmd, color);
+        }
+
+        function insertLink() {
+            const url = prompt("กรุณาใส่ URL:", "https://");
+            if (url) {
+                formatDoc('createLink', url);
+            }
+        }
+
+        function insertImage() {
+            openMediaModal('editor');
+        }
+
+        function toggleSource() {
+            if (!activeTabId) return;
+            const visual = document.getElementById(`editorVisual_${activeTabId}`);
+            const source = document.getElementById(`editorSource_${activeTabId}`);
+
+            if (source.style.display === 'none') {
+                source.value = visual.innerHTML;
+                visual.style.display = 'none';
+                source.style.display = 'block';
+            } else {
+                visual.innerHTML = source.value;
+                source.style.display = 'none';
+                visual.style.display = 'block';
+            }
+        }
+
+        // --- Dynamic Tab Logic ---
+        function addNewTab(name = "ข้อมูลทั่วไป") {
+            tabCounter++;
+            const id = tabCounter;
+
+            // 1. Create Tab Item
+            const tabsList = document.getElementById('articleTabs');
+            const li = document.createElement('li');
+            li.className = 'nav-tab-item';
+            li.id = `tabItem_${id}`;
+
+            const link = document.createElement('a');
+            link.className = 'nav-tab-link';
+
+            // Editable Title Span
+            const titleSpan = document.createElement('span');
+            titleSpan.innerText = name;
+            titleSpan.ondblclick = function (e) {
+                e.stopPropagation();
+                const currentText = this.innerText;
+                const input = document.createElement('input');
+                input.value = currentText;
+                input.onclick = (e) => e.stopPropagation();
+                input.onblur = function () {
+                    titleSpan.innerText = this.value || "Tab";
+                    titleSpan.style.display = 'inline';
+                    input.remove();
+                };
+                input.onkeydown = function (e) {
+                    if (e.key === 'Enter') this.blur();
+                };
+                this.style.display = 'none';
+                link.insertBefore(input, closeBtn);
+                input.focus();
+            };
+
+            const closeBtn = document.createElement('span');
+            closeBtn.className = 'tab-close';
+            closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+            closeBtn.onclick = (e) => {
+                e.stopPropagation();
+                if (confirm('ต้องการลบแท็บนี้ใช่หรือไม่?')) {
+                    deleteTab(id);
+                }
+            };
+
+            link.appendChild(titleSpan);
+            link.appendChild(closeBtn);
+
+            link.onclick = (e) => {
+                if (e.target.tagName !== 'INPUT' && !e.target.closest('.tab-close')) {
+                    switchTab(id);
+                }
+            };
+
+            li.appendChild(link);
+            tabsList.appendChild(li);
+
+            // 2. Create Tab Pane
+            const contentContainer = document.getElementById('tabContentContainer');
+            const pane = document.createElement('div');
+            pane.className = 'tab-pane';
+            pane.id = `tabPane_${id}`;
+            pane.dataset.tab = id;
+
+            pane.innerHTML = `
+                <div id="editorVisual_${id}" class="editor-content" contenteditable="true"
+                    style="outline: none; background: #fff; min-height: 400px; padding: 20px; font-family: 'Kanit', sans-serif; font-size: 16px; color: #333;">
+                    <p>รายละเอียด...</p>
+                </div>
+                <textarea id="editorSource_${id}"
+                    style="display: none; width: 100%; min-height: 400px; padding: 20px; border: none; font-family: 'Consolas', monospace; outline: none; resize: vertical;"></textarea>
+            `;
+            contentContainer.appendChild(pane);
+
+            switchTab(id);
+        }
+
+        function switchTab(id) {
+            if (activeTabId === id) return;
+
+            // Deactivate current
+            if (activeTabId) {
+                const currItem = document.getElementById(`tabItem_${activeTabId}`);
+                const currPane = document.getElementById(`tabPane_${activeTabId}`);
+                if (currItem) currItem.querySelector('.nav-tab-link').classList.remove('active');
+                if (currPane) currPane.classList.remove('active');
+            }
+
+            // Activate new
+            activeTabId = id;
+            const newItem = document.getElementById(`tabItem_${id}`);
+            const newPane = document.getElementById(`tabPane_${id}`);
+
+            if (newItem) newItem.querySelector('.nav-tab-link').classList.add('active');
+            if (newPane) newPane.classList.add('active');
+        }
+
+        function deleteTab(id) {
+            const item = document.getElementById(`tabItem_${id}`);
+            const pane = document.getElementById(`tabPane_${id}`);
+
+            if (item) item.remove();
+            if (pane) pane.remove();
+
+            if (activeTabId === id) {
+                const tabs = document.querySelectorAll('.nav-tab-item');
+                if (tabs.length > 0) {
+                    const lastId = tabs[tabs.length - 1].id.replace('tabItem_', '');
+                    switchTab(parseInt(lastId));
+                } else {
+                    activeTabId = null;
+                }
+            }
+        }
+
+        // --- Media Modal Logic ---
+        let fileSystem = {
+            "assets": {
+                type: "folder",
+                children: {
+                    "images": {
+                        type: "folder",
+                        children: {
+                            "banner.jpg": { type: "file" },
+                            "logo.png": { type: "file" },
+                            "meeting.jpg": { type: "file" },
+                            "activity-01.jpg": { type: "file" }
+                        }
+                    },
+                    "documents": { type: "folder", children: {} },
+                    "sample-illustration.png": { type: "file" }
+                }
+            }
+        };
+
+        let currentModalPath = ["assets", "images"]; // Start at assets/images
+        let modalMode = 'editor'; // 'editor' or 'cover'
+
+        function openMediaModal(mode = 'editor') {
+            modalMode = mode;
+            document.getElementById('mediaModal').style.display = 'flex';
+            currentModalPath = ["assets", "images"]; // Reset path to default on open
+            renderMediaModal();
+        }
+
+        function closeMediaModal() {
+            document.getElementById('mediaModal').style.display = 'none';
+        }
+
+        function getModalFolder() {
+            let folder = fileSystem["assets"];
+            // Traverse path, handling that our structure starts at 'assets'
+            // and path array includes 'assets'.
+            // Correct traversal:
+            if (currentModalPath[0] !== "assets") return null; // Error safety
+
+            for (let i = 1; i < currentModalPath.length; i++) {
+                if (folder.children && folder.children[currentModalPath[i]]) {
+                    folder = folder.children[currentModalPath[i]];
+                } else {
+                    return { children: {} }; // Path not found empty fallback
+                }
+            }
+            return folder;
+        }
+
+        function renderMediaModal() {
+            const container = document.getElementById('modalFileList');
+            const breadcrumb = document.getElementById('modalBreadcrumb');
+            container.innerHTML = '';
+
+            breadcrumb.innerHTML = currentModalPath.join(' / ');
+
+            const currentFolder = getModalFolder();
+            const items = currentFolder.children || {};
+
+            if (Object.keys(items).length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #999;">ไม่พบไฟล์</div>';
+                return;
+            }
+
+            const sortedKeys = Object.keys(items).sort((a, b) => {
+                if (items[a].type === items[b].type) return a.localeCompare(b);
+                return items[a].type === 'folder' ? -1 : 1;
+            });
+
+            sortedKeys.forEach(name => {
+                const item = items[name];
+                const isFolder = item.type === 'folder';
+                const icon = isFolder ? 'fa-folder' : 'fa-image';
+                const color = isFolder ? '#ffc107' : '#17a2b8';
+
+                const card = document.createElement('div');
+                card.style.cssText = 'border: 1px solid #eee; padding: 10px; border-radius: 4px; text-align: center; cursor: pointer; background: #fff; transition: all 0.2s;';
+                card.onmouseover = () => card.style.borderColor = '#007bff';
+                card.onmouseout = () => card.style.borderColor = '#eee';
+
+                // Click Action
+                if (isFolder) {
+                    card.onclick = () => {
+                        currentModalPath.push(name);
+                        renderMediaModal();
+                    };
+                } else {
+                    card.onclick = () => {
+                        selectImage(name);
+                    };
+                }
+
+                card.innerHTML = `
+                    <div style="font-size: 2.5rem; color: ${color}; margin-bottom: 5px;">
+                        <i class="fa-solid ${icon}"></i>
+                    </div>
+                    <div style="font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${name}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function navigateUpModal() {
+            if (currentModalPath.length > 1) { // Never go above root 'assets'
+                currentModalPath.pop();
+                renderMediaModal();
+            }
+        }
+
+        function selectImage(filename) {
+            // Construct path
+            const fullPath = currentModalPath.join('/') + '/' + filename;
+
+            if (modalMode === 'editor') {
+                if (activeTabId) {
+                    const visual = document.getElementById(`editorVisual_${activeTabId}`);
+                    visual.focus();
+                    formatDoc('insertImage', fullPath);
+                } else {
+                    alert('กรุณาเลือกแท็บที่ต้องการเพิ่มรูปภาพ');
+                }
+            } else if (modalMode === 'cover') {
+                const container = document.getElementById('coverImageContainer');
+                container.innerHTML = `
+                    <img src="${fullPath}" style="max-width: 100%; height: auto; border-radius: 4px; margin-bottom: 10px;">
+                    <div>
+                        <button type="button" onclick="openMediaModal('cover')" style="padding: 5px 10px; cursor: pointer; margin-right: 5px;">เปลี่ยน</button>
+                        <button type="button" onclick="removeCoverImage()" style="padding: 5px 10px; cursor: pointer; color: red;">ลบ</button>
+                    </div>
+                `;
+            }
+
+            closeMediaModal();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            addNewTab("รายละเอียด");
+        });
+
+        function removeCoverImage() {
+            const container = document.getElementById('coverImageContainer');
+            container.innerHTML = `
+                <div style="color: #ccc; margin-bottom: 10px;">ไม่มีรูปภาพ</div>
+                <button type="button" onclick="openMediaModal('cover')"
+                    style="padding: 5px 10px; cursor: pointer;">เลือกรูปภาพ</button>
+             `;
+        }
+    </script>
+</body>
+
+</html>

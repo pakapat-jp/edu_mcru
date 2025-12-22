@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - EDU MCRU Administrator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin_style.css">
+</head>
+
+<body>
+
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="assets/web_admin_logo.png" alt="Admin Logo"
+                    style="width: 30px; height: auto; margin-right: 10px;">
+                Web Admin
+            </div>
+
+            <ul class="sidebar-menu">
+                <li><a href="admin_dashboard.html" class="active"><i class="fa-solid fa-gauge"></i> แดชบอร์ด</a></li>
+
+                <!-- Content Group -->
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600;">
+                    เนื้อหา</li>
+                <li><a href="news_content.html"><i class="fa-solid fa-newspaper"></i> บทความ (Articles)</a></li>
+                <li><a href="news_categories.html"><i class="fa-solid fa-layer-group"></i> หมวดหมู่ (Categories)</a>
+                </li>
+                <li><a href="media.html"><i class="fa-solid fa-images"></i> สื่อ (Media)</a></li>
+
+                <!-- Structure Group -->
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    โครงสร้างเว็บ</li>
+                <li><a href="menus.html"><i class="fa-solid fa-bars"></i> เมนู (Menus)</a></li>
+                <li><a href="header_settings.html"><i class="fa-solid fa-heading"></i> ส่วนหัว (Header)</a></li>
+                <li><a href="footer_settings.html"><i class="fa-solid fa-shoe-prints"></i> ส่วนท้าย (Footer)</a></li>
+
+
+                <!-- Users Group -->
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    ผู้ใช้งาน</li>
+                <li><a href="users.html"><i class="fa-solid fa-users"></i> จัดการผู้ใช้</a></li>
+
+                <!-- System Group -->
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    ระบบ</li>
+                <li><a href="settings.html"><i class="fa-solid fa-gears"></i> ตั้งค่าทั่วไป</a></li>
+                <li><a href="theme_color.html"><i class="fa-solid fa-palette"></i> ธีมสี (Theme Color)</a></li>
+                <li><a href="fonts.html"><i class="fa-solid fa-font"></i> ฟ้อนต์ (Fonts)</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                EDU MCRU CMS v1.0<br>
+                &copy; 2025
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-content">
+            <!-- Topbar -->
+            <header class="admin-topbar">
+                <button class="toggle-sidebar" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+
+                <div class="topbar-right">
+                    <a href="index.html" target="_blank"
+                        style="color: var(--cms-text); text-decoration: none; font-size: 0.9rem;">
+                        <i class="fa-solid fa-external-link-alt"></i> ดูหน้าเว็บไซต์
+                    </a>
+                    <div class="user-profile" id="userProfileDropdown" onclick="toggleProfileDropdown()">
+                        <div class="user-avatar">A</div>
+                        <span style="font-size: 0.9rem; font-weight: 500;">Super Admin</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i>
+
+                        <div class="dropdown-menu" id="profileDropdown">
+                            <a href="user_profile.html" class="dropdown-item"><i class="fa-solid fa-user-cog"
+                                    style="margin-right: 8px;"></i> ตั้งค่าผู้ใช้งาน</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="index.html" class="dropdown-item" style="color: #dc3545;"><i
+                                    class="fa-solid fa-sign-out-alt" style="margin-right: 8px;"></i> ออกจากระบบ</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-container">
+                <h1 class="page-title">แผงควบคุมหลัก (Dashboard)</h1>
+
+                <!-- Quick Icons (Joomla Style) -->
+                <div class="widget-card" style="margin-bottom: 20px;">
+                    <h3>เมนูลัด</h3>
+                    <div class="quick-icons">
+                        <a href="#" class="quick-icon-item">
+                            <i class="fa-solid fa-plus-circle"></i>
+                            <span>เพิ่มบทความ</span>
+                        </a>
+                        <a href="#" class="quick-icon-item">
+                            <i class="fa-solid fa-folder-plus"></i>
+                            <span>เพิ่มหมวดหมู่</span>
+                        </a>
+                        <a href="#" class="quick-icon-item">
+                            <i class="fa-solid fa-users"></i>
+                            <span>ผู้ใช้งาน</span>
+                        </a>
+                        <a href="#" class="quick-icon-item">
+                            <i class="fa-solid fa-image"></i>
+                            <span>จัดการรูปภาพ</span>
+                        </a>
+                        <a href="#" class="quick-icon-item">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>ตั้งค่าระบบ</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Widgets Grid -->
+                <div class="dashboard-widgets">
+                    <!-- Site Info -->
+                    <div class="widget-card">
+                        <h3><i class="fa-solid fa-chart-line"></i> สถิติเว็บไซต์</h3>
+                        <div
+                            style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px;">
+                            <span>ผู้เยี่ยมชมวันนี้</span>
+                            <span style="font-weight: 600; color: var(--cms-primary);">152</span>
+                        </div>
+                        <div
+                            style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px;">
+                            <span>บทความทั้งหมด</span>
+                            <span style="font-weight: 600; color: var(--cms-primary);">45</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>ผู้ใช้งานระบบ</span>
+                            <span style="font-weight: 600; color: var(--cms-primary);">5</span>
+                        </div>
+                    </div>
+
+                    <!-- Popular Articles -->
+                    <div class="widget-card">
+                        <h3><i class="fa-solid fa-fire"></i> บทความยอดนิยม</h3>
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li
+                                style="padding: 8px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                                <span>รับสมัครนักศึกษาใหม่ 68</span>
+                                <span class="badge"
+                                    style="background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">1,205
+                                    วิว</span>
+                            </li>
+                            <li
+                                style="padding: 8px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                                <span>กำหนดการสอบปลายภาค</span>
+                                <span class="badge"
+                                    style="background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">890
+                                    วิว</span>
+                            </li>
+                            <li style="padding: 8px 0; display: flex; justify-content: space-between;">
+                                <span>พิธีไหว้ครู 2568</span>
+                                <span class="badge"
+                                    style="background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">750
+                                    วิว</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Logged in Users -->
+                    <div class="widget-card">
+                        <h3><i class="fa-solid fa-user-clock"></i> ผู้ใช้งานขณะนี้</h3>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                            <div
+                                style="width: 30px; height: 30px; background: #28a745; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                A</div>
+                            <div>
+                                <div style="font-weight: 500;">Super Admin</div>
+                                <div style="font-size: 0.8rem; color: #999;">กำลังใช้งาน - หน้าหลัก</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Articles Table -->
+                <div class="widget-card">
+                    <h3><i class="fa-solid fa-clock-rotate-left"></i> บทความล่าสุด</h3>
+                    <table class="cms-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>หัวข้อ</th>
+                                <th>หมวดหมู่</th>
+                                <th>สถานะ</th>
+                                <th>วันที่สร้าง</th>
+                                <th>ผู้เขียน</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>ขอเชิญร่วมงานวันครู 2568</td>
+                                <td>กิจกรรม</td>
+                                <td><span style="color: #28a745;"><i class="fa-solid fa-check-circle"></i>
+                                        เผยแพร่</span></td>
+                                <td>10 ธ.ค. 2568</td>
+                                <td>Admin</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>ประชุมวิชาการระดับชาติ</td>
+                                <td>วิชาการ</td>
+                                <td><span style="color: #28a745;"><i class="fa-solid fa-check-circle"></i>
+                                        เผยแพร่</span></td>
+                                <td>08 ธ.ค. 2568</td>
+                                <td>Staff 1</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>ประกาศทุนการศึกษา</td>
+                                <td>ทุนการศึกษา</td>
+                                <td><span style="color: #ffc107;"><i class="fa-solid fa-circle-pause"></i> ร่าง</span>
+                                </td>
+                                <td>05 ธ.ค. 2568</td>
+                                <td>Admin</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Simple Sidebar Toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const adminContainer = document.querySelector('.admin-container');
+
+        sidebarToggle.addEventListener('click', () => {
+            adminContainer.classList.toggle('sidebar-open');
+        });
+
+        function toggleProfileDropdown() {
+            document.getElementById('profileDropdown').classList.toggle('show');
+        }
+
+        // Close dropdowns if clicked outside
+        window.onclick = function (event) {
+            if (!event.target.closest('.user-profile')) {
+                const dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

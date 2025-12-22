@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ศูนย์พัฒนาวิชาชีพครู - คณะครุศาสตร์</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="assets/logo.png" type="image/png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Top Banner -->
+    <div class="page-banner">
+        <img src="assets/edu-topbanner.png" alt="Top Banner" style="width: 100%; height: auto; display: block;">
+    </div>
+
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <img src="assets/logo-name.png" alt="EDU MCRU">
+            </a>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">หน้าหลัก</a></li>
+                <li class="dropdown">
+                    <a href="#" class="nav-link">เกี่ยวกับคณะ <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <!-- 2.1 General Info -->
+                        <li class="dropdown-submenu">
+                            <a href="#" class="dropdown-item dropdown-submenu-toggle">ข้อมูลทั่วไป</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="history.html">ประวัติความเป็นมา</a></li>
+                                <li><a href="vision.html">ปรัชญา วิสัยทัศน์ พันธกิจ</a></li>
+                            </ul>
+                        </li>
+                        <!-- 2.2 Administration -->
+                        <li class="dropdown-submenu">
+                            <a href="#" class="dropdown-item dropdown-submenu-toggle">การบริหาร</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="structure.html">โครงสร้าง</a></li>
+                                <li><a href="board.html">คณะกรรมการประจำคณะ</a></li>
+                                <li><a href="deans_list.html">ทำเนียบคณบดี</a></li>
+                                <li><a href="personnel.html">ผู้บริหาร อาจารย์ บุคลากร</a></li>
+                            </ul>
+                        </li>
+                        <!-- Other Items -->
+                        <li><a href="operation_plan.html">แผนการดำเนินงาน</a></li>
+                        <li><a href="operation_results.html">ผลการดำเนินงาน</a></li>
+                        <li><a href="qa.html">ประกันคุณภาพการศึกษา</a></li>
+                        <li><a href="ita.html">ความโปร่งใส่ (ITA)</a></li>
+                    </ul>
+                </li>
+                <li><a href="courses.html" class="nav-link">หลักสูตร</a></li>
+                <li class="dropdown">
+                    <a href="#departments" class="nav-link active">หน่วยงาน <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="teacher_pro_dev.html">ศูนย์พัฒนาวิชาชีพครู</a></li>
+                        <li><a href="thantawan_school.html">โรงเรียนสาธิตอนุบาลทานตะวัน</a></li>
+                    </ul>
+                </li>
+                <li><a href="documents.html" class="nav-link">เอกสารเผยแพร่</a></li>
+                <li><a href="services.html" class="nav-link">บริการ</a></li>
+                <li><a href="index.html#contact" class="nav-link">ติดต่อเรา</a></li>
+
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header"
+        style="background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); padding: 60px 0; color: white;">
+        <div class="container"
+            style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <h1 class="fade-in-up text-center">ศูนย์พัฒนาวิชาชีพครู</h1>
+            <p class="fade-in-up text-center" style="transition-delay: 0.1s;">คณะครุศาสตร์
+                มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง</p>
+        </div>
+    </header>
+
+    <section class="section-padding">
+        <div class="container">
+            <!-- Tabs Navigation -->
+            <div class="tab-nav">
+                <button class="tab-btn active"
+                    onclick="openTab(event, 'network-schools')">ข้อมูลโรงเรียนเครือข่าย</button>
+                <button class="tab-btn" onclick="openTab(event, 'supervision-teachers')">รายชื่ออาจารย์นิเทศ</button>
+            </div>
+
+            <!-- Tab 1: Network Schools -->
+            <div id="network-schools" class="tab-content" style="display: block;">
+                <h3 class="text-center" style="margin-bottom: 30px; color: var(--primary-dark);">ข้อมูลโรงเรียนเครือข่าย
+                </h3>
+                <div class="card" style="padding: 40px; text-align: center;">
+                    <i class="fa-solid fa-school"
+                        style="font-size: 3rem; color: var(--primary-light); margin-bottom: 20px;"></i>
+                    <p style="color: var(--text-light);">อยู่ระหว่างการรวบรวมข้อมูลโรงเรียนเครือข่าย</p>
+                </div>
+            </div>
+
+            <!-- Tab 2: Supervision Teachers -->
+            <div id="supervision-teachers" class="tab-content">
+                <h3 class="text-center" style="margin-bottom: 30px; color: var(--primary-dark);">รายชื่ออาจารย์นิเทศ
+                </h3>
+                <div class="card" style="padding: 40px; text-align: center;">
+                    <i class="fa-solid fa-chalkboard-user"
+                        style="font-size: 3rem; color: var(--primary-light); margin-bottom: 20px;"></i>
+                    <p style="color: var(--text-light);">อยู่ระหว่างการรวบรวมรายชื่ออาจารย์นิเทศ</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content grid-4">
+                <div class="footer-col">
+                    <h3>ติดต่อเรา</h3>
+                    <p>คณะครุศาสตร์ <br>มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง</p>
+                    <p>46 หมู่ 3 ต.จอมบึง อ.จอมบึง <br>จ.ราชบุรี 70150</p>
+                </div>
+                <div class="footer-col">
+                    <h3>ลิงก์ด่วน</h3>
+                    <ul>
+                        <li><a href="#">ระบบบริการการศึกษา</a></li>
+                        <li><a href="#">ห้องสมุด</a></li>
+                        <li><a href="#">ปฏิทินวิชาการ</a></li>
+                        <li><a href="#">ดาวน์โหลดเอกสาร</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>ติดตามเรา</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#"><i class="fa-brands fa-line"></i></a>
+                        <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>สำหรับผู้ดูแลระบบ</h3>
+                    <a href="#" class="btn btn-outline text-white btn-sm">เข้าสู่ระบบ</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Education Faculty, Muban Chombueng Rajabhat University. All Rights
+                    Reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>

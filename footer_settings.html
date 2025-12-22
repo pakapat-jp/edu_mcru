@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตั้งค่าส่วนท้าย (Footer) - CMS Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin_style.css">
+</head>
+
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="assets/web_admin_logo.png" alt="Admin Logo"
+                    style="width: 30px; height: auto; margin-right: 10px;">
+                Web Admin
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="admin_dashboard.html"><i class="fa-solid fa-gauge"></i> แดชบอร์ด</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600;">
+                    เนื้อหา</li>
+                <li><a href="news_content.html"><i class="fa-solid fa-newspaper"></i> บทความ (Articles)</a></li>
+                <li><a href="news_categories.html"><i class="fa-solid fa-layer-group"></i> หมวดหมู่ (Categories)</a>
+                </li>
+                <li><a href="media.html"><i class="fa-solid fa-images"></i> สื่อ (Media)</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    โครงสร้างเว็บ</li>
+                <li><a href="menus.html"><i class="fa-solid fa-bars"></i> เมนู (Menus)</a></li>
+                <li><a href="header_settings.html"><i class="fa-solid fa-heading"></i> ส่วนหัว (Header)</a></li>
+                <li><a href="footer_settings.html" class="active"><i class="fa-solid fa-shoe-prints"></i> ส่วนท้าย
+                        (Footer)</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    ผู้ใช้งาน</li>
+                <li><a href="users.html"><i class="fa-solid fa-users"></i> จัดการผู้ใช้</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    ระบบ</li>
+                <li><a href="settings.html"><i class="fa-solid fa-gears"></i> ตั้งค่าทั่วไป</a></li>
+                <li><a href="theme_color.html"><i class="fa-solid fa-palette"></i> ธีมสี (Theme Color)</a></li>
+                <li><a href="fonts.html"><i class="fa-solid fa-font"></i> ฟ้อนต์ (Fonts)</a></li>
+            </ul>
+        </aside>
+
+        <main class="admin-content">
+            <header class="admin-topbar">
+                <button class="toggle-sidebar" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+                <div class="topbar-right">
+                    <div class="user-profile" id="userProfileDropdown" onclick="toggleProfileDropdown()">
+                        <div class="user-avatar">A</div>
+                        <span style="font-size: 0.9rem; font-weight: 500;">Super Admin</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i>
+
+                        <div class="dropdown-menu" id="profileDropdown">
+                            <a href="user_profile.html" class="dropdown-item"><i class="fa-solid fa-user-cog"
+                                    style="margin-right: 8px;"></i> ตั้งค่าผู้ใช้งาน</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="index.html" class="dropdown-item" style="color: #dc3545;"><i
+                                    class="fa-solid fa-sign-out-alt" style="margin-right: 8px;"></i> ออกจากระบบ</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-container">
+                <h1 class="page-title">ตั้งค่าส่วนท้าย (Footer Settings)</h1>
+
+                <div class="widget-card">
+                    <form>
+                        <div style="margin-bottom: 20px;">
+                            <label
+                                style="display: block; margin-bottom: 10px; font-weight: 500;">ข้อความเกี่ยวกับเรา</label>
+                            <textarea
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: 'Kanit';"
+                                rows="3">คณะครุศาสตร์ มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง</textarea>
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 500;">ที่อยู่</label>
+                            <textarea
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: 'Kanit';"
+                                rows="3">46 หมู่ 3 ต.จอมบึง อ.จอมบึง จ.ราชบุรี 70150</textarea>
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 500;">Copyright Text</label>
+                            <input type="text"
+                                value="&copy; 2025 Education Faculty, Muban Chombueng Rajabhat University. All Rights Reserved."
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: 'Kanit';">
+                        </div>
+                        <button type="submit" class="btn-login"
+                            style="width: auto; padding: 10px 30px;">บันทึกการเปลี่ยนแปลง</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const adminContainer = document.querySelector('.admin-container');
+        sidebarToggle.addEventListener('click', () => { adminContainer.classList.toggle('sidebar-open'); });
+
+        function toggleProfileDropdown() {
+            document.getElementById('profileDropdown').classList.toggle('show');
+        }
+
+        window.onclick = function (event) {
+            if (!event.target.closest('.user-profile')) {
+                const dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

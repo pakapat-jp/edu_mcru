@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จัดการเมนู (Menus) - CMS Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin_style.css">
+</head>
+
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="assets/web_admin_logo.png" alt="Admin Logo"
+                    style="width: 30px; height: auto; margin-right: 10px;">
+                Web Admin
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="admin_dashboard.html"><i class="fa-solid fa-gauge"></i> แดชบอร์ด</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600;">
+                    เนื้อหา</li>
+                <li><a href="news_content.html"><i class="fa-solid fa-newspaper"></i> บทความ (Articles)</a></li>
+                <li><a href="news_categories.html"><i class="fa-solid fa-layer-group"></i> หมวดหมู่ (Categories)</a>
+                </li>
+                <li><a href="media.html"><i class="fa-solid fa-images"></i> สื่อ (Media)</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    โครงสร้างเว็บ</li>
+                <li><a href="menus.html" class="active"><i class="fa-solid fa-bars"></i> เมนู (Menus)</a></li>
+                <li><a href="header_settings.html"><i class="fa-solid fa-heading"></i> ส่วนหัว (Header)</a></li>
+                <li><a href="footer_settings.html"><i class="fa-solid fa-shoe-prints"></i> ส่วนท้าย (Footer)</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    ผู้ใช้งาน</li>
+                <li><a href="users.html"><i class="fa-solid fa-users"></i> จัดการผู้ใช้</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    ระบบ</li>
+                <li><a href="settings.html"><i class="fa-solid fa-gears"></i> ตั้งค่าทั่วไป</a></li>
+                <li><a href="theme_color.html"><i class="fa-solid fa-palette"></i> ธีมสี (Theme Color)</a></li>
+                <li><a href="fonts.html"><i class="fa-solid fa-font"></i> ฟ้อนต์ (Fonts)</a></li>
+            </ul>
+        </aside>
+
+        <main class="admin-content">
+            <header class="admin-topbar">
+                <button class="toggle-sidebar" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+                <div class="topbar-right">
+                    <div class="user-profile" id="userProfileDropdown" onclick="toggleProfileDropdown()">
+                        <div class="user-avatar">A</div>
+                        <span style="font-size: 0.9rem; font-weight: 500;">Super Admin</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i>
+
+                        <div class="dropdown-menu" id="profileDropdown">
+                            <a href="user_profile.html" class="dropdown-item"><i class="fa-solid fa-user-cog"
+                                    style="margin-right: 8px;"></i> ตั้งค่าผู้ใช้งาน</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="index.html" class="dropdown-item" style="color: #dc3545;"><i
+                                    class="fa-solid fa-sign-out-alt" style="margin-right: 8px;"></i> ออกจากระบบ</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <script>
+                function toggleProfileDropdown() {
+                    document.getElementById('profileDropdown').classList.toggle('show');
+                }
+
+                // Close dropdowns if clicked outside
+                window.onclick = function (event) {
+                    if (!event.target.closest('.user-profile')) {
+                        const dropdowns = document.getElementsByClassName("dropdown-menu");
+                        for (let i = 0; i < dropdowns.length; i++) {
+                            const openDropdown = dropdowns[i];
+                            if (openDropdown.classList.contains('show')) {
+                                openDropdown.classList.remove('show');
+                            }
+                        }
+                    }
+
+                    // Existing modal close logic
+                    const menuModal = document.getElementById('menuModal');
+                    const articleModal = document.getElementById('articleModal');
+                    if (event.target == menuModal) closeModal();
+                    if (event.target == articleModal && typeof closeArticlePicker === 'function') closeArticlePicker();
+                }
+            </script>
+
+            <div class="dashboard-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h1 class="page-title" style="margin-bottom: 0;">จัดการเมนูหลัก (Main Menu)</h1>
+                    <button class="btn-login" style="width: auto; padding: 10px 20px;" onclick="openModal()"><i
+                            class="fa-solid fa-plus"></i>
+                        เพิ่มรายการเมนู</button>
+                </div>
+
+                <div class="widget-card">
+                    <table class="cms-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">ลำดับ</th>
+                                <th>ชื่อเมนู</th>
+                                <th>ลิงก์ (URL)</th>
+                                <th>ประเภท</th>
+                                <th>สถานะ</th>
+                                <th>เครื่องมือ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="menuTableBody">
+                            <!-- Generated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Menu Modal -->
+    <div id="menuModal"
+        style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+        <div
+            style="background-color: #fefefe; margin: 5% auto; padding: 25px; border: 1px solid #888; width: 600px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); animation: fadeIn 0.3s;">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                <h3 style="margin: 0;" id="modalTitle">เพิ่มรายการเมนู</h3>
+                <span onclick="closeModal()"
+                    style="color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+            </div>
+
+            <form id="menuForm" onsubmit="saveMenu(event)">
+                <input type="hidden" id="menuId">
+
+                <!-- Title & Slug -->
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">ชื่อเมนู (Title) <span
+                            style="color: red;">*</span></label>
+                    <input type="text" id="menuTitle" required
+                        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
+                        onkeyup="generateSlug(this.value)">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Slug (Alias)</label>
+                    <input type="text" id="menuSlug" placeholder="auto-generated-from-title"
+                        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; background-color: #f9f9f9;">
+                    <div style="font-size: 0.8rem; color: #888; margin-top: 3px;">ใช้ภาษาอังกฤษตัวพิมพ์เล็กและตัวเลข
+                        (a-z, 0-9) คั่นด้วยขีดกลาง (-)</div>
+                </div>
+
+                <!-- Type & Parent -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div class="form-group">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">ประเภทเมนู (Menu
+                            Type)</label>
+                        <select id="menuType"
+                            style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
+                            onchange="toggleUrlField()">
+                            <option value="link">ลิงก์เมนู (Menu Link)</option>
+                            <option value="heading">หัวข้อเมนู (Menu Heading)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">เมนูหลัก (Parent
+                            Item)</label>
+                        <select id="menuParent"
+                            style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="0">- ไม่มี (เป็นเมนูหลัก) -</option>
+                            <!-- Populated by JS -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- URL Section (Conditional) -->
+                <div id="urlSection" class="form-group" style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">ลิงก์ (URL) <span
+                            style="color: red;">*</span></label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="menuUrl"
+                            style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <button type="button" onclick="openArticlePicker()"
+                            style="background: #17a2b8; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; white-space: nowrap;"><i
+                                class="fa-solid fa-list"></i> เลือกบทความ</button>
+                    </div>
+                </div>
+
+                <!-- Status removed from form, default to 1 on create, toggle in list -->
+
+                <div style="text-align: right; border-top: 1px solid #eee; padding-top: 20px;">
+                    <button type="button" onclick="closeModal()"
+                        style="background: #ccc; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin-right: 10px;">ยกเลิก</button>
+                    <button type="submit"
+                        style="background:var(--cms-primary); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">บันทึก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Article Picker Modal -->
+    <div id="articleModal"
+        style="display: none; position: fixed; z-index: 1100; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);">
+        <div
+            style="background-color: #fefefe; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 500px; border-radius: 8px; max-height: 70vh; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin: 0;">เลือกบทความ (Select Article)</h3>
+                <span onclick="closeArticlePicker()"
+                    style="color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+            </div>
+            <div style="overflow-y: auto; flex: 1; border: 1px solid #eee; border-radius: 4px;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tbody id="articleList">
+                        <!-- JS Generated -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const adminContainer = document.querySelector('.admin-container');
+        sidebarToggle.addEventListener('click', () => { adminContainer.classList.toggle('sidebar-open'); });
+
+        // Mock Data
+        let menuItems = [
+            { id: 1, title: 'หน้าหลัก', slug: 'home', url: 'index.html', type: 'link', parent_id: 0, status: 1 },
+            { id: 2, title: 'เกี่ยวกับคณะ', slug: 'about', url: '#', type: 'heading', parent_id: 0, status: 1 },
+            { id: 3, title: 'ประวัติความเป็นมา', slug: 'history', url: 'history.html', type: 'link', parent_id: 2, status: 1 },
+            { id: 4, title: 'วิสัยทัศน์ พันธกิจ', slug: 'vision', url: 'vision.html', type: 'link', parent_id: 2, status: 1 },
+            { id: 5, title: 'หลักสูตร', slug: 'courses', url: 'courses.html', type: 'link', parent_id: 0, status: 1 },
+            { id: 6, title: 'ข่าวประชาสัมพันธ์', slug: 'news', url: 'news.html', type: 'link', parent_id: 0, status: 1 },
+            { id: 7, title: 'ติดต่อเรา', slug: 'contact', url: 'contact.html', type: 'link', parent_id: 0, status: 1 }
+        ];
+
+        let articles = [
+            { id: 101, title: 'พิธีไหว้ครู ประจำปีการศึกษา 2568', url: 'news-detail.html?id=101' },
+            { id: 102, title: 'การอบรมเชิงปฏิบัติการพัฒนาทักษะดิจิทัล', url: 'news-detail.html?id=102' },
+            { id: 103, title: 'รับสมัครนักศึกษาใหม่ รอบที่ 1 Portfolio', url: 'admission.html' },
+            { id: 104, title: 'ผลงานวิจัยดีเด่น โดยคณาจารย์คณะครุศาสตร์', url: 'research-award.html' }
+        ];
+
+        function renderMenus() {
+            const tbody = document.getElementById('menuTableBody');
+            tbody.innerHTML = '';
+
+            // Allow basic sorting by order in array, but visual hierarchy
+            // For simple table, we list all, but indicate parent
+            menuItems.forEach((item, index) => {
+                const tr = document.createElement('tr');
+
+                let typeBadge = '';
+                if (item.type === 'heading') {
+                    typeBadge = '<span style="font-size: 0.8rem; background: #d4edda; color: #155724; padding: 2px 6px; border-radius: 3px;">Heading</span>';
+                } else {
+                    typeBadge = '<span style="font-size: 0.8rem; background: #e2e3e5; color: #383d41; padding: 2px 6px; border-radius: 3px;">Link</span>';
+                }
+
+                const statusBadge = item.status === 1
+                    ? `<span onclick="toggleStatus(${item.id})" style="color: #28a745; cursor: pointer;" title="คลิกเพื่อซ่อน (Click to Unpublish)"><i class="fa-solid fa-check-circle"></i> แสดงผล</span>`
+                    : `<span onclick="toggleStatus(${item.id})" style="color: #dc3545; cursor: pointer;" title="คลิกเพื่อแสดงผล (Click to Publish)"><i class="fa-solid fa-times-circle"></i> ซ่อน</span>`;
+
+                // Indent if child
+                let displayTitle = item.title;
+                if (item.parent_id !== 0) {
+                    displayTitle = '<span style="color: #ccc; margin-right: 5px;">↳</span> ' + item.title;
+                }
+
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td style="font-weight: 500;">${displayTitle}</td>
+                    <td style="color: #666; font-size: 0.9rem;">${item.type === 'heading' ? '-' : item.url}</td>
+                    <td>${typeBadge}</td>
+                    <td>${statusBadge}</td>
+                    <td>
+                        <button onclick="moveUp(${index})" style="border: none; background: #fff3cd; width: 30px; height: 30px; border-radius: 4px; cursor: pointer; margin-right: 5px; color: #856404;" title="เลื่อนขึ้น" ${index === 0 ? 'disabled style="opacity:0.3; pointer-events:none; border: none; background: #fff3cd; width: 30px; height: 30px; border-radius: 4px; margin-right: 5px;"' : ''}><i class="fa-solid fa-arrow-up"></i></button>
+                        <button onclick="moveDown(${index})" style="border: none; background: #fff3cd; width: 30px; height: 30px; border-radius: 4px; cursor: pointer; margin-right: 5px; color: #856404;" title="เลื่อนลง" ${index === menuItems.length - 1 ? 'disabled style="opacity:0.3; pointer-events:none; border: none; background: #fff3cd; width: 30px; height: 30px; border-radius: 4px; margin-right: 5px;"' : ''}><i class="fa-solid fa-arrow-down"></i></button>
+                        <button onclick="editMenu(${item.id})" style="border: none; background: #f0f0f0; width: 30px; height: 30px; border-radius: 4px; cursor: pointer; margin-right: 5px; color: #555;" title="แก้ไข"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteMenu(${item.id})" style="border: none; background: #fee; width: 30px; height: 30px; border-radius: 4px; cursor: pointer; color: #dc3545;" title="ลบ"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleStatus(id) {
+            const index = menuItems.findIndex(m => m.id === id);
+            if (index !== -1) {
+                // Toggle 1 <-> 0
+                menuItems[index].status = menuItems[index].status === 1 ? 0 : 1;
+                renderMenus();
+            }
+        }
+
+        // --- Logic Functions ---
+
+        function generateSlug(val) {
+            const slug = val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+            document.getElementById('menuSlug').value = slug;
+        }
+
+        function toggleUrlField() {
+            const type = document.getElementById('menuType').value;
+            const urlSection = document.getElementById('urlSection');
+            if (type === 'heading') {
+                urlSection.style.display = 'none';
+                document.getElementById('menuUrl').value = '#'; // Default placeholder
+            } else {
+                urlSection.style.display = 'block';
+                if (document.getElementById('menuUrl').value === '#') document.getElementById('menuUrl').value = '';
+            }
+        }
+
+        function renderParentOptions(excludeId = null) {
+            const select = document.getElementById('menuParent');
+            select.innerHTML = '<option value="0">- ไม่มี (เป็นเมนูหลัก) -</option>';
+
+            // Build a simplified tree or just linear sort by hierarchy for display
+            // For a flat list, we can just find roots and recursively print children
+
+            // Helper to print options recursively
+            function printOptions(parentId, depth) {
+                const children = menuItems.filter(item => item.parent_id === parentId);
+
+                children.forEach(item => {
+                    if (item.id === excludeId) return; // Don't allow selecting self as parent
+
+                    const option = document.createElement('option');
+                    option.value = item.id;
+
+                    let prefix = '';
+                    if (depth > 0) {
+                        prefix = ' '.repeat(depth * 2) + '- '.repeat(depth);
+                    }
+
+                    option.text = prefix + item.title;
+                    select.appendChild(option);
+
+                    // Recursive call for sub-items
+                    printOptions(item.id, depth + 1);
+                });
+            }
+
+            // Start from root (parent_id = 0)
+            printOptions(0, 0);
+        }
+
+        function openModal(id = null) {
+            const modal = document.getElementById('menuModal');
+            const form = document.getElementById('menuForm');
+
+            // reset logic
+            renderParentOptions(id);
+
+            if (id) {
+                // Edit Mode
+                const item = menuItems.find(m => m.id === id);
+                document.getElementById('modalTitle').innerText = 'แก้ไขรายการเมนู';
+                document.getElementById('menuId').value = item.id;
+                document.getElementById('menuTitle').value = item.title;
+                document.getElementById('menuSlug').value = item.slug || '';
+                document.getElementById('menuType').value = item.type;
+                document.getElementById('menuParent').value = item.parent_id;
+                document.getElementById('menuUrl').value = item.url;
+                // Status not in form
+            } else {
+                // Add Mode
+                document.getElementById('modalTitle').innerText = 'เพิ่มรายการเมนู';
+                form.reset();
+                document.getElementById('menuId').value = '';
+                document.getElementById('menuType').value = 'link';
+                document.getElementById('menuParent').value = 0;
+            }
+            toggleUrlField(); // Set correct init state
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('menuModal').style.display = 'none';
+        }
+
+        function saveMenu(e) {
+            e.preventDefault();
+            const id = document.getElementById('menuId').value ? parseInt(document.getElementById('menuId').value) : null;
+            const title = document.getElementById('menuTitle').value;
+            const slug = document.getElementById('menuSlug').value;
+            const type = document.getElementById('menuType').value;
+            const parent_id = parseInt(document.getElementById('menuParent').value);
+            const url = document.getElementById('menuUrl').value;
+
+            if (id) {
+                // Update
+                const index = menuItems.findIndex(m => m.id === id);
+                if (index !== -1) {
+                    // Preserve existing status
+                    const currentStatus = menuItems[index].status;
+                    menuItems[index] = { ...menuItems[index], title, slug, type, parent_id, url, status: currentStatus };
+                }
+            } else {
+                // Add - Default Status 1
+                const newId = menuItems.length > 0 ? Math.max(...menuItems.map(m => m.id)) + 1 : 1;
+                menuItems.push({ id: newId, title, slug, type, parent_id, url, status: 1 });
+            }
+
+            renderMenus();
+            closeModal();
+        }
+
+        function editMenu(id) {
+            openModal(id);
+        }
+
+        function deleteMenu(id) {
+            if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบเมนูนี้?')) {
+                menuItems = menuItems.filter(m => m.id !== id);
+                renderMenus();
+            }
+        }
+
+        function moveUp(index) {
+            if (index > 0) {
+                const temp = menuItems[index];
+                menuItems[index] = menuItems[index - 1];
+                menuItems[index - 1] = temp;
+                renderMenus();
+            }
+        }
+
+        function moveDown(index) {
+            if (index < menuItems.length - 1) {
+                const temp = menuItems[index];
+                menuItems[index] = menuItems[index + 1];
+                menuItems[index + 1] = temp;
+                renderMenus();
+            }
+        }
+
+        // --- Article Picker ---
+        function openArticlePicker() {
+            const modal = document.getElementById('articleModal');
+            const list = document.getElementById('articleList');
+            list.innerHTML = '';
+
+            articles.forEach(art => {
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid #eee';
+                tr.innerHTML = `
+                    <td style="padding: 10px;">${art.title}</td>
+                    <td style="padding: 10px; text-align: right;">
+                        <button type="button" onclick="selectArticle('${art.url}')" style="background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">เลือก</button>
+                    </td>
+                `;
+                list.appendChild(tr);
+            });
+            modal.style.display = 'block';
+        }
+
+        function closeArticlePicker() {
+            document.getElementById('articleModal').style.display = 'none';
+        }
+
+        function selectArticle(url) {
+            document.getElementById('menuUrl').value = url;
+            closeArticlePicker();
+        }
+
+        // Initialize
+        renderMenus();
+
+        // Close modal if clicked outside
+        window.onclick = function (event) {
+            const menuModal = document.getElementById('menuModal');
+            const articleModal = document.getElementById('articleModal');
+            if (event.target == menuModal) closeModal();
+            if (event.target == articleModal) closeArticlePicker();
+        }
+    </script>
+</body>
+
+</html>

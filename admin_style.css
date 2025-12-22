@@ -1,0 +1,406 @@
+/* Admin Panel Variables (Joomla-like) */
+:root {
+    --cms-sidebar-bg: #10162f;
+    --cms-sidebar-text: #b7c0cd;
+    --cms-sidebar-active: #1e2642;
+    --cms-sidebar-active-text: #fff;
+    --cms-primary: #2255a4;
+    --cms-bg: #f0f2f5;
+    --cms-card-bg: #ffffff;
+    --cms-text: #2e3d54;
+    --cms-text-muted: #6c757d;
+    --cms-border: #e0e0e0;
+}
+
+body {
+    background-color: var(--cms-bg);
+    color: var(--cms-text);
+    font-family: 'Kanit', sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* Layout */
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.admin-sidebar {
+    width: 250px;
+    background-color: var(--cms-sidebar-bg);
+    color: var(--cms-sidebar-text);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    transition: all 0.3s;
+    z-index: 1000;
+}
+
+.sidebar-header {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    background-color: rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.sidebar-header img {
+    height: 30px;
+    margin-right: 10px;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 20px 0;
+    margin: 0;
+    flex: 1;
+}
+
+.sidebar-menu li {
+    margin-bottom: 5px;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: var(--cms-sidebar-text);
+    text-decoration: none;
+    transition: 0.2s;
+    font-size: 0.95rem;
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
+    background-color: var(--cms-sidebar-active);
+    color: var(--cms-sidebar-active-text);
+    border-left: 4px solid var(--cms-primary);
+}
+
+.sidebar-menu i {
+    width: 25px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+.sidebar-footer {
+    padding: 20px;
+    font-size: 0.8rem;
+    color: #5d6b82;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Main Content */
+.admin-content {
+    flex: 1;
+    margin-left: 250px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Topbar */
+.admin-topbar {
+    height: 60px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.toggle-sidebar {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--cms-text);
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.user-avatar {
+    width: 35px;
+    height: 35px;
+    background-color: var(--cms-primary);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+}
+
+/* Dropdown Menu */
+.user-profile {
+    position: relative;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 200px;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, .1);
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+    z-index: 1000;
+    margin-top: 10px;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    clear: both;
+    font-weight: 400;
+    color: var(--cms-text);
+    text-align: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+    box-sizing: border-box;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: var(--cms-primary);
+}
+
+.dropdown-divider {
+    height: 0;
+    margin: .5rem 0;
+    overflow: hidden;
+    border-top: 1px solid #e9ecef;
+}
+
+/* Dashboard Grid */
+.dashboard-container {
+    padding: 20px;
+}
+
+.page-title {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.dashboard-widgets {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.widget-card {
+    background: var(--cms-card-bg);
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+    border: 1px solid var(--cms-border);
+    padding: 20px;
+}
+
+.widget-card h3 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    color: var(--cms-text-muted);
+    font-weight: 500;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+/* Quick Icons Grid used in Joomla Dashboard */
+.quick-icons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 15px;
+}
+
+.quick-icon-item {
+    background: #f8f9fa;
+    border: 1px solid #eee;
+    padding: 15px;
+    text-align: center;
+    border-radius: 5px;
+    transition: 0.2s;
+    text-decoration: none;
+    color: var(--cms-text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+}
+
+.quick-icon-item:hover {
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+    border-color: var(--cms-primary);
+    color: var(--cms-primary);
+}
+
+.quick-icon-item i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: var(--cms-primary);
+}
+
+/* Table Style */
+.table-container {
+    background: var(--cms-card-bg);
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+    border: 1px solid var(--cms-border);
+}
+
+.cms-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cms-table th,
+.cms-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.cms-table th {
+    background-color: #f8f9fa;
+    font-weight: 500;
+    color: var(--cms-text-muted);
+}
+
+.cms-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Login Page Styles */
+.login-body {
+    background-color: var(--cms-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.login-card {
+    background: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.login-logo {
+    margin-bottom: 20px;
+}
+
+.login-logo img {
+    height: 60px;
+}
+
+.login-form .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--cms-text);
+}
+
+.login-form input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid var(--cms-border);
+    border-radius: 4px;
+    font-family: 'Kanit', sans-serif;
+    box-sizing: border-box;
+    transition: 0.2s;
+}
+
+.login-form input:focus {
+    border-color: var(--cms-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(34, 85, 164, 0.1);
+}
+
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--cms-primary);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-login:hover {
+    background-color: #1a428a;
+}
+
+.login-footer {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: var(--cms-text-muted);
+}
+
+.login-footer a {
+    color: var(--cms-primary);
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+    }
+
+    .admin-content {
+        margin-left: 0;
+    }
+
+    .admin-container.sidebar-open .admin-sidebar {
+        transform: translateX(0);
+    }
+}

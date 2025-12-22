@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บทความ (Articles) - CMS Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin_style.css">
+</head>
+
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="assets/web_admin_logo.png" alt="Admin Logo"
+                    style="width: 30px; height: auto; margin-right: 10px;">
+                Web Admin
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="admin_dashboard.html"><i class="fa-solid fa-gauge"></i> แดชบอร์ด</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600;">
+                    เนื้อหา</li>
+                <li><a href="news_content.html" class="active"><i class="fa-solid fa-newspaper"></i> บทความ
+                        (Articles)</a></li>
+                <li><a href="news_categories.html"><i class="fa-solid fa-layer-group"></i> หมวดหมู่ (Categories)</a>
+                </li>
+                <li><a href="media.html"><i class="fa-solid fa-images"></i> สื่อ (Media)</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    โครงสร้างเว็บ</li>
+                <li><a href="menus.html"><i class="fa-solid fa-bars"></i> เมนู (Menus)</a></li>
+                <li><a href="header_settings.html"><i class="fa-solid fa-heading"></i> ส่วนหัว (Header)</a></li>
+                <li><a href="footer_settings.html"><i class="fa-solid fa-shoe-prints"></i> ส่วนท้าย (Footer)</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    ผู้ใช้งาน</li>
+                <li><a href="users.html"><i class="fa-solid fa-users"></i> จัดการผู้ใช้</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    ระบบ</li>
+                <li><a href="settings.html"><i class="fa-solid fa-gears"></i> ตั้งค่าทั่วไป</a></li>
+                <li><a href="theme_color.html"><i class="fa-solid fa-palette"></i> ธีมสี (Theme Color)</a></li>
+                <li><a href="fonts.html"><i class="fa-solid fa-font"></i> ฟ้อนต์ (Fonts)</a></li>
+            </ul>
+        </aside>
+
+        <main class="admin-content">
+            <header class="admin-topbar">
+                <button class="toggle-sidebar" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+                <div class="topbar-right">
+                    <a href="index.html" target="_blank"
+                        style="color: var(--cms-text); text-decoration: none; font-size: 0.9rem;"><i
+                            class="fa-solid fa-external-link-alt"></i> ดูหน้าเว็บไซต์</a>
+                    <div class="user-profile" id="userProfileDropdown" onclick="toggleProfileDropdown()">
+                        <div class="user-avatar">A</div>
+                        <span style="font-size: 0.9rem; font-weight: 500;">Super Admin</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i>
+
+                        <div class="dropdown-menu" id="profileDropdown">
+                            <a href="user_profile.html" class="dropdown-item"><i class="fa-solid fa-user-cog"
+                                    style="margin-right: 8px;"></i> ตั้งค่าผู้ใช้งาน</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="index.html" class="dropdown-item" style="color: #dc3545;"><i
+                                    class="fa-solid fa-sign-out-alt" style="margin-right: 8px;"></i> ออกจากระบบ</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h1 class="page-title" style="margin-bottom: 0;">จัดการบทความ (Articles)</h1>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <div id="bulkActions" style="display: none; gap: 5px;">
+                            <button class="btn-login"
+                                style="width: auto; padding: 10px 15px; background-color: #28a745; border-color: #28a745;"><i
+                                    class="fa-solid fa-check"></i> เผยแพร่</button>
+                            <button class="btn-login"
+                                style="width: auto; padding: 10px 15px; background-color: #ffc107; border-color: #ffc107; color: #000;"><i
+                                    class="fa-solid fa-circle-pause"></i> ร่าง</button>
+                            <button class="btn-login"
+                                style="width: auto; padding: 10px 15px; background-color: #dc3545; border-color: #dc3545;"><i
+                                    class="fa-solid fa-trash"></i> ลบ</button>
+                        </div>
+                        <a href="news_form.html" class="btn-login"
+                            style="width: auto; padding: 10px 20px; text-decoration: none; display: inline-block;"><i
+                                class="fa-solid fa-plus"></i> เพิ่มบทความใหม่</a>
+                    </div>
+                </div>
+
+                <div class="widget-card">
+                    <div style="padding-bottom: 15px; display: flex; gap: 10px;">
+                        <input type="text" placeholder="ค้นหาบทความ..."
+                            style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; flex: 1;">
+                        <select style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option>ทุกหมวดหมู่</option>
+                            <option>ข่าวประชาสัมพันธ์</option>
+                            <option>กิจกรรม</option>
+                        </select>
+                        <button class="btn-login" style="width: auto; padding: 8px 15px;">ค้นหา</button>
+                    </div>
+                    <table class="cms-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;"><input type="checkbox" id="checkAll"></th>
+                                <th>ชื่อเรื่อง</th>
+                                <th>สถานะ</th>
+                                <th>หมวดหมู่</th>
+                                <th>ผู้เขียน</th>
+                                <th>วันที่</th>
+                                <th>จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="checkbox" class="row-checkbox"></td>
+                                <td><a href="news_form.html"
+                                        style="color: var(--cms-primary); font-weight: 500;">ขอเชิญร่วมงานวันครู
+                                        ประจำปี 2568</a></td>
+                                <td><span style="color: #28a745;"><i class="fa-solid fa-check-circle"></i>
+                                        เผยแพร่</span></td>
+                                <td>กิจกรรม</td>
+                                <td>Admin</td>
+                                <td>10 ธ.ค. 2568</td>
+                                <td style="position: relative;">
+                                    <button class="action-btn" onclick="toggleActionMenu(this)"
+                                        style="border: none; background: none; color: #666; cursor: pointer; padding: 5px;"><i
+                                            class="fa-solid fa-ellipsis-vertical"></i></button>
+                                    <div class="action-menu"
+                                        style="display: none; position: absolute; right: 0; top: 100%; background: #fff; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 100; min-width: 120px; border-radius: 4px;">
+                                        <a href="#"
+                                            style="display: block; padding: 8px 15px; color: #28a745; text-decoration: none; font-size: 0.9rem;"><i
+                                                class="fa-solid fa-check"></i> เผยแพร่</a>
+                                        <a href="#"
+                                            style="display: block; padding: 8px 15px; color: #ffc107; text-decoration: none; font-size: 0.9rem;"><i
+                                                class="fa-solid fa-circle-pause"></i> ร่าง</a>
+                                        <div style="border-top: 1px solid #eee;"></div>
+                                        <a href="#"
+                                            style="display: block; padding: 8px 15px; color: #dc3545; text-decoration: none; font-size: 0.9rem;"><i
+                                                class="fa-solid fa-trash"></i> ลบ</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="row-checkbox"></td>
+                                <td><a href="news_form.html"
+                                        style="color: var(--cms-primary); font-weight: 500;">ประกาศปิดทำการช่วงเทศกาลปีใหม่</a>
+                                </td>
+                                <td><span style="color: #ffc107;"><i class="fa-solid fa-circle-pause"></i> ร่าง</span>
+                                </td>
+                                <td>ข่าวทั่วไป</td>
+                                <td>Staff 1</td>
+                                <td>05 ธ.ค. 2568</td>
+                                <td style="position: relative;">
+                                    <button class="action-btn" onclick="toggleActionMenu(this)"
+                                        style="border: none; background: none; color: #666; cursor: pointer; padding: 5px;"><i
+                                            class="fa-solid fa-ellipsis-vertical"></i></button>
+                                    <div class="action-menu"
+                                        style="display: none; position: absolute; right: 0; top: 100%; background: #fff; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 100; min-width: 120px; border-radius: 4px;">
+                                        <a href="#"
+                                            style="display: block; padding: 8px 15px; color: #28a745; text-decoration: none; font-size: 0.9rem;"><i
+                                                class="fa-solid fa-check"></i> เผยแพร่</a>
+                                        <a href="#"
+                                            style="display: block; padding: 8px 15px; color: #ffc107; text-decoration: none; font-size: 0.9rem;"><i
+                                                class="fa-solid fa-circle-pause"></i> ร่าง</a>
+                                        <div style="border-top: 1px solid #eee;"></div>
+                                        <a href="#"
+                                            style="display: block; padding: 8px 15px; color: #dc3545; text-decoration: none; font-size: 0.9rem;"><i
+                                                class="fa-solid fa-trash"></i> ลบ</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const adminContainer = document.querySelector('.admin-container');
+        sidebarToggle.addEventListener('click', () => {
+            adminContainer.classList.toggle('sidebar-open');
+        });
+
+        function toggleProfileDropdown() {
+            document.getElementById('profileDropdown').classList.toggle('show');
+        }
+
+        // Bulk Actions Logic
+        const bulkActions = document.getElementById('bulkActions');
+        const checkAll = document.getElementById('checkAll');
+        const checkboxes = document.querySelectorAll('.row-checkbox');
+
+        function updateBulkActions() {
+            const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+            bulkActions.style.display = anyChecked ? 'flex' : 'none';
+        }
+
+        checkAll.addEventListener('change', () => {
+            checkboxes.forEach(cb => cb.checked = checkAll.checked);
+            updateBulkActions();
+        });
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', updateBulkActions);
+        });
+
+        // Inline Action Menu Logic
+        function toggleActionMenu(btn) {
+            // Close all other open menus
+            document.querySelectorAll('.action-menu').forEach(menu => {
+                if (menu !== btn.nextElementSibling) {
+                    menu.style.display = 'none';
+                }
+            });
+
+            const menu = btn.nextElementSibling;
+            if (menu.style.display === 'block') {
+                menu.style.display = 'none';
+            } else {
+                menu.style.display = 'block';
+            }
+
+            // Prevent event bubbling
+            event.stopPropagation();
+        }
+
+        // Close menus when clicking outside
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.action-menu').forEach(menu => {
+                menu.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+
+</html>

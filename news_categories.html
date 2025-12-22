@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หมวดหมู่ (Categories) - CMS Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin_style.css">
+</head>
+
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="assets/web_admin_logo.png" alt="Admin Logo"
+                    style="width: 30px; height: auto; margin-right: 10px;">
+                Web Admin
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="admin_dashboard.html"><i class="fa-solid fa-gauge"></i> แดชบอร์ด</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600;">
+                    เนื้อหา</li>
+                <li><a href="news_content.html"><i class="fa-solid fa-newspaper"></i> บทความ (Articles)</a></li>
+                <li><a href="news_categories.html" class="active"><i class="fa-solid fa-layer-group"></i> หมวดหมู่
+                        (Categories)</a></li>
+                <li><a href="media.html"><i class="fa-solid fa-images"></i> สื่อ (Media)</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    โครงสร้างเว็บ</li>
+                <li><a href="menus.html"><i class="fa-solid fa-bars"></i> เมนู (Menus)</a></li>
+                <li><a href="header_settings.html"><i class="fa-solid fa-heading"></i> ส่วนหัว (Header)</a></li>
+                <li><a href="footer_settings.html"><i class="fa-solid fa-shoe-prints"></i> ส่วนท้าย (Footer)</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    ผู้ใช้งาน</li>
+                <li><a href="users.html"><i class="fa-solid fa-users"></i> จัดการผู้ใช้</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    ระบบ</li>
+                <li><a href="settings.html"><i class="fa-solid fa-gears"></i> ตั้งค่าทั่วไป</a></li>
+                <li><a href="theme_color.html"><i class="fa-solid fa-palette"></i> ธีมสี (Theme Color)</a></li>
+                <li><a href="fonts.html"><i class="fa-solid fa-font"></i> ฟ้อนต์ (Fonts)</a></li>
+            </ul>
+        </aside>
+
+        <main class="admin-content">
+            <header class="admin-topbar">
+                <button class="toggle-sidebar" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+                <div class="topbar-right">
+                    <a href="index.html" target="_blank"
+                        style="color: var(--cms-text); text-decoration: none; font-size: 0.9rem;"><i
+                            class="fa-solid fa-external-link-alt"></i> ดูหน้าเว็บไซต์</a>
+                    <div class="user-profile" id="userProfileDropdown" onclick="toggleProfileDropdown()">
+                        <div class="user-avatar">A</div>
+                        <span style="font-size: 0.9rem; font-weight: 500;">Super Admin</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i>
+
+                        <div class="dropdown-menu" id="profileDropdown">
+                            <a href="user_profile.html" class="dropdown-item"><i class="fa-solid fa-user-cog"
+                                    style="margin-right: 8px;"></i> ตั้งค่าผู้ใช้งาน</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="index.html" class="dropdown-item" style="color: #dc3545;"><i
+                                    class="fa-solid fa-sign-out-alt" style="margin-right: 8px;"></i> ออกจากระบบ</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h1 class="page-title" style="margin-bottom: 0;">จัดการหมวดหมู่ (Categories)</h1>
+                    <button id="addCategoryBtn" class="btn-login" style="width: auto; padding: 10px 20px;"><i
+                            class="fa-solid fa-plus"></i>
+                        เพิ่มหมวดหมู่</button>
+                </div>
+
+                <div class="widget-card">
+                    <table class="cms-table">
+                        <thead>
+                            <tr>
+                                <th>ชื่อหมวดหมู่</th>
+                                <th>Slug</th>
+                                <th>จำนวนบทความ</th>
+                                <th>สถานะ</th>
+                                <th>เครื่องมือ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><a href="news_category_form.html"
+                                        style="color: var(--cms-primary); font-weight: 500;">ข่าวประชาสัมพันธ์</a></td>
+                                <td>news</td>
+                                <td>15</td>
+                                <td><span style="color: #28a745;"><i class="fa-solid fa-check-circle"></i> ใช้งาน</span>
+                                </td>
+                                <td><button onclick="deleteRow(this)"
+                                        style="border: none; background: none; color: #dc3545; cursor: pointer;"><i
+                                            class="fa-solid fa-trash"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td><a href="news_category_form.html"
+                                        style="color: var(--cms-primary); font-weight: 500;">กิจกรรมคณะ</a></td>
+                                <td>activities</td>
+                                <td>8</td>
+                                <td><span style="color: #28a745;"><i class="fa-solid fa-check-circle"></i> ใช้งาน</span>
+                                </td>
+                                <td><button onclick="deleteRow(this)"
+                                        style="border: none; background: none; color: #dc3545; cursor: pointer;"><i
+                                            class="fa-solid fa-trash"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- Add Category Modal -->
+    <div id="addCategoryModal" class="modal"
+        style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+        <div class="modal-content"
+            style="background-color: #fefefe; margin: 10% auto; padding: 0; border: 1px solid #888; width: 50%; border-radius: 8px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); animation: animatetop 0.4s">
+            <div class="modal-header"
+                style="padding: 15px 20px; background-color: var(--cms-primary); color: white; border-top-left-radius: 8px; border-top-right-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin: 0; font-size: 1.2rem;">เพิ่มหมวดหมู่ใหม่</h2>
+                <span class="close-modal"
+                    style="color: white; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+            </div>
+            <div class="modal-body" style="padding: 20px;">
+                <form>
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">ชื่อหมวดหมู่ <span
+                                style="color: red;">*</span></label>
+                        <input type="text" placeholder="ระบุชื่อหมวดหมู่..."
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Slug (Alias)</label>
+                        <input type="text" placeholder="auto-generated"
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background-color: #f9f9f9;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">สถานะ</label>
+                        <select style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="1">ใช้งาน (Published)</option>
+                            <option value="0">ไม่ใช้งาน (Unpublished)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">รายละเอียด</label>
+                        <textarea rows="3"
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                    </div>
+                    <div class="form-actions" style="text-align: right; margin-top: 20px;">
+                        <button type="button" class="btn-cancel close-modal-btn"
+                            style="padding: 10px 20px; border: 1px solid #ddd; background: #fff; color: #333; border-radius: 4px; cursor: pointer; margin-right: 10px;">ยกเลิก</button>
+                        <button type="submit" class="btn-save"
+                            style="padding: 10px 20px; border: none; background: var(--cms-primary); color: #fff; border-radius: 4px; cursor: pointer;">บันทึก</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const adminContainer = document.querySelector('.admin-container');
+        sidebarToggle.addEventListener('click', () => { adminContainer.classList.toggle('sidebar-open'); });
+
+        function toggleProfileDropdown() {
+            document.getElementById('profileDropdown').classList.toggle('show');
+        }
+
+        // Modal Logic
+        const addCategoryModal = document.getElementById("addCategoryModal"); // Renamed to avoid conflict with 'modal' in window.onclick
+        const btn = document.getElementById("addCategoryBtn");
+        const span = document.getElementsByClassName("close-modal")[0];
+        const cancelBtn = document.getElementsByClassName("close-modal-btn")[0];
+
+        function closeModal() {
+            addCategoryModal.style.display = "none";
+        }
+
+        btn.onclick = function () {
+            addCategoryModal.style.display = "block";
+        }
+
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        cancelBtn.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        function deleteRow(btn) {
+            if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบหมวดหมู่นี้?')) {
+                var row = btn.parentNode.parentNode;
+                row.remove();
+            }
+        }
+    </script>
+</body>
+
+</html>

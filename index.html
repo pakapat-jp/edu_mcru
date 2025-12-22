@@ -1,0 +1,342 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คณะครุศาสตร์ - มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง</title>
+    <meta name="description" content="เว็บไซต์คณะครุศาสตร์ มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="assets/logo.png" type="image/png">
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Top Banner -->
+    <div class="page-banner">
+        <img src="assets/edu-topbanner.png" alt="Top Banner" style="width: 100%; height: auto; display: block;">
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">
+                <img src="assets/logo-name.png" alt="EDU MCRU">
+            </a>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">หน้าหลัก</a></li>
+                <li class="dropdown">
+                    <a href="#" class="nav-link">เกี่ยวกับคณะ <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <!-- 2.1 General Info -->
+                        <li class="dropdown-submenu">
+                            <a href="#" class="dropdown-item dropdown-submenu-toggle">ข้อมูลทั่วไป</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="history.html">ประวัติความเป็นมา</a></li>
+                                <li><a href="vision.html">ปรัชญา วิสัยทัศน์ พันธกิจ</a></li>
+                            </ul>
+                        </li>
+                        <!-- 2.2 Administration -->
+                        <li class="dropdown-submenu">
+                            <a href="#" class="dropdown-item dropdown-submenu-toggle">การบริหาร</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="structure.html">โครงสร้าง</a></li>
+                                <li><a href="board.html">คณะกรรมการประจำคณะ</a></li>
+                                <li><a href="deans_list.html">ทำเนียบคณบดี</a></li>
+                                <li><a href="personnel.html">ผู้บริหาร อาจารย์ บุคลากร</a></li>
+                            </ul>
+                        </li>
+                        <!-- Other Items -->
+                        <li><a href="operation_plan.html">แผนการดำเนินงาน</a></li>
+                        <li><a href="operation_results.html">ผลการดำเนินงาน</a></li>
+                        <li><a href="qa.html">ประกันคุณภาพการศึกษา</a></li>
+                        <li><a href="ita.html">ความโปร่งใส่ (ITA)</a></li>
+                    </ul>
+                </li>
+                <li><a href="courses.html" class="nav-link">หลักสูตร</a></li>
+                <li class="dropdown">
+                    <a href="#departments" class="nav-link">หน่วยงาน <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="teacher_pro_dev.html">ศูนย์พัฒนาวิชาชีพครู</a></li>
+                        <li><a href="thantawan_school.html">โรงเรียนสาธิตอนุบาลทานตะวัน</a></li>
+                    </ul>
+                </li>
+                <li><a href="documents.html" class="nav-link">เอกสารเผยแพร่</a></li>
+                <li><a href="services.html" class="nav-link">บริการ</a></li>
+                <li><a href="#contact" class="nav-link">ติดต่อเรา</a></li>
+
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="slideshow-container">
+            <!-- Slide 1 with Overlay -->
+            <div class="slide fade">
+                <img src="https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+                    alt="University">
+                <div class="hero-overlay">
+                    <h2 class="fade-in-up">ครุศาสตร์ สร้างครู ครูสร้างชาติเพื่อการพัฒนาที่ยั่งยืน</h2>
+                    <p class="fade-in-up" style="transition-delay: 0.2s;">คณะครุศาสตร์
+                        มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง
+                    </p>
+                    <div class="hero-buttons fade-in-up" style="transition-delay: 0.4s;">
+                        <a href="courses.html" class="btn btn-primary">หลักสูตร</a>
+                        <a href="#contact" class="btn btn-outline text-white">ติดต่อสอบถาม</a>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Slide 3 -->
+            <div class="slide fade">
+                <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+                    alt="Students">
+            </div>
+
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+
+            <div class="dots-container">
+                <span class="dot" onclick="currentSlide(1)"></span>
+                <span class="dot" onclick="currentSlide(3)"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container grid-4">
+            <div class="stat-item fade-in-up">
+                <h3>80+</h3>
+                <p>คณาจารย์ผู้เชี่ยวชาญ</p>
+            </div>
+            <div class="stat-item fade-in-up" style="transition-delay: 0.1s;">
+                <h3>2000+</h3>
+                <p>นักศึกษาปัจจุบัน</p>
+            </div>
+            <div class="stat-item fade-in-up" style="transition-delay: 0.2s;">
+                <h3>10+</h3>
+                <p>สาขาวิชา</p>
+            </div>
+            <div class="stat-item fade-in-up" style="transition-delay: 0.3s;">
+                <h3>95%</h3>
+                <p>อัตราการได้งานทำ</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- News Feed Section -->
+    <section id="news" class="section-padding bg-light">
+        <div class="container">
+            <h2 class="section-title text-center">ข่าวประชาสัมพันธ์</h2>
+
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="openTab(event, 'News')">รอบรั้วครุศาสตร์</button>
+                <button class="tab-btn" onclick="openTab(event, 'Activities')">กิจกรรมคณะ/สาขา</button>
+                <button class="tab-btn" onclick="openTab(event, 'Scholarships')">ทุนการศึกษา</button>
+            </div>
+
+            <!-- News Category -->
+            <div id="News" class="tab-content" style="display: block;">
+                <div class="grid-3">
+                    <div class="card">
+                        <div class="card-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60');">
+                        </div>
+                        <div class="card-body">
+                            <span class="news-date">10 ธ.ค. 2568</span>
+                            <h4>ขอเชิญร่วมงานวันครู ประจำปี 2568</h4>
+                            <p>คณะครุศาสตร์ขอเชิญคณาจารย์และนักศึกษาร่วมพิธีรำลึกถึงพระคุณครู...</p>
+                            <a href="#" class="read-more">อ่านต่อ <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60');">
+                        </div>
+                        <div class="card-body">
+                            <span class="news-date">8 ธ.ค. 2568</span>
+                            <h4>ประชุมเตรียมความพร้อมฝึกประสบการณ์วิชาชีพ</h4>
+                            <p>การประชุมชี้แจงระเบียบและการปฏิบัติตนสำหรับนักศึกษาชั้นปีที่ 4...</p>
+                            <a href="#" class="read-more">อ่านต่อ <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1531545514256-b1400bc00f31?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60');">
+                        </div>
+                        <div class="card-body">
+                            <span class="news-date">5 ธ.ค. 2568</span>
+                            <h4>MOU ความร่วมมือทางวิชาการ</h4>
+                            <p>ลงนามความร่วมมือกับโรงเรียนเครือข่ายเพื่อยกระดับคุณภาพการศึกษา...</p>
+                            <a href="#" class="read-more">อ่านต่อ <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1509062522246-3755977927d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60');">
+                        </div>
+                        <div class="card-body">
+                            <span class="news-date">3 ธ.ค. 2568</span>
+                            <h4>รับสมัครนักศึกษาใหม่ ประจำปีการศึกษา 2569</h4>
+                            <p>เปิดรับสมัครนักศึกษาระดับปริญญาตรี ภาคปกติ รอบที่ 1 Portfolio...</p>
+                            <a href="#" class="read-more">อ่านต่อ <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60');">
+                        </div>
+                        <div class="card-body">
+                            <span class="news-date">1 ธ.ค. 2568</span>
+                            <h4>ผลงานวิจัยดีเด่นระดับชาติ</h4>
+                            <p>ขอแสดงความยินดีกับอาจารย์คณะครุศาสตร์ที่ได้รับรางวัลงานวิจัยดีเด่น...</p>
+                            <a href="#" class="read-more">อ่านต่อ <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60');">
+                        </div>
+                        <div class="card-body">
+                            <span class="news-date">28 พ.ย. 2568</span>
+                            <h4>อบรมพัฒนาทักษะภาษาอังกฤษ</h4>
+                            <p>โครงการอบรมภาษาอังกฤษเพื่อการสื่อสารสำหรับครูในยุคศตวรรษที่ 21...</p>
+                            <a href="#" class="read-more">อ่านต่อ <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activities Category -->
+            <div id="Activities" class="tab-content">
+                <div class="grid-3">
+                    <div class="card">
+                        <div class="card-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60');">
+                        </div>
+                        <div class="card-body">
+                            <span class="news-date">12 ธ.ค. 2568</span>
+                            <h4>โครงการจิตอาสาพัฒนาชุมชน</h4>
+                            <p>สโมสรนักศึกษาจัดกิจกรรมทาสีรั้วโรงเรียนและการเรียนรู้ชุมชน...</p>
+                            <a href="#" class="read-more">อ่านต่อ <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1544531696-b4001968d27d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60');">
+                        </div>
+                        <div class="card-body">
+                            <span class="news-date">15 พ.ย. 2568</span>
+                            <h4>กีฬาสานสัมพันธ์น้องพี่</h4>
+                            <p>กิจกรรมแข่งกีฬาระหว่างสาขาวิชาเพื่อสร้างความสามัคคี...</p>
+                            <a href="#" class="read-more">อ่านต่อ <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60');">
+                        </div>
+                        <div class="card-body">
+                            <span class="news-date">10 พ.ย. 2568</span>
+                            <h4>อบรมเชิงปฏิบัติการผลิตสื่อการสอน</h4>
+                            <p>สาขาวิชาเทคโนโลยีการศึกษาจัดอบรมการใช้ AI ในการผลิตสื่อ...</p>
+                            <a href="#" class="read-more">อ่านต่อ <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scholarships Category -->
+            <div id="Scholarships" class="tab-content">
+                <div class="grid-3">
+                    <div class="card">
+                        <div class="card-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60');">
+                        </div>
+                        <div class="card-body">
+                            <span class="news-date">Urgent</span>
+                            <h4>ทุนเรียนดีแต่ยากจน ประจำปี 2568</h4>
+                            <p>เปิดรับสมัครทุนสนับสนุนการศึกษาสำหรับนักเรียนที่มีผลการเรียนดี...</p>
+                            <a href="#" class="read-more">อ่านต่อ <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60');">
+                        </div>
+                        <div class="card-body">
+                            <span class="news-date">Open</span>
+                            <h4>ทุนแลกเปลี่ยนวัฒนธรรมต่างประเทศ</h4>
+                            <p>โอกาสสำหรับนักศึกษาที่สนใจเข้าร่วมโครงการแลกเปลี่ยน ณ ประเทศญี่ปุ่น...</p>
+                            <a href="#" class="read-more">อ่านต่อ <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+
+
+
+
+
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content grid-4">
+                <div class="footer-col">
+                    <h3>ติดต่อเรา</h3>
+                    <p>คณะครุศาสตร์ <br>มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง</p>
+                    <p>46 หมู่ 3 ต.จอมบึง อ.จอมบึง <br>จ.ราชบุรี 70150</p>
+                </div>
+                <div class="footer-col">
+                    <h3>ลิงก์ด่วน</h3>
+                    <ul>
+                        <li><a href="#">ระบบบริการการศึกษา</a></li>
+                        <li><a href="#">ห้องสมุด</a></li>
+                        <li><a href="#">ปฏิทินวิชาการ</a></li>
+                        <li><a href="#">ดาวน์โหลดเอกสาร</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>ติดตามเรา</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#"><i class="fa-brands fa-line"></i></a>
+                        <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>สำหรับผู้ดูแลระบบ</h3>
+                    <a href="login.html" class="btn btn-outline text-white btn-sm">เข้าสู่ระบบ</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Education Faculty, Muban Chombueng Rajabhat University. All Rights Reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

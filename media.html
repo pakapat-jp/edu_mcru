@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จัดการสื่อ (Media) - CMS Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin_style.css">
+</head>
+
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="assets/web_admin_logo.png" alt="Admin Logo"
+                    style="width: 30px; height: auto; margin-right: 10px;">
+                Web Admin
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="admin_dashboard.html"><i class="fa-solid fa-gauge"></i> แดชบอร์ด</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600;">
+                    เนื้อหา</li>
+                <li><a href="news_content.html"><i class="fa-solid fa-newspaper"></i> บทความ (Articles)</a></li>
+                <li><a href="news_categories.html"><i class="fa-solid fa-layer-group"></i> หมวดหมู่ (Categories)</a>
+                </li>
+                <li><a href="media.html" class="active"><i class="fa-solid fa-images"></i> สื่อ (Media)</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    โครงสร้างเว็บ</li>
+                <li><a href="menus.html"><i class="fa-solid fa-bars"></i> เมนู (Menus)</a></li>
+                <li><a href="header_settings.html"><i class="fa-solid fa-heading"></i> ส่วนหัว (Header)</a></li>
+                <li><a href="footer_settings.html"><i class="fa-solid fa-shoe-prints"></i> ส่วนท้าย (Footer)</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    ผู้ใช้งาน</li>
+                <li><a href="users.html"><i class="fa-solid fa-users"></i> จัดการผู้ใช้</a></li>
+                <li
+                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
+                    ระบบ</li>
+                <li><a href="settings.html"><i class="fa-solid fa-gears"></i> ตั้งค่าทั่วไป</a></li>
+                <li><a href="theme_color.html"><i class="fa-solid fa-palette"></i> ธีมสี (Theme Color)</a></li>
+                <li><a href="fonts.html"><i class="fa-solid fa-font"></i> ฟ้อนต์ (Fonts)</a></li>
+            </ul>
+        </aside>
+
+        <main class="admin-content">
+            <header class="admin-topbar">
+                <button class="toggle-sidebar" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+                <div class="topbar-right">
+                    <div class="user-profile" id="userProfileDropdown" onclick="toggleProfileDropdown()">
+                        <div class="user-avatar">A</div>
+                        <span style="font-size: 0.9rem; font-weight: 500;">Super Admin</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i>
+
+                        <div class="dropdown-menu" id="profileDropdown">
+                            <a href="user_profile.html" class="dropdown-item"><i class="fa-solid fa-user-cog"
+                                    style="margin-right: 8px;"></i> ตั้งค่าผู้ใช้งาน</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="index.html" class="dropdown-item" style="color: #dc3545;"><i
+                                    class="fa-solid fa-sign-out-alt" style="margin-right: 8px;"></i> ออกจากระบบ</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h1 class="page-title" style="margin-bottom: 0;">คลังสื่อ (Media Library)</h1>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-login"
+                            style="width: auto; padding: 10px 15px; background-color: #6c757d; border-color: #6c757d;"
+                            onclick="navigateUp()"><i class="fa-solid fa-arrow-up"></i> กลับ</button>
+                        <button class="btn-login" style="width: auto; padding: 10px 15px;" onclick="createFolder()"><i
+                                class="fa-solid fa-folder-plus"></i> สร้างโฟลเดอร์</button>
+                        <button class="btn-login" style="width: auto; padding: 10px 15px; background-color: #007bff;"
+                            onclick="uploadFile()"><i class="fa-solid fa-upload"></i> อัปโหลด</button>
+                    </div>
+                </div>
+
+                <div class="widget-card">
+                    <div
+                        style="background: #f8f9fa; padding: 10px; border-bottom: 1px solid #ddd; margin-bottom: 15px; border-radius: 4px;">
+                        <i class="fa-solid fa-location-dot" style="color: #666; margin-right: 5px;"></i> <span
+                            id="breadcrumb" style="font-weight: 500; color: #333;">assets</span>
+                    </div>
+
+                    <div id="fileList"
+                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px;">
+                        <!-- Content will be generated by JS -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const adminContainer = document.querySelector('.admin-container');
+        sidebarToggle.addEventListener('click', () => { adminContainer.classList.toggle('sidebar-open'); });
+
+        function toggleProfileDropdown() {
+            document.getElementById('profileDropdown').classList.toggle('show');
+        }
+
+        window.onclick = function (event) {
+            if (!event.target.closest('.user-profile')) {
+                const dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+        // Simulated File System
+        // Structure: Name -> { type: 'folder'|'file', children: {} (if folder) }
+        let fileSystem = {
+            "assets": {
+                type: "folder",
+                children: {
+                    "images": {
+                        type: "folder",
+                        children: {
+                            "banner.jpg": { type: "file" },
+                            "logo.png": { type: "file" }
+                        }
+                    },
+                    "documents": { type: "folder", children: {} },
+                    "sample.jpg": { type: "file" }
+                }
+            }
+        };
+
+        let currentPath = ["assets"];
+
+        function getCurrentFolder() {
+            let folder = fileSystem["assets"];
+            // Traverse path, skipping root "assets" as it's the starting point variable
+            for (let i = 1; i < currentPath.length; i++) {
+                folder = folder.children[currentPath[i]];
+            }
+            return folder;
+        }
+
+        function navigateToPath(index) {
+            // Slice the path up to the clicked index + 1
+            currentPath = currentPath.slice(0, index + 1);
+            renderMedia();
+        }
+
+        function renderMedia() {
+            const container = document.getElementById('fileList');
+            const breadcrumb = document.getElementById('breadcrumb');
+            container.innerHTML = '';
+
+            // Update Breadcrumb with clickable links
+            breadcrumb.innerHTML = currentPath.map((folder, index) => {
+                const isLast = index === currentPath.length - 1;
+                const style = isLast ? 'color: #333; font-weight: 600;' : 'color: var(--cms-primary); cursor: pointer; text-decoration: underline;';
+                const onclick = isLast ? '' : `onclick="navigateToPath(${index})"`;
+                return `<span ${onclick} style="${style}">${folder}</span>`;
+            }).join(' <span style="color:#999; margin:0 5px;">/</span> ');
+
+            const currentFolder = getCurrentFolder();
+            const items = currentFolder.children;
+
+            if (Object.keys(items).length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #999; padding: 30px;">โฟลเดอร์ว่างเปล่า</div>';
+                return;
+            }
+
+            // Sort: Folders first, then Files
+            const sortedKeys = Object.keys(items).sort((a, b) => {
+                if (items[a].type === items[b].type) return a.localeCompare(b);
+                return items[a].type === 'folder' ? -1 : 1;
+            });
+
+            sortedKeys.forEach(name => {
+                const item = items[name];
+                const isFolder = item.type === 'folder';
+                const icon = isFolder ? 'fa-folder' : 'fa-image';
+                const color = isFolder ? '#ffc107' : '#17a2b8';
+
+                const card = document.createElement('div');
+                card.style.cssText = 'border: 1px solid #eee; padding: 10px; border-radius: 4px; text-align: center; position: relative; background: #fff; transition: box-shadow 0.2s;';
+                card.onmouseover = () => card.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+                card.onmouseout = () => card.style.boxShadow = 'none';
+
+                let html = `
+                    <div style="height: 80px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; cursor: pointer;" onclick="${isFolder ? `enterFolder('${name}')` : ''}">
+                        <i class="fa-solid ${icon}" style="font-size: 3rem; color: ${color};"></i>
+                    </div>
+                    <div style="font-size: 0.9rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 8px;">${name}</div>
+                    <div style="display: flex; justify-content: center; gap: 5px;">
+                        <button onclick="renameItem('${name}')" style="border: none; background: #f0f0f0; padding: 4px 8px; border-radius: 3px; cursor: pointer; color: #555;" title="แก้ไขชื่อ"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteItem('${name}')" style="border: none; background: #fee; padding: 4px 8px; border-radius: 3px; cursor: pointer; color: #dc3545;" title="ลบ"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                card.innerHTML = html;
+                container.appendChild(card);
+            });
+        }
+
+        function enterFolder(name) {
+            currentPath.push(name);
+            renderMedia();
+        }
+
+        function navigateUp() {
+            if (currentPath.length > 1) {
+                currentPath.pop();
+                renderMedia();
+            } else {
+                alert("คุณอยู่ที่โฟลเดอร์ราก (Root) แล้ว");
+            }
+        }
+
+        function createFolder() {
+            const name = prompt("กรุณาใส่ชื่อโฟลเดอร์ใหม่:");
+            if (name) {
+                const cleanName = name.trim();
+                const folder = getCurrentFolder();
+                if (folder.children[cleanName]) {
+                    alert("ชื่อนี้มีอยู่แล้ว");
+                    return;
+                }
+                folder.children[cleanName] = { type: 'folder', children: {} };
+                renderMedia();
+            }
+        }
+
+        function uploadFile() {
+            // Simulation only
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (file) {
+                    const folder = getCurrentFolder();
+                    folder.children[file.name] = { type: 'file' };
+                    renderMedia();
+                    alert(`อัปโหลดไฟล์ ${file.name} เรียบร้อยแล้ว (จำลอง)`);
+                }
+            };
+            input.click();
+        }
+
+        function deleteItem(name) {
+            if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบ "${name}"?`)) {
+                const folder = getCurrentFolder();
+                delete folder.children[name];
+                renderMedia();
+            }
+        }
+
+        function renameItem(oldName) {
+            const newName = prompt("กรุณาใส่ชื่อใหม่:", oldName);
+            if (newName && newName !== oldName) {
+                const folder = getCurrentFolder();
+                if (folder.children[newName]) {
+                    alert("ชื่อนี้มีอยู่แล้ว");
+                    return;
+                }
+                const item = folder.children[oldName];
+                folder.children[newName] = item;
+                delete folder.children[oldName];
+                renderMedia();
+            }
+        }
+
+        // Initialize
+        renderMedia();
+    </script>
+</body>
+
+</html>

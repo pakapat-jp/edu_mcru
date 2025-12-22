@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบผู้ดูแลระบบ - EDU MCRU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin_style.css">
+</head>
+
+<body class="login-body">
+
+    <div class="login-card">
+        <div class="login-logo">
+            <img src="assets/logo-name.png" alt="EDU MCRU Logo"
+                style="height: auto; width: 150px; object-fit: contain;">
+        </div>
+        <h2 style="margin-bottom: 5px; color: var(--cms-primary);">เข้าสู่ระบบ</h2>
+        <p style="color: #6c757d; margin-bottom: 30px;">สำหรับผู้ดูแลระบบเว็บไซต์</p>
+
+        <form class="login-form" action="admin_dashboard.html" method="GET">
+            <div class="form-group">
+                <label for="username">ชื่อผู้ใช้งาน</label>
+                <div style="position: relative;">
+                    <input type="text" id="username" name="username" placeholder="Username" required>
+                    <i class="fa-solid fa-user" style="position: absolute; right: 15px; top: 13px; color: #ccc;"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">รหัสผ่าน</label>
+                <div style="position: relative;">
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                    <i class="fa-solid fa-lock" style="position: absolute; right: 15px; top: 13px; color: #ccc;"></i>
+                </div>
+            </div>
+
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 0.9rem;">
+                <label style="display: flex; align-items: center; margin: 0; font-weight: 400;">
+                    <input type="checkbox" style="width: auto; margin-right: 8px;"> จำฉันไว้ในระบบ
+                </label>
+                <a href="#" style="color: var(--cms-primary); text-decoration: none;">ลืมรหัสผ่าน?</a>
+            </div>
+
+            <button type="submit" class="btn-login">เข้าสู่ระบบ</button>
+        </form>
+
+        <div class="login-footer">
+            <p>&copy; 2025 Education Faculty, McRU.</p>
+            <a href="index.html">กลับไปหน้าเว็บไซต์หลัก</a>
+        </div>
+    </div>
+
+</body>
+
+</html>
