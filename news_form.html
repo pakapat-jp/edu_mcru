@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="admin_style.css">
+
     <style>
         /* Toolbar Actions */
         .toolbar-actions {
@@ -60,32 +61,23 @@
             }
         }
 
-        /* Editor Placeholder */
+        /* Editor Container */
         .editor-container {
             border: 1px solid #ddd;
             border-radius: 4px;
             background: #fff;
-        }
-
-        .editor-toolbar {
-            background: #f8f9fa;
-            border-bottom: 1px solid #ddd;
             padding: 10px;
-            display: flex;
-            gap: 10px;
         }
 
-        .editor-btn {
-            background: none;
-            border: 1px solid #ddd;
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-
-        .editor-content {
+        #editor {
+            width: 100%;
             min-height: 400px;
-            padding: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
         }
 
         /* Accordion/Panel Styling */
@@ -288,8 +280,10 @@
                     style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #fff; padding: 10px 20px; border-radius: 5px; border: 1px solid #e0e0e0;">
                     <h1 class="page-title" style="margin-bottom: 0; font-size: 1.2rem;">บทความ: เพิ่มข้อมูลใหม่</h1>
                     <div class="toolbar-actions">
-                        <button class="btn-toolbar btn-save"><i class="fa-solid fa-check"></i> บันทึก</button>
-                        <button class="btn-toolbar btn-save"><i class="fa-solid fa-floppy-disk"></i>
+                        <button type="button" class="btn-toolbar btn-save" onclick="saveNews(false)"><i
+                                class="fa-solid fa-check"></i> บันทึก</button>
+                        <button type="button" class="btn-toolbar btn-save" onclick="saveNews(true)"><i
+                                class="fa-solid fa-floppy-disk"></i>
                             บันทึกและปิด</button>
                         <a href="news_content.html" class="btn-toolbar btn-cancel"><i class="fa-solid fa-xmark"></i>
                             ยกเลิก</a>
@@ -302,7 +296,7 @@
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 500; font-size: 1.1rem;">หัวข้อ (Title) <span
                                     style="color: red;">*</span></label>
-                            <input type="text" placeholder="ใส่หัวข้อบทความที่นี่..."
+                            <input type="text" id="titleInput" placeholder="ใส่หัวข้อบทความที่นี่..."
                                 style="width: 100%; padding: 10px; font-size: 1.1rem; border: 1px solid #ccc; border-radius: 4px;">
                         </div>
 
@@ -319,142 +313,13 @@
                         <!-- TinyMCE-like Editor -->
                         <!-- Tabbed Editor -->
                         <div class="form-group">
-                            <label style="font-weight: 500; margin-bottom: 5px; display: block;">รายละเอียด (Details)
-                                <span style="color: red;">*</span></label>
+                            <label style="font-weight: 500; margin-bottom: 5px; display: block;">รายละเอียด
+                                (Details) <span style="color: red;">*</span></label>
 
-                            <!-- Tab Navigation -->
-                            <div class="nav-tabs-wrapper">
-                                <ul class="nav-tabs" id="articleTabs">
-                                    <!-- Dynamic Tabs -->
-                                </ul>
-                                <button type="button" class="btn-add-tab" onclick="addNewTab()" title="เพิ่มแท็บใหม่"><i
-                                        class="fa-solid fa-plus"></i></button>
-                            </div>
-
-                            <div class="editor-container with-tabs"
-                                style="border: 1px solid #ccc; border-radius: 4px; display: flex; flex-direction: column; background: #fff;">
-
-                                <!-- Shared Toolbar -->
-                                <div class="editor-toolbar"
-                                    style="padding: 5px; display: flex; flex-wrap: wrap; gap: 2px; border-bottom: 1px solid #eee; align-items: center; background: #fff;">
-
-                                    <!-- Format Select -->
-                                    <select
-                                        style="height: 30px; border: 1px solid #fff; border-radius: 3px; font-size: 14px; margin-right: 5px; cursor: pointer; background: transparent; font-weight: 500; color: #333; padding: 0 5px;">
-                                        <option>Normal</option>
-                                        <option>Heading 1</option>
-                                        <option>Heading 2</option>
-                                        <option>Heading 3</option>
-                                    </select>
-                                    <div style="border-left: 1px solid #ccc; height: 18px; margin: 0 4px;"></div>
-
-                                    <!-- Group 1: Text Style -->
-                                    <button type="button" class="editor-btn-tiny" title="Bold"
-                                        onclick="formatDoc('bold')"><i class="fa-solid fa-bold"></i></button>
-                                    <button type="button" class="editor-btn-tiny" title="Italic"
-                                        onclick="formatDoc('italic')"><i class="fa-solid fa-italic"></i></button>
-                                    <button type="button" class="editor-btn-tiny" title="Underline"
-                                        onclick="formatDoc('underline')"><i class="fa-solid fa-underline"></i></button>
-                                    <div style="border-left: 1px solid #ccc; height: 18px; margin: 0 4px;"></div>
-
-                                    <!-- Group 2: Alignment -->
-                                    <button type="button" class="editor-btn-tiny" title="Align Left"
-                                        onclick="formatDoc('justifyLeft')"><i
-                                            class="fa-solid fa-align-left"></i></button>
-                                    <button type="button" class="editor-btn-tiny" title="Align Center"
-                                        onclick="formatDoc('justifyCenter')"><i
-                                            class="fa-solid fa-align-center"></i></button>
-                                    <button type="button" class="editor-btn-tiny" title="Align Right"
-                                        onclick="formatDoc('justifyRight')"><i
-                                            class="fa-solid fa-align-right"></i></button>
-                                    <button type="button" class="editor-btn-tiny" title="Justify"
-                                        onclick="formatDoc('justifyFull')"><i
-                                            class="fa-solid fa-align-justify"></i></button>
-                                    <div style="border-left: 1px solid #ccc; height: 18px; margin: 0 4px;"></div>
-
-                                    <!-- Group 3: Lists & Indent -->
-                                    <button type="button" class="editor-btn-tiny" title="Bullet List"
-                                        onclick="formatDoc('insertUnorderedList')"><i
-                                            class="fa-solid fa-list-ul"></i></button>
-                                    <button type="button" class="editor-btn-tiny" title="Numbered List"
-                                        onclick="formatDoc('insertOrderedList')"><i
-                                            class="fa-solid fa-list-ol"></i></button>
-                                    <button type="button" class="editor-btn-tiny" title="Decrease Indent"
-                                        onclick="formatDoc('outdent')"><i class="fa-solid fa-outdent"></i></button>
-                                    <button type="button" class="editor-btn-tiny" title="Increase Indent"
-                                        onclick="formatDoc('indent')"><i class="fa-solid fa-indent"></i></button>
-                                    <div style="border-left: 1px solid #ccc; height: 18px; margin: 0 4px;"></div>
-
-                                    <!-- Group 4: Quote & Colors -->
-                                    <button type="button" class="editor-btn-tiny" title="Blockquote"
-                                        onclick="formatDoc('formatBlock', 'blockquote')"><i
-                                            class="fa-solid fa-quote-right"></i></button>
-                                    <button type="button" class="editor-btn-tiny" title="Text Color"
-                                        onclick="chooseColor('foreColor')"><i class="fa-solid fa-font"></i><span
-                                            style="border-bottom: 3px solid #000; width: 100%; display: block; height: 0; margin-top: -2px;"></span></button>
-                                    <button type="button" class="editor-btn-tiny" title="Background Color"
-                                        onclick="chooseColor('hiliteColor')"><i
-                                            class="fa-solid fa-pen-nib"></i></button>
-                                    <div style="border-left: 1px solid #ccc; height: 18px; margin: 0 4px;"></div>
-
-                                    <!-- Group 5: Insert & View -->
-                                    <button type="button" class="editor-btn-tiny" title="Link" onclick="insertLink()"><i
-                                            class="fa-solid fa-link"></i></button>
-                                    <button type="button" class="editor-btn-tiny" title="Table"
-                                        onclick="alert('Table insertion not available in this demo.')"><i
-                                            class="fa-solid fa-table"></i></button>
-                                    <button type="button" class="editor-btn-tiny" title="Image"
-                                        onclick="insertImage()"><i class="fa-regular fa-image"></i></button>
-                                    <div style="border-left: 1px solid #ccc; height: 18px; margin: 0 4px;"></div>
-
-                                    <button type="button" class="editor-btn-tiny" title="Fullscreen"
-                                        onclick="alert('Fullscreen mode not available.')"><i
-                                            class="fa-solid fa-expand"></i></button>
-                                    <button type="button" class="editor-btn-tiny" title="Source Code"
-                                        onclick="toggleSource()"><i class="fa-solid fa-code"></i></button>
-                                    <button type="button" class="editor-btn-tiny" title="Preview"
-                                        onclick="alert('Preview not available.')"><i
-                                            class="fa-regular fa-eye"></i></button>
-                                </div>
-
-                                <!-- Content Area -->
-                                <div id="tabContentContainer">
-                                    <!-- Dynamic Panes -->
-                                </div>
-
-                                <!-- Status Bar -->
-                                <div
-                                    style="display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; border-top: 1px solid #eee; font-size: 11px; color: #888; background: #fff;">
-                                    <span>P</span>
-                                    <span>POWERED BY TINY</span>
-                                </div>
+                            <div class="editor-container">
+                                <textarea id="editor"></textarea>
                             </div>
                         </div>
-
-                        <style>
-                            .editor-btn-tiny {
-                                background: transparent;
-                                border: none;
-                                border-radius: 3px;
-                                width: 30px;
-                                height: 30px;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                color: #444;
-                                cursor: pointer;
-                                transition: background 0.2s;
-                            }
-
-                            .editor-btn-tiny:hover {
-                                background: #dfe1e5;
-                                color: #000;
-                            }
-
-                            .editor-btn-tiny i {
-                                font-size: 14px;
-                            }
-                        </style>
 
                     </div>
 
@@ -465,7 +330,7 @@
                             <div class="panel-body">
                                 <div class="form-group" style="margin-bottom: 15px;">
                                     <label style="display: block; margin-bottom: 5px;">สถานะ</label>
-                                    <select
+                                    <select id="statusSelect"
                                         style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
                                         <option value="1">เผยแพร่ (Published)</option>
                                         <option value="0">ไม่เผยแพร่ (Unpublished)</option>
@@ -474,16 +339,14 @@
                                 </div>
                                 <div class="form-group" style="margin-bottom: 15px;">
                                     <label style="display: block; margin-bottom: 5px;">หมวดหมู่</label>
-                                    <select
+                                    <select id="categoryIdSelect"
                                         style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                                        <option value="1">ข่าวประชาสัมพันธ์</option>
-                                        <option value="2">กิจกรรมคณะ</option>
-                                        <option value="3">ทุนการศึกษา</option>
+                                        <option value="">กำลังโหลด...</option>
                                     </select>
                                 </div>
                                 <div class="form-group" style="margin-bottom: 15px;">
                                     <label style="display: block; margin-bottom: 5px;">วันที่เผยแพร่</label>
-                                    <input type="date"
+                                    <input type="date" id="publishedDateInput"
                                         style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
                                 </div>
 
@@ -495,9 +358,32 @@
                             <div class="panel-body">
                                 <div id="coverImageContainer"
                                     style="text-align: center; border: 2px dashed #ddd; padding: 20px; margin-bottom: 10px; border-radius: 4px;">
-                                    <div style="color: #ccc; margin-bottom: 10px;">ไม่มีรูปภาพ</div>
-                                    <button type="button" onclick="openMediaModal('cover')"
-                                        style="padding: 5px 10px; cursor: pointer;">เลือกรูปภาพ</button>
+                                    <img id="imagePreview" src=""
+                                        style="max-width: 100%; max-height: 200px; display: none; margin-bottom: 10px;">
+
+                                    <div style="margin-top:10px; display:flex; gap:10px; justify-content:center;">
+                                        <button type="button" onclick="openMediaModal('cover')" class="btn-toolbar"
+                                            style="background:#f8f9fa; border:1px solid #ddd;"><i
+                                                class="fa-solid fa-image"></i> เพิ่มรูปภาพ</button>
+                                    </div>
+                                    <input type="hidden" id="coverUrlInput">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gallery Section -->
+                        <div class="panel">
+                            <div class="panel-header">อัลบั้มรูปภาพ (Gallery)</div>
+                            <div class="panel-body">
+                                <div style="margin-bottom: 10px; display:flex; gap:10px;">
+                                    <button type="button" onclick="openMediaModal('gallery')"
+                                        style="background: #f8f9fa; color: #333; border: 1px dashed #ccc; padding: 10px; flex:1; border-radius: 4px; cursor: pointer; text-align: center;">
+                                        <i class="fa-solid fa-image"></i> เพิ่มรูปภาพ
+                                    </button>
+                                </div>
+                                <div id="galleryPreviewContainer"
+                                    style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;">
+                                    <!-- Gallery items will appear here -->
                                 </div>
                             </div>
                         </div>
@@ -542,6 +428,8 @@
             <div style="padding: 15px 20px; border-top: 1px solid #eee; text-align: right; background: #f8f9fa;">
                 <button type="button" onclick="closeMediaModal()"
                     style="padding: 8px 15px; border: 1px solid #ddd; background: #fff; border-radius: 4px; cursor: pointer; margin-right: 10px;">ยกเลิก</button>
+                <button type="button" onclick="confirmModalSelection()" id="modalConfirmBtn"
+                    style="padding: 8px 15px; border: 1px solid #28a745; background: #28a745; color: white; border-radius: 4px; cursor: pointer; display: none;">ยืนยันเลือกรูปภาพ</button>
             </div>
         </div>
     </div>
@@ -575,125 +463,192 @@
         }
 
         // --- Editor Functions ---
-        let tabCounter = 0;
-        let activeTabId = null;
 
-        function formatDoc(cmd, value = null) {
-            if (value) {
-                document.execCommand(cmd, false, value);
-            } else {
-                document.execCommand(cmd);
-            }
-        }
 
-        function chooseColor(cmd) {
-            const color = prompt("Enter color code (e.g. #ff0000):", "#000000");
-            if (color) formatDoc(cmd, color);
-        }
-
-        function insertLink() {
-            const url = prompt("กรุณาใส่ URL:", "https://");
-            if (url) {
-                formatDoc('createLink', url);
-            }
-        }
-
-        function insertImage() {
-            openMediaModal('editor');
-        }
-
-        function toggleSource() {
-            if (!activeTabId) return;
-            const visual = document.getElementById(`editorVisual_${activeTabId}`);
-            const source = document.getElementById(`editorSource_${activeTabId}`);
-
-            if (source.style.display === 'none') {
-                source.value = visual.innerHTML;
-                visual.style.display = 'none';
-                source.style.display = 'block';
-            } else {
-                visual.innerHTML = source.value;
-                source.style.display = 'none';
-                visual.style.display = 'block';
-            }
-        }
+        // Gallery State
+        let currentGallery = []; // Array of URLs string
 
         // --- Dynamic Tab Logic ---
         function addNewTab(name = "ข้อมูลทั่วไป") {
-            tabCounter++;
-            const id = tabCounter;
+            return new Promise((resolve) => {
+                tabCounter++;
+                const id = tabCounter;
 
-            // 1. Create Tab Item
-            const tabsList = document.getElementById('articleTabs');
-            const li = document.createElement('li');
-            li.className = 'nav-tab-item';
-            li.id = `tabItem_${id}`;
+                // 1. Create Tab Item
+                const tabsList = document.getElementById('articleTabs');
+                const li = document.createElement('li');
+                li.className = 'nav-tab-item';
+                li.id = `tabItem_${id}`;
 
-            const link = document.createElement('a');
-            link.className = 'nav-tab-link';
+                const link = document.createElement('a');
+                link.className = 'nav-tab-link';
 
-            // Editable Title Span
-            const titleSpan = document.createElement('span');
-            titleSpan.innerText = name;
-            titleSpan.ondblclick = function (e) {
-                e.stopPropagation();
-                const currentText = this.innerText;
-                const input = document.createElement('input');
-                input.value = currentText;
-                input.onclick = (e) => e.stopPropagation();
-                input.onblur = function () {
-                    titleSpan.innerText = this.value || "Tab";
-                    titleSpan.style.display = 'inline';
-                    input.remove();
+                // Editable Title Span
+                const titleSpan = document.createElement('span');
+                titleSpan.innerText = name;
+                titleSpan.ondblclick = function (e) {
+                    e.stopPropagation();
+                    const currentText = this.innerText;
+                    const input = document.createElement('input');
+                    input.value = currentText;
+                    input.onclick = (e) => e.stopPropagation();
+                    input.onblur = function () {
+                        titleSpan.innerText = this.value || "Tab";
+                        titleSpan.style.display = 'inline';
+                        input.remove();
+                    };
+                    input.onkeydown = function (e) {
+                        if (e.key === 'Enter') this.blur();
+                    };
+                    this.style.display = 'none';
+                    link.insertBefore(input, closeBtn);
+                    input.focus();
                 };
-                input.onkeydown = function (e) {
-                    if (e.key === 'Enter') this.blur();
+
+                const closeBtn = document.createElement('span');
+                closeBtn.className = 'tab-close';
+                closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                closeBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (confirm('ต้องการลบแท็บนี้ใช่หรือไม่?')) {
+                        deleteTab(id);
+                    }
                 };
-                this.style.display = 'none';
-                link.insertBefore(input, closeBtn);
-                input.focus();
-            };
 
-            const closeBtn = document.createElement('span');
-            closeBtn.className = 'tab-close';
-            closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-            closeBtn.onclick = (e) => {
-                e.stopPropagation();
-                if (confirm('ต้องการลบแท็บนี้ใช่หรือไม่?')) {
-                    deleteTab(id);
-                }
-            };
+                link.appendChild(titleSpan);
+                link.appendChild(closeBtn);
 
-            link.appendChild(titleSpan);
-            link.appendChild(closeBtn);
+                link.onclick = (e) => {
+                    if (e.target.tagName !== 'INPUT' && !e.target.closest('.tab-close')) {
+                        switchTab(id);
+                    }
+                };
 
-            link.onclick = (e) => {
-                if (e.target.tagName !== 'INPUT' && !e.target.closest('.tab-close')) {
-                    switchTab(id);
-                }
-            };
+                li.appendChild(link);
+                tabsList.appendChild(li);
 
-            li.appendChild(link);
-            tabsList.appendChild(li);
+                // 2. Create Tab Pane
+                const contentContainer = document.getElementById('tabContentContainer');
+                const pane = document.createElement('div');
+                pane.className = 'tab-pane';
+                pane.id = `tabPane_${id}`;
+                pane.dataset.tab = id;
 
-            // 2. Create Tab Pane
-            const contentContainer = document.getElementById('tabContentContainer');
-            const pane = document.createElement('div');
-            pane.className = 'tab-pane';
-            pane.id = `tabPane_${id}`;
-            pane.dataset.tab = id;
+                // Create Textarea for CKEditor
+                const textarea = document.createElement('textarea');
+                textarea.id = `editor_${id}`;
+                pane.appendChild(textarea);
 
-            pane.innerHTML = `
-                <div id="editorVisual_${id}" class="editor-content" contenteditable="true"
-                    style="outline: none; background: #fff; min-height: 400px; padding: 20px; font-family: 'Kanit', sans-serif; font-size: 16px; color: #333;">
-                    <p>รายละเอียด...</p>
-                </div>
-                <textarea id="editorSource_${id}"
-                    style="display: none; width: 100%; min-height: 400px; padding: 20px; border: none; font-family: 'Consolas', monospace; outline: none; resize: vertical;"></textarea>
-            `;
-            contentContainer.appendChild(pane);
+                contentContainer.appendChild(pane);
 
-            switchTab(id);
+                // 3. Make pane visible BEFORE initializing CKEditor to prevent rendering issues
+                switchTab(id);
+
+                // Initialize CKEditor
+                CKEDITOR.ClassicEditor.create(document.querySelector(`#editor_${id}`), {
+                    // https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html#enabling-all-html-features
+                    htmlSupport: {
+                        allow: [
+                            {
+                                name: /.*/,
+                                attributes: true,
+                                classes: true,
+                                styles: true
+                            }
+                        ]
+                    },
+                    toolbar: {
+                        items: [
+                            'sourceEditing', '|',
+                            'heading', '|',
+                            'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'removeFormat', '|',
+                            'bulletedList', 'numberedList', 'todoList', '|',
+                            'outdent', 'indent', '|',
+                            'undo', 'redo',
+                            '-',
+                            'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
+                            'alignment', '|',
+                            'link', 'uploadImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
+                            'specialCharacters', 'horizontalLine', 'pageBreak', '|',
+                            'textPartLanguage', '|',
+                        ],
+                        shouldNotGroupWhenFull: true
+                    },
+                    // Changing the language of the interface requires loading the language file using the <script> tag.
+                    // language: 'th',
+                    list: {
+                        properties: {
+                            styles: true,
+                            startIndex: true,
+                            reversed: true
+                        }
+                    },
+                    // https://ckeditor.com/docs/ckeditor5/latest/features/headings.html#configuration
+                    heading: {
+                        options: [
+                            { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                            { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                            { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                            { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+                            { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+                            { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+                            { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
+                        ]
+                    },
+                    // https://ckeditor.com/docs/ckeditor5/latest/features/font.html#configuring-the-font-family-feature
+                    fontFamily: {
+                        options: [
+                            'default',
+                            'Kanit, Arial, sans-serif',
+                            'Arial, Helvetica, sans-serif',
+                            'Courier New, Courier, monospace',
+                            'Georgia, serif',
+                            'Lucida Sans Unicode, Lucida Grande, sans-serif',
+                            'Tahoma, Geneva, sans-serif',
+                            'Times New Roman, Times, serif',
+                            'Trebuchet MS, Helvetica, sans-serif',
+                            'Verdana, Geneva, sans-serif'
+                        ],
+                        supportAllValues: true
+                    },
+                    // https://ckeditor.com/docs/ckeditor5/latest/features/font.html#configuring-the-font-size-feature
+                    fontSize: {
+                        options: [10, 12, 14, 'default', 18, 20, 22],
+                        supportAllValues: true
+                    },
+                    // Be careful with adding plugins that might not be in the build
+                    removePlugins: [
+                        'CKBox',
+                        'CKFinder',
+                        'EasyImage',
+                        'RealTimeCollaborativeComments',
+                        'RealTimeCollaborativeTrackChanges',
+                        'RealTimeCollaborativeRevisionHistory',
+                        'PresenceList',
+                        'Comments',
+                        'TrackChanges',
+                        'TrackChangesData',
+                        'RevisionHistory',
+                        'Pagination',
+                        'WProofreader',
+                        'MathType',
+                        'SlashCommand',
+                        'Template',
+                        'DocumentOutline',
+                        'FormatPainter',
+                        'TableOfContents'
+                    ]
+                })
+                    .then(editor => {
+                        editors[id] = editor;
+                        editor.setData('');
+                        resolve(id);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        resolve(null);
+                    });
+            });
         }
 
         function switchTab(id) {
@@ -723,6 +678,13 @@
             if (item) item.remove();
             if (pane) pane.remove();
 
+            // Destroy CKEditor instance
+            if (editors[id]) {
+                editors[id].destroy().then(() => {
+                    delete editors[id];
+                });
+            }
+
             if (activeTabId === id) {
                 const tabs = document.querySelectorAll('.nav-tab-item');
                 if (tabs.length > 0) {
@@ -734,155 +696,406 @@
             }
         }
 
-        // --- Media Modal Logic ---
-        let fileSystem = {
+        // --- API Integration ---
+        const token = localStorage.getItem('cms_token');
+        if (!token) window.location.href = 'login.html';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const newsId = urlParams.get('id');
+
+        // Identify Page Mode
+        if (newsId) {
+            document.querySelector('.page-title').innerText = 'บทความ: แก้ไขข้อมูล';
+        }
+
+        async function loadCategories() {
+            try {
+                const res = await fetch('/api/categories', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const categories = await res.json();
+                const select = document.getElementById('categoryIdSelect');
+                select.innerHTML = '<option value="">-- เลือกหมวดหมู่ --</option>';
+                categories.forEach(cat => {
+                    select.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+                });
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        async function loadNewsData() {
+            if (!newsId) return;
+
+            try {
+                const res = await fetch(`/api/news/${newsId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+
+                // Populate Fields
+                document.getElementById('titleInput').value = data.title;
+                if (data.category_id) {
+                    document.getElementById('categoryIdSelect').value = data.category_id;
+                }
+                if (data.publish_date) {
+                    const date = new Date(data.publish_date);
+                    const yyyy = date.getFullYear();
+                    const mm = String(date.getMonth() + 1).padStart(2, '0');
+                    const dd = String(date.getDate()).padStart(2, '0');
+                    document.getElementById('publishedDateInput').value = `${yyyy}-${mm}-${dd}`;
+                }
+
+                // --- Handle Content ---
+                const content = data.content || '';
+
+                document.getElementById('editor').value = content;
+
+                // Image Preview
+                if (data.image_url) {
+                    const imgPreview = document.getElementById('imagePreview');
+                    imgPreview.src = data.image_url;
+                    imgPreview.style.display = 'block';
+                    document.getElementById('coverUrlInput').value = data.image_url;
+                }
+
+                if (data.status !== undefined) {
+                    document.getElementById('statusSelect').value = data.status;
+                }
+
+                // Gallery Images
+                if (data.gallery_images) {
+                    if (typeof data.gallery_images === 'string') {
+                        try {
+                            currentGallery = JSON.parse(data.gallery_images);
+                        } catch (e) { currentGallery = []; }
+                    } else if (Array.isArray(data.gallery_images)) {
+                        currentGallery = data.gallery_images;
+                    }
+                    renderGalleryPreviews();
+                }
+
+            } catch (error) {
+                console.error('Error loading news:', error);
+            }
+        }
+
+
+
+        async function saveNews(closeAfter = false) {
+            const title = document.getElementById('titleInput').value;
+            const categoryId = document.getElementById('categoryIdSelect').value;
+            const publishDate = document.getElementById('publishedDateInput').value;
+
+            const finalContent = document.getElementById('editor').value;
+
+            if (!title) {
+                alert('กรุณากรอกหัวข้อ');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('category_id', categoryId);
+            formData.append('publish_date', publishDate);
+            formData.append('content', finalContent);
+
+            const status = document.getElementById('statusSelect').value;
+            formData.append('status', status);
+
+            const coverUrl = document.getElementById('coverUrlInput').value;
+            // If coverUrl exists, prioritized. 
+            // If editing existing, we might not have coverUrl input set if we didn't touch it? 
+            // - current logic: loadNewsData sets imgPreview source but NOT coverUrlInput value? 
+            //   Wait, loadNewsData sets imgPreview.src = data.image_url
+            //   If user doesn't change it, we should probably submit nothing? 
+            //   But if we want to change it via assets...
+            //   Let's check if coverUrlInput is set. If not, don't send anything (backend keeps existing).
+            //   However, if we CHANGED it via selectAsset, coverUrlInput IS set.
+            //   Wait, `selectAsset` sets `document.getElementById('coverUrlInput').value = path;`.
+
+            if (coverUrl) {
+                formData.append('image_url', coverUrl);
+            }
+
+            // Gallery
+            formData.append('existing_gallery_images', JSON.stringify(currentGallery));
+
+            try {
+                const method = newsId ? 'PUT' : 'POST';
+                const url = newsId ? `/api/news/${newsId}` : '/api/news';
+
+                const res = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                if (res.ok) {
+                    alert('บันทึกข้อมูลเรียบร้อย');
+                    if (closeAfter) {
+                        window.location.href = 'news_content.html';
+                    } else if (!newsId) {
+                        window.location.href = 'news_content.html';
+                    }
+                } else {
+                    const err = await res.json();
+                    alert('Error: ' + err.message);
+                }
+            } catch (error) {
+                console.error('Save error:', error);
+                alert('An error occurred while saving.');
+            }
+        }
+
+        // Dummy File System (Populate this via API in production)
+        const fileSystem = {
             "assets": {
                 type: "folder",
                 children: {
                     "images": {
                         type: "folder",
                         children: {
-                            "banner.jpg": { type: "file" },
                             "logo.png": { type: "file" },
-                            "meeting.jpg": { type: "file" },
-                            "activity-01.jpg": { type: "file" }
+                            "banner.png": { type: "file" }
                         }
-                    },
-                    "documents": { type: "folder", children: {} },
-                    "sample-illustration.png": { type: "file" }
+                    }
                 }
             }
         };
 
-        let currentModalPath = ["assets", "images"]; // Start at assets/images
-        let modalMode = 'editor'; // 'editor' or 'cover'
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCategories();
+            loadNewsData();
+        });
 
-        function openMediaModal(mode = 'editor') {
+
+        function insertCard() {
+            if (!activeTabId || !editors[activeTabId]) return alert('กรุณาเลือกแท็บที่ต้องการแก้ไข');
+            const editor = editors[activeTabId];
+
+            const html = `
+            <div class="card" style="border:1px solid #ddd; max-width:300px; padding:10px; margin:10px; border-radius:4px;">
+                <img src="https://via.placeholder.com/300x150" style="width:100%; height:auto;" alt="Card Image">
+                <div style="padding:10px;">
+                    <h3>Card Title</h3>
+                    <p>Sample description text.</p>
+                </div>
+            </div><p>&nbsp;</p>
+            `;
+            const viewFragment = editor.data.processor.toView(html);
+            const modelFragment = editor.data.toModel(viewFragment);
+            editor.model.insertContent(modelFragment);
+        }
+
+        function insertGrid() {
+            if (!activeTabId || !editors[activeTabId]) return alert('กรุณาเลือกแท็บที่ต้องการแก้ไข');
+            const editor = editors[activeTabId];
+
+            const html = `
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div style="background:#f9f9f9; padding:10px;">col 1</div>
+                <div style="background:#f9f9f9; padding:10px;">col 2</div>
+            </div><p>&nbsp;</p>
+            `;
+            const viewFragment = editor.data.processor.toView(html);
+            const modelFragment = editor.data.toModel(viewFragment);
+            editor.model.insertContent(modelFragment);
+        }
+
+
+        function removeCoverImage() {
+            document.getElementById('imagePreview').src = '';
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('coverUrlInput').value = '';
+        }
+
+        // --- Media Modal Logic ---
+        let modalMode = null; // 'cover' or 'gallery'
+        let modalPathStack = [{ id: 0, name: 'assets' }];
+        let selectedModalFiles = new Set(); // Store selected paths
+
+        function openMediaModal(mode) {
             modalMode = mode;
             document.getElementById('mediaModal').style.display = 'flex';
-            currentModalPath = ["assets", "images"]; // Reset path to default on open
-            renderMediaModal();
+            modalPathStack = [{ id: 0, name: 'assets' }]; // Reset to root
+            selectedModalFiles.clear(); // Reset selection
+
+            // Show/Hide Confirm Button based on mode
+            const confirmBtn = document.getElementById('modalConfirmBtn');
+            if (mode === 'gallery') {
+                confirmBtn.style.display = 'inline-block';
+            } else {
+                confirmBtn.style.display = 'none';
+            }
+
+            fetchModalMedia(0);
         }
 
         function closeMediaModal() {
             document.getElementById('mediaModal').style.display = 'none';
+            modalMode = null;
         }
 
-        function getModalFolder() {
-            let folder = fileSystem["assets"];
-            // Traverse path, handling that our structure starts at 'assets'
-            // and path array includes 'assets'.
-            // Correct traversal:
-            if (currentModalPath[0] !== "assets") return null; // Error safety
-
-            for (let i = 1; i < currentModalPath.length; i++) {
-                if (folder.children && folder.children[currentModalPath[i]]) {
-                    folder = folder.children[currentModalPath[i]];
-                } else {
-                    return { children: {} }; // Path not found empty fallback
-                }
-            }
-            return folder;
+        function getCurrentModalFolderId() {
+            return modalPathStack[modalPathStack.length - 1].id;
         }
 
-        function renderMediaModal() {
+        async function fetchModalMedia(parentId = 0) {
+            try {
+                // Reuse the same API as media.html
+                const res = await fetch(`/api/media?parent_id=${parentId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const items = await res.json();
+                renderModalFiles(items);
+            } catch (e) { console.error(e); }
+        }
+
+        function renderModalFiles(items) {
             const container = document.getElementById('modalFileList');
             const breadcrumb = document.getElementById('modalBreadcrumb');
             container.innerHTML = '';
 
-            breadcrumb.innerHTML = currentModalPath.join(' / ');
+            // Update Breadcrumb
+            const breadcrumbHtml = modalPathStack.map((folder, index) => {
+                const isLast = index === modalPathStack.length - 1;
+                const style = isLast ? 'color: #333; font-weight: 600;' : 'color: #1a73e8; cursor: pointer; text-decoration: underline;';
+                const onclick = isLast ? '' : `onclick="navigateToModalIndex(${index})"`;
+                return `<span ${onclick} style="${style}">${folder.name}</span>`;
+            }).join(' <span style="color:#999; margin:0 5px;">/</span> ');
+            breadcrumb.innerHTML = breadcrumbHtml;
 
-            const currentFolder = getModalFolder();
-            const items = currentFolder.children || {};
 
-            if (Object.keys(items).length === 0) {
-                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #999;">ไม่พบไฟล์</div>';
+            if (items.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #999; padding: 30px;">โฟลเดอร์ว่างเปล่า</div>';
                 return;
             }
 
-            const sortedKeys = Object.keys(items).sort((a, b) => {
-                if (items[a].type === items[b].type) return a.localeCompare(b);
-                return items[a].type === 'folder' ? -1 : 1;
-            });
-
-            sortedKeys.forEach(name => {
-                const item = items[name];
-                const isFolder = item.type === 'folder';
+            items.forEach(item => {
+                const isFolder = item.is_folder;
                 const icon = isFolder ? 'fa-folder' : 'fa-image';
                 const color = isFolder ? '#ffc107' : '#17a2b8';
 
-                const card = document.createElement('div');
-                card.style.cssText = 'border: 1px solid #eee; padding: 10px; border-radius: 4px; text-align: center; cursor: pointer; background: #fff; transition: all 0.2s;';
-                card.onmouseover = () => card.style.borderColor = '#007bff';
-                card.onmouseout = () => card.style.borderColor = '#eee';
-
-                // Click Action
-                if (isFolder) {
-                    card.onclick = () => {
-                        currentModalPath.push(name);
-                        renderMediaModal();
-                    };
-                } else {
-                    card.onclick = () => {
-                        selectImage(name);
-                    };
+                let thumbnailHtml = `<i class="fa-solid ${icon}" style="font-size: 3rem; color: ${color};"></i>`;
+                if (!isFolder && ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(item.file_type.toLowerCase())) {
+                    thumbnailHtml = `<img src="${item.file_path}" style="max-width:100%; max-height:100%; object-fit:contain;">`;
                 }
 
-                card.innerHTML = `
-                    <div style="font-size: 2.5rem; color: ${color}; margin-bottom: 5px;">
-                        <i class="fa-solid ${icon}"></i>
+                const div = document.createElement('div');
+                div.style = "cursor: pointer; text-align: center; border: 1px solid #eee; padding: 10px; border-radius: 4px; background:#fff; transition: box-shadow 0.2s; position: relative;";
+
+                // Highlight if selected
+                if (!isFolder && selectedModalFiles.has(item.file_path)) {
+                    div.style.border = "2px solid #28a745";
+                    div.style.background = "#e8f5e9";
+                }
+
+                // Click action
+                if (isFolder) {
+                    div.onclick = () => enterModalFolder(item.id, item.file_name);
+                } else {
+                    div.onclick = () => selectAsset(item.file_path);
+                }
+
+                div.onmouseover = () => div.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+                div.onmouseout = () => div.style.boxShadow = 'none';
+
+                div.innerHTML = `
+                    <div style="height: 80px; display: flex; align-items: center; justify-content: center; margin-bottom: 5px;">
+                        ${thumbnailHtml}
                     </div>
-                    <div style="font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${name}</div>
+                    <div style="font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.file_name}</div>
+                     ${(!isFolder && selectedModalFiles.has(item.file_path)) ? '<div style="position: absolute; top: 5px; right: 5px; color: #28a745;"><i class="fa-solid fa-circle-check"></i></div>' : ''}
                 `;
-                container.appendChild(card);
+                container.appendChild(div);
             });
         }
 
+        function enterModalFolder(id, name) {
+            modalPathStack.push({ id, name });
+            fetchModalMedia(id);
+        }
+
+        function navigateToModalIndex(index) {
+            modalPathStack = modalPathStack.slice(0, index + 1);
+            fetchModalMedia(getCurrentModalFolderId());
+        }
+
         function navigateUpModal() {
-            if (currentModalPath.length > 1) { // Never go above root 'assets'
-                currentModalPath.pop();
-                renderMediaModal();
+            if (modalPathStack.length > 1) {
+                modalPathStack.pop();
+                fetchModalMedia(getCurrentModalFolderId());
             }
         }
 
-        function selectImage(filename) {
-            // Construct path
-            const fullPath = currentModalPath.join('/') + '/' + filename;
-
-            if (modalMode === 'editor') {
-                if (activeTabId) {
-                    const visual = document.getElementById(`editorVisual_${activeTabId}`);
-                    visual.focus();
-                    formatDoc('insertImage', fullPath);
+        function selectAsset(path) {
+            if (modalMode === 'cover') {
+                document.getElementById('coverUrlInput').value = path;
+                const img = document.getElementById('imagePreview');
+                img.src = path;
+                img.style.display = 'block';
+                closeMediaModal();
+            } else if (modalMode === 'gallery') {
+                // Toggle selection
+                if (selectedModalFiles.has(path)) {
+                    selectedModalFiles.delete(path);
                 } else {
-                    alert('กรุณาเลือกแท็บที่ต้องการเพิ่มรูปภาพ');
+                    selectedModalFiles.add(path);
                 }
-            } else if (modalMode === 'cover') {
-                const container = document.getElementById('coverImageContainer');
-                container.innerHTML = `
-                    <img src="${fullPath}" style="max-width: 100%; height: auto; border-radius: 4px; margin-bottom: 10px;">
-                    <div>
-                        <button type="button" onclick="openMediaModal('cover')" style="padding: 5px 10px; cursor: pointer; margin-right: 5px;">เปลี่ยน</button>
-                        <button type="button" onclick="removeCoverImage()" style="padding: 5px 10px; cursor: pointer; color: red;">ลบ</button>
-                    </div>
-                `;
+                // Re-render to show selection state (inefficient but safe)
+                // In a real app we'd toggle classes, but here we redraw
+                fetchModalMedia(getCurrentModalFolderId());
+                // Wait, fetching again is network-heavy. Let's just re-render current items if we had them.
+                // But we don't have 'items' easily available here globally. 
+                // Actually, let's just trigger a click or update style manually? 
+                // For simplicity, let's just call fetchModalMedia which is cached by browser/fast enough or valid.
+                // Better: Just update the specific element style if we could identify it. 
+                // Let's stick to simplest: re-fetch. Ideally we should store 'currentItems' in a variable.
             }
-
-            closeMediaModal();
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            addNewTab("รายละเอียด");
-        });
-
-        function removeCoverImage() {
-            const container = document.getElementById('coverImageContainer');
-            container.innerHTML = `
-                <div style="color: #ccc; margin-bottom: 10px;">ไม่มีรูปภาพ</div>
-                <button type="button" onclick="openMediaModal('cover')"
-                    style="padding: 5px 10px; cursor: pointer;">เลือกรูปภาพ</button>
-             `;
+        function confirmModalSelection() {
+            if (modalMode === 'gallery') {
+                selectedModalFiles.forEach(path => {
+                    currentGallery.push(path);
+                });
+                renderGalleryPreviews();
+                closeMediaModal();
+            }
         }
+
+        function removeGalleryItem(index) {
+            currentGallery.splice(index, 1);
+            renderGalleryPreviews();
+        }
+
+        function renderGalleryPreviews() {
+            const container = document.getElementById('galleryPreviewContainer');
+            container.innerHTML = '';
+
+            currentGallery.forEach((url, index) => {
+                const div = document.createElement('div');
+                div.style.position = 'relative';
+                div.style.border = '1px solid #ddd';
+                div.style.borderRadius = '4px';
+                div.style.overflow = 'hidden';
+                div.style.aspectRatio = '1/1';
+
+                div.innerHTML = `
+                    <img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">
+                    <button type="button" onclick="removeGalleryItem(${index})" 
+                        style="position: absolute; top: 2px; right: 2px; background: rgba(255,255,255,0.8); border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; color: red;">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
     </script>
 </body>
 

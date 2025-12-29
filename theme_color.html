@@ -109,15 +109,80 @@
 
         window.onclick = function (event) {
             if (!event.target.closest('.user-profile')) {
-                const dropdowns = document.getElementsByClassName("dropdown-menu");
-                for (let i = 0; i < dropdowns.length; i++) {
-                    const openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
+                const d = document.getElementById('profileDropdown');
+                if (d && d.classList.contains('show')) d.classList.remove('show');
             }
         }
+
+        // --- API Integration ---
+        const token = localStorage.getItem('cms_token');
+        if (!token) window.location.href = 'login.html';
+
+        async function loadThemeSettings() {
+            try {
+                const res = await fetch('/api/settings', { headers: { 'Authorization': `Bearer ${token}` } });
+                const settings = await res.json();
+
+                if (settings.theme_primary_color) {
+                    const el = document.getElementById('primaryColor');
+                    const txt = document.getElementById('primaryColorText');
+                    if (el) el.value = settings.theme_primary_color;
+                    if (txt) txt.innerText = settings.theme_primary_color;
+                }
+                if (settings.theme_secondary_color) {
+                    const el = document.getElementById('secondaryColor');
+                    const txt = document.getElementById('secondaryColorText');
+                    if (el) el.value = settings.theme_secondary_color;
+                    if (txt) txt.innerText = settings.theme_secondary_color;
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function saveThemeSettings(e) {
+            e.preventDefault();
+            const primary = document.getElementById('primaryColor').value;
+            const secondary = document.getElementById('secondaryColor').value;
+
+            try {
+                const res = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({
+                        theme_primary_color: primary,
+                        theme_secondary_color: secondary
+                    })
+                });
+
+                if (res.ok) alert('บันทึกสีเรียบร้อยแล้ว');
+                else alert('Error');
+            } catch (e) { console.error(e); }
+        }
+
+        // Bind updates for color picker text
+        document.addEventListener('DOMContentLoaded', () => {
+            const p = document.querySelector('input[type="color"]:nth-of-type(1)'); // or update HTML IDs
+            // Actually, let's inject IDs into HTML first or handle via querySelector if ids not present
+            // Since I can only replace script here easily without multi-edits being messy, I'll update HTML around inputs in next step or try to selector smartly.
+            // Looking at original file (Step 127), inputs have no IDs.
+            // I will use querySelectorAll.
+
+            const inputs = document.querySelectorAll('input[type="color"]');
+            const spans = document.querySelectorAll('.widget-card span'); // Ensure this selects the text spans next to inputs
+
+            if (inputs.length >= 2) {
+                inputs[0].id = 'primaryColor';
+                inputs[1].id = 'secondaryColor';
+
+                inputs[0].addEventListener('input', (e) => spans[0].innerText = e.target.value);
+                inputs[1].addEventListener('input', (e) => spans[1].innerText = e.target.value);
+
+                spans[0].id = 'primaryColorText';
+                spans[1].id = 'secondaryColorText';
+            }
+
+            document.querySelector('form').addEventListener('submit', saveThemeSettings);
+            loadThemeSettings();
+        });
     </script>
 </body>
 

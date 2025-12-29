@@ -54,8 +54,20 @@ ul {
 
 .grid-3 {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 30px;
+}
+
+@media (max-width: 992px) {
+    .grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .grid-3 {
+        grid-template-columns: 1fr;
+    }
 }
 
 .grid-4 {
@@ -286,7 +298,8 @@ ul {
 }
 
 /* Tabs */
-.tab-nav {
+.tab-nav,
+.tab-buttons {
     display: flex;
     justify-content: center;
     gap: 15px;
@@ -463,6 +476,18 @@ ul {
     font-size: 0.8rem;
     font-weight: 500;
     margin-bottom: 10px;
+}
+
+.news-category {
+    display: inline-block;
+    background-color: #f0f0f0;
+    color: #666;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+    margin-left: 5px;
 }
 
 /* Course Cards */

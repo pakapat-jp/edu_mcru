@@ -111,15 +111,84 @@
 
         window.onclick = function (event) {
             if (!event.target.closest('.user-profile')) {
-                const dropdowns = document.getElementsByClassName("dropdown-menu");
-                for (let i = 0; i < dropdowns.length; i++) {
-                    const openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
+                const d = document.getElementById('profileDropdown');
+                if (d && d.classList.contains('show')) d.classList.remove('show');
             }
         }
+
+        // --- API Integration ---
+        const token = localStorage.getItem('cms_token');
+        if (!token) window.location.href = 'login.html';
+
+        async function loadSettings() {
+            try {
+                const res = await fetch('/api/settings', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const settings = await res.json();
+
+                // Map settings to inputs (by name or ID if aligned, here manual mapping)
+                if (settings.site_name) document.querySelector('input[name="site_name"]').value = settings.site_name;
+                if (settings.meta_description) document.querySelector('textarea[name="meta_description"]').value = settings.meta_description;
+                if (settings.site_offline) {
+                    const radios = document.getElementsByName('site_offline');
+                    for (let r of radios) {
+                        if (r.value === settings.site_offline) r.checked = true;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        async function saveSettings(e) {
+            e.preventDefault();
+            const form = e.target;
+            const site_name = form.querySelector('input[name="site_name"]').value;
+            const meta_description = form.querySelector('textarea[name="meta_description"]').value;
+            const site_offline = form.querySelector('input[name="site_offline"]:checked').value;
+
+            // Prepare payload
+            const payload = {
+                site_name,
+                meta_description,
+                site_offline
+            };
+
+            try {
+                const res = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    alert('บันทึกการตั้งค่าเรียบร้อยแล้ว');
+                } else {
+                    alert('เกิดข้อผิดพลาดในการบันทึก');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Connection error');
+            }
+        }
+
+        // Helper to add names to static HTML form (since original didn't have name attributes)
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inject name attributes for easier access
+            const inputs = document.querySelectorAll('.widget-card input[type="text"]');
+            if (inputs[0]) inputs[0].name = "site_name";
+            const textareas = document.querySelectorAll('.widget-card textarea');
+            if (textareas[0]) textareas[0].name = "meta_description";
+            const radios = document.querySelectorAll('input[name="offline"]'); // Original was "offline"
+            radios.forEach(r => r.name = "site_offline");
+
+            document.querySelector('.widget-card form').addEventListener('submit', saveSettings);
+            loadSettings();
+        });
     </script>
 </body>
 

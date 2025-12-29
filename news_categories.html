@@ -90,28 +90,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><a href="news_category_form.html"
-                                        style="color: var(--cms-primary); font-weight: 500;">ข่าวประชาสัมพันธ์</a></td>
-                                <td>news</td>
-                                <td>15</td>
-                                <td><span style="color: #28a745;"><i class="fa-solid fa-check-circle"></i> ใช้งาน</span>
-                                </td>
-                                <td><button onclick="deleteRow(this)"
-                                        style="border: none; background: none; color: #dc3545; cursor: pointer;"><i
-                                            class="fa-solid fa-trash"></i></button></td>
-                            </tr>
-                            <tr>
-                                <td><a href="news_category_form.html"
-                                        style="color: var(--cms-primary); font-weight: 500;">กิจกรรมคณะ</a></td>
-                                <td>activities</td>
-                                <td>8</td>
-                                <td><span style="color: #28a745;"><i class="fa-solid fa-check-circle"></i> ใช้งาน</span>
-                                </td>
-                                <td><button onclick="deleteRow(this)"
-                                        style="border: none; background: none; color: #dc3545; cursor: pointer;"><i
-                                            class="fa-solid fa-trash"></i></button></td>
-                            </tr>
+                            <!-- Dynamic Content -->
                         </tbody>
                     </table>
                 </div>
@@ -134,7 +113,7 @@
                     <div class="form-group" style="margin-bottom: 20px;">
                         <label style="display: block; margin-bottom: 5px; font-weight: 500;">ชื่อหมวดหมู่ <span
                                 style="color: red;">*</span></label>
-                        <input type="text" placeholder="ระบุชื่อหมวดหมู่..."
+                        <input type="text" id="catNameInput" placeholder="ระบุชื่อหมวดหมู่..."
                             style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
                     </div>
                     <div class="form-group" style="margin-bottom: 20px;">
@@ -174,40 +153,121 @@
             document.getElementById('profileDropdown').classList.toggle('show');
         }
 
+        // Auth Check
+        const token = localStorage.getItem('cms_token');
+        if (!token) window.location.href = 'login.html';
+
         // Modal Logic
-        const addCategoryModal = document.getElementById("addCategoryModal"); // Renamed to avoid conflict with 'modal' in window.onclick
+        const addCategoryModal = document.getElementById("addCategoryModal");
         const btn = document.getElementById("addCategoryBtn");
         const span = document.getElementsByClassName("close-modal")[0];
         const cancelBtn = document.getElementsByClassName("close-modal-btn")[0];
 
+        // Fix scoping
+        const modal = addCategoryModal;
+
         function closeModal() {
-            addCategoryModal.style.display = "none";
+            modal.style.display = "none";
         }
 
         btn.onclick = function () {
-            addCategoryModal.style.display = "block";
+            modal.style.display = "block";
         }
 
-        span.onclick = function () {
-            modal.style.display = "none";
-        }
-
-        cancelBtn.onclick = function () {
-            modal.style.display = "none";
-        }
+        span.onclick = closeModal;
+        cancelBtn.onclick = closeModal;
 
         window.onclick = function (event) {
             if (event.target == modal) {
-                modal.style.display = "none";
+                closeModal();
+            } else if (!event.target.closest('.user-profile')) {
+                const dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    if (dropdowns[i].classList.contains('show')) dropdowns[i].classList.remove('show');
+                }
             }
         }
 
-        function deleteRow(btn) {
-            if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบหมวดหมู่นี้?')) {
-                var row = btn.parentNode.parentNode;
-                row.remove();
+        // --- API Integration ---
+        async function fetchCategories() {
+            try {
+                const res = await fetch('/api/categories', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const categories = await res.json();
+                const tbody = document.querySelector('table.cms-table tbody');
+                tbody.innerHTML = '';
+
+                if (categories.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">ไม่พบข้อมูล</td></tr>';
+                    return;
+                }
+
+                categories.forEach(cat => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><span style="color: var(--cms-primary); font-weight: 500;">${cat.name}</span></td>
+                        <td>${cat.id}</td> <!-- Using ID as mock slug for now -->
+                        <td>-</td>
+                        <td><span style="color: #28a745;"><i class="fa-solid fa-check-circle"></i> ใช้งาน</span></td>
+                        <td><button onclick="deleteCategory(${cat.id})"
+                                style="border: none; background: none; color: #dc3545; cursor: pointer;"><i
+                                    class="fa-solid fa-trash"></i></button></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error(e);
             }
         }
+
+        async function createCategory(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('catNameInput');
+            const name = nameInput.value;
+
+            if (!name) return alert('กรุณาระบุชื่อหมวดหมู่');
+
+            try {
+                const res = await fetch('/api/categories', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ name })
+                });
+
+                if (res.ok) {
+                    alert('เพิ่มหมวดหมู่เรียบร้อย');
+                    nameInput.value = '';
+                    closeModal();
+                    fetchCategories();
+                } else {
+                    const err = await res.json();
+                    alert('Error: ' + err.message);
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Failed to create category');
+            }
+        }
+
+        async function deleteCategory(id) {
+            if (!confirm('ยืนยันการลบ?')) return;
+            try {
+                const res = await fetch(`/api/categories/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) fetchCategories();
+                else alert('Failed to delete');
+            } catch (e) { console.error(e); }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchCategories);
+        document.querySelector('#addCategoryModal form').addEventListener('submit', createCategory);
+
     </script>
 </body>
 

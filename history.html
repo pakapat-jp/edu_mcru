@@ -75,26 +75,25 @@
     </nav>
 
     <!-- About/History Section moved from Index -->
-    <section id="about" class="about section-padding">
-        <div class="container grid-2">
-            <div class="about-img fade-in-left">
-                <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
-                    alt="About Faculty">
-            </div>
-            <div class="about-text fade-in-right">
-                <h2>ประวัติความเป็นมา</h2>
-                <p>มุ่งผลิตบัณฑิตครูที่มีคุณภาพ มีจิตวิญญาณความเป็นครู มีความรอบรู้ในศาสตร์การสอน
-                    และก้าวทันเทคโนโลยี
-                    เพื่อพัฒนาท้องถิ่นและประเทศชาติ</p>
-                <ul class="feature-list">
-                    <li><i class="fa-solid fa-check-circle"></i> หลักสูตรทันสมัยได้มาตรฐาน</li>
-                    <li><i class="fa-solid fa-check-circle"></i> เน้นการปฏิบัติจริง</li>
-                    <li><i class="fa-solid fa-check-circle"></i> ส่งเสริมกิจกรรมนักศึกษา</li>
-                </ul>
-                <!-- Removed Read More button as we are on the page -->
-            </div>
+    <section id="page-content" class="section-padding">
+        <div class="container" id="history-content">
+            <!-- Dynamic Content -->
+            <p class="text-center">กำลังโหลดข้อมูล...</p>
         </div>
     </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Function defined in script.js
+            setTimeout(() => {
+                if (typeof loadPageContent === 'function') {
+                    loadPageContent('ประวัติความเป็นมา', 'history-content');
+                } else {
+                    console.error('loadPageContent not found');
+                }
+            }, 500); // Small delay to ensure script.js loaded
+        });
+    </script>
 
     <!-- Footer (Same as index) -->
     <footer id="contact">

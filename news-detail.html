@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รายละเอียดข่าว - คณะครุศาสตร์</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="assets/logo.png" type="image/png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .news-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .news-gallery img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .news-gallery img:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-back {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-back:hover {
+            color: #fff !important;
+            background-color: var(--primary-color);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Global Header -->
+    <div id="global-header"></div>
+
+    <section class="section-padding">
+        <div class="container" id="news-content">
+            <p style="text-align: center;">กำลังโหลดข้อมูล...</p>
+        </div>
+    </section>
+
+    <!-- Global Footer -->
+    <div id="global-footer"></div>
+    <script src="js/global-loader.js"></script>
+
+    <script src="script.js"></script>
+    <script>
+        // Specific logic for news detail
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            const container = document.getElementById('news-content');
+
+            if (!id) {
+                container.innerHTML = '<p style="text-align:center;">ไม่พบรหัสข่าว</p>';
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/news/${id}`);
+                if (!res.ok) throw new Error('News not found');
+                const news = await res.json();
+
+                const date = new Date(news.publish_date).toLocaleDateString('th-TH', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                const img = news.image_url ? (news.image_url.startsWith('http') || news.image_url.startsWith('/') ? news.image_url : `/${news.image_url}`) : null;
+
+                let html = `
+                    <div style="max-width: 800px; margin: 0 auto;">
+                        <h1 style="color: var(--primary-color); margin-bottom: 10px;">${news.title}</h1>
+                        <div style="color: #666; margin-bottom: 20px; font-size: 0.9rem;">
+                            <span style="margin-right: 15px;"><i class="fa-regular fa-calendar"></i> ${date}</span>
+                            <span><i class="fa-regular fa-user"></i> ${news.author_name || 'Admin'}</span>
+                            <span style="margin-left: 15px;"><i class="fa-solid fa-tag"></i> ${news.category_name || 'ทั่วไป'}</span>
+                        </div>
+                `;
+
+                if (img) {
+                    html += `<img src="${img}" alt="${news.title}" style="width: 100%; height: auto; border-radius: 8px; margin-bottom: 20px;">`;
+                }
+
+                // Gallery Logic
+                if (news.gallery_images) {
+                    let gallery = [];
+                    if (typeof news.gallery_images === 'string') {
+                        try {
+                            gallery = JSON.parse(news.gallery_images);
+                        } catch (e) {
+                            gallery = [];
+                        }
+                    } else if (Array.isArray(news.gallery_images)) {
+                        gallery = news.gallery_images;
+                    }
+
+                    if (gallery.length > 0) {
+                        html += `<div class="news-gallery">`;
+                        gallery.forEach(gImg => {
+                            // Fix relative paths for gallery images too
+                            const gSrc = (gImg.startsWith('http') || gImg.startsWith('/')) ? gImg : `/${gImg}`;
+                            html += `<img src="${gSrc}" onclick="window.open('${gSrc}', '_blank')">`;
+                        });
+                        html += `</div>`;
+                    }
+                }
+
+                html += `
+                        <div class="news-body" style="line-height: 1.8; color: #333;">
+                            ${news.content}
+                        </div>
+                        <div style="margin-top: 40px; text-align: center;">
+                            <a href="index.html#news" class="btn btn-outline btn-back">กลับไปหน้าหลัก</a>
+                        </div>
+                    </div>
+                `;
+
+                container.innerHTML = html;
+
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<p style="text-align:center;">ไม่พบข้อมูลข่าว หรือเกิดข้อผิดพลาด</p>';
+            }
+        });
+    </script>
+</body>
+
+</html>

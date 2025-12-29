@@ -21,7 +21,7 @@
         <h2 style="margin-bottom: 5px; color: var(--cms-primary);">เข้าสู่ระบบ</h2>
         <p style="color: #6c757d; margin-bottom: 30px;">สำหรับผู้ดูแลระบบเว็บไซต์</p>
 
-        <form class="login-form" action="admin_dashboard.html" method="GET">
+        <form class="login-form" id="loginForm">
             <div class="form-group">
                 <label for="username">ชื่อผู้ใช้งาน</label>
                 <div style="position: relative;">
@@ -47,7 +47,42 @@
             </div>
 
             <button type="submit" class="btn-login">เข้าสู่ระบบ</button>
+            <p id="error-message" style="color: red; text-align: center; margin-top: 10px; display: none;"></p>
         </form>
+
+        <script>
+            document.getElementById('loginForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const errorMessage = document.getElementById('error-message');
+
+                try {
+                    const response = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        localStorage.setItem('cms_token', data.token);
+                        localStorage.setItem('cms_user', JSON.stringify(data.user));
+                        window.location.href = 'admin_dashboard.html';
+                    } else {
+                        errorMessage.textContent = data.message || 'Login failed';
+                        errorMessage.style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    errorMessage.textContent = 'An error occurred. Please try again.';
+                    errorMessage.style.display = 'block';
+                }
+            });
+        </script>
 
         <div class="login-footer">
             <p>&copy; 2025 Education Faculty, McRU.</p>

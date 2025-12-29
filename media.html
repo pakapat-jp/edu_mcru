@@ -107,98 +107,75 @@
 
         window.onclick = function (event) {
             if (!event.target.closest('.user-profile')) {
-                const dropdowns = document.getElementsByClassName("dropdown-menu");
-                for (let i = 0; i < dropdowns.length; i++) {
-                    const openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
+                const d = document.getElementById('profileDropdown');
+                if (d && d.classList.contains('show')) d.classList.remove('show');
             }
         }
 
-        // Simulated File System
-        // Structure: Name -> { type: 'folder'|'file', children: {} (if folder) }
-        let fileSystem = {
-            "assets": {
-                type: "folder",
-                children: {
-                    "images": {
-                        type: "folder",
-                        children: {
-                            "banner.jpg": { type: "file" },
-                            "logo.png": { type: "file" }
-                        }
-                    },
-                    "documents": { type: "folder", children: {} },
-                    "sample.jpg": { type: "file" }
-                }
-            }
-        };
+        // --- API Integration ---
+        const token = localStorage.getItem('cms_token');
+        if (!token) window.location.href = 'login.html';
 
-        let currentPath = ["assets"];
+        // Path Management (Stores IDs and Names)
+        let pathStack = [{ id: 0, name: 'assets' }];
 
-        function getCurrentFolder() {
-            let folder = fileSystem["assets"];
-            // Traverse path, skipping root "assets" as it's the starting point variable
-            for (let i = 1; i < currentPath.length; i++) {
-                folder = folder.children[currentPath[i]];
-            }
-            return folder;
+        async function fetchMedia(parentId = 0) {
+            try {
+                const res = await fetch(`/api/media?parent_id=${parentId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const items = await res.json();
+                renderMedia(items);
+            } catch (e) { console.error(e); }
         }
 
-        function navigateToPath(index) {
-            // Slice the path up to the clicked index + 1
-            currentPath = currentPath.slice(0, index + 1);
-            renderMedia();
+        function getCurrentFolderId() {
+            return pathStack[pathStack.length - 1].id;
         }
 
-        function renderMedia() {
+        function renderMedia(items) {
             const container = document.getElementById('fileList');
             const breadcrumb = document.getElementById('breadcrumb');
             container.innerHTML = '';
 
-            // Update Breadcrumb with clickable links
-            breadcrumb.innerHTML = currentPath.map((folder, index) => {
-                const isLast = index === currentPath.length - 1;
+            // Update Breadcrumb
+            breadcrumb.innerHTML = pathStack.map((folder, index) => {
+                const isLast = index === pathStack.length - 1;
                 const style = isLast ? 'color: #333; font-weight: 600;' : 'color: var(--cms-primary); cursor: pointer; text-decoration: underline;';
-                const onclick = isLast ? '' : `onclick="navigateToPath(${index})"`;
-                return `<span ${onclick} style="${style}">${folder}</span>`;
+                const onclick = isLast ? '' : `onclick="navigateToIndex(${index})"`;
+                return `<span ${onclick} style="${style}">${folder.name}</span>`;
             }).join(' <span style="color:#999; margin:0 5px;">/</span> ');
 
-            const currentFolder = getCurrentFolder();
-            const items = currentFolder.children;
-
-            if (Object.keys(items).length === 0) {
+            if (items.length === 0) {
                 container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #999; padding: 30px;">โฟลเดอร์ว่างเปล่า</div>';
                 return;
             }
 
-            // Sort: Folders first, then Files
-            const sortedKeys = Object.keys(items).sort((a, b) => {
-                if (items[a].type === items[b].type) return a.localeCompare(b);
-                return items[a].type === 'folder' ? -1 : 1;
-            });
-
-            sortedKeys.forEach(name => {
-                const item = items[name];
-                const isFolder = item.type === 'folder';
+            items.forEach(item => {
+                const isFolder = item.is_folder;
                 const icon = isFolder ? 'fa-folder' : 'fa-image';
                 const color = isFolder ? '#ffc107' : '#17a2b8';
+
+                // For files, ideally show thumbnail if image, but icon is fine for now
+                let thumbnailHtml = `<i class="fa-solid ${icon}" style="font-size: 3rem; color: ${color};"></i>`;
+                if (!isFolder && ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(item.file_type.toLowerCase())) {
+                    // Using proxy or direct path if served
+                    thumbnailHtml = `<img src="${item.file_path}" style="max-width:100%; max-height:100%; object-fit:contain;">`;
+                }
 
                 const card = document.createElement('div');
                 card.style.cssText = 'border: 1px solid #eee; padding: 10px; border-radius: 4px; text-align: center; position: relative; background: #fff; transition: box-shadow 0.2s;';
                 card.onmouseover = () => card.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
                 card.onmouseout = () => card.style.boxShadow = 'none';
 
+                const onClickAction = isFolder ? `enterFolder(${item.id}, '${item.file_name}')` : `viewFile('${item.file_path}')`;
+
                 let html = `
-                    <div style="height: 80px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; cursor: pointer;" onclick="${isFolder ? `enterFolder('${name}')` : ''}">
-                        <i class="fa-solid ${icon}" style="font-size: 3rem; color: ${color};"></i>
+                    <div style="height: 80px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; cursor: pointer;" onclick="${onClickAction}">
+                        ${thumbnailHtml}
                     </div>
-                    <div style="font-size: 0.9rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 8px;">${name}</div>
+                    <div style="font-size: 0.9rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 8px;" title="${item.file_name}">${item.file_name}</div>
                     <div style="display: flex; justify-content: center; gap: 5px;">
-                        <button onclick="renameItem('${name}')" style="border: none; background: #f0f0f0; padding: 4px 8px; border-radius: 3px; cursor: pointer; color: #555;" title="แก้ไขชื่อ"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteItem('${name}')" style="border: none; background: #fee; padding: 4px 8px; border-radius: 3px; cursor: pointer; color: #dc3545;" title="ลบ"><i class="fa-solid fa-trash"></i></button>
+                        <!-- Rename not implemented in this minimal API version -->
+                        <button onclick="deleteItem(${item.id}, '${item.file_name}')" style="border: none; background: #fee; padding: 4px 8px; border-radius: 3px; cursor: pointer; color: #dc3545;" title="ลบ"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
                 card.innerHTML = html;
@@ -206,75 +183,100 @@
             });
         }
 
-        function enterFolder(name) {
-            currentPath.push(name);
-            renderMedia();
+        function enterFolder(id, name) {
+            pathStack.push({ id, name });
+            fetchMedia(id);
+        }
+
+        function navigateToIndex(index) {
+            pathStack = pathStack.slice(0, index + 1);
+            fetchMedia(getCurrentFolderId());
         }
 
         function navigateUp() {
-            if (currentPath.length > 1) {
-                currentPath.pop();
-                renderMedia();
+            if (pathStack.length > 1) {
+                pathStack.pop();
+                fetchMedia(getCurrentFolderId());
             } else {
                 alert("คุณอยู่ที่โฟลเดอร์ราก (Root) แล้ว");
             }
         }
 
-        function createFolder() {
+        async function createFolder() {
             const name = prompt("กรุณาใส่ชื่อโฟลเดอร์ใหม่:");
             if (name) {
-                const cleanName = name.trim();
-                const folder = getCurrentFolder();
-                if (folder.children[cleanName]) {
-                    alert("ชื่อนี้มีอยู่แล้ว");
-                    return;
-                }
-                folder.children[cleanName] = { type: 'folder', children: {} };
-                renderMedia();
+                try {
+                    const res = await fetch('/api/media/folder', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                        body: JSON.stringify({ name, parent_id: getCurrentFolderId() })
+                    });
+                    if (res.ok) fetchMedia(getCurrentFolderId());
+                    else alert('Error creating folder');
+                } catch (e) { console.error(e); }
             }
         }
 
-        function uploadFile() {
-            // Simulation only
+        async function uploadFile() {
             const input = document.createElement('input');
             input.type = 'file';
-            input.onchange = e => {
-                const file = e.target.files[0];
-                if (file) {
-                    const folder = getCurrentFolder();
-                    folder.children[file.name] = { type: 'file' };
-                    renderMedia();
-                    alert(`อัปโหลดไฟล์ ${file.name} เรียบร้อยแล้ว (จำลอง)`);
+            input.multiple = true;
+            input.onchange = async e => {
+                const files = e.target.files;
+                if (files && files.length > 0) {
+                    let successCount = 0;
+
+                    const promises = Array.from(files).map(async file => {
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        formData.append('parent_id', getCurrentFolderId());
+
+                        try {
+                            const res = await fetch('/api/media/upload', {
+                                method: 'POST',
+                                headers: { 'Authorization': `Bearer ${token}` },
+                                body: formData
+                            });
+                            if (res.ok) successCount++;
+                        } catch (e) { console.error(e); }
+                    });
+
+                    await Promise.all(promises);
+
+                    if (successCount > 0) {
+                        fetchMedia(getCurrentFolderId());
+                    } else {
+                        alert('Upload failed');
+                    }
                 }
             };
             input.click();
         }
 
-        function deleteItem(name) {
+        async function deleteItem(id, name) {
             if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบ "${name}"?`)) {
-                const folder = getCurrentFolder();
-                delete folder.children[name];
-                renderMedia();
+                try {
+                    const res = await fetch(`/api/media/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (res.ok) fetchMedia(getCurrentFolderId());
+                    else alert('Delete failed');
+                } catch (e) { console.error(e); }
             }
         }
 
-        function renameItem(oldName) {
-            const newName = prompt("กรุณาใส่ชื่อใหม่:", oldName);
-            if (newName && newName !== oldName) {
-                const folder = getCurrentFolder();
-                if (folder.children[newName]) {
-                    alert("ชื่อนี้มีอยู่แล้ว");
-                    return;
-                }
-                const item = folder.children[oldName];
-                folder.children[newName] = item;
-                delete folder.children[oldName];
-                renderMedia();
-            }
+        function renameItem() {
+            alert('Feature not available in this version');
+        }
+
+        function viewFile(path) {
+            // Optional: Open in new tab
+            window.open(path, '_blank');
         }
 
         // Initialize
-        renderMedia();
+        fetchMedia(0);
     </script>
 </body>
 

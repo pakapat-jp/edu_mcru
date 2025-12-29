@@ -74,25 +74,22 @@
         </div>
     </nav>
 
-    <section class="section-padding">
-        <div class="container">
-            <h2 class="section-title text-center">ปรัชญา วิสัยทัศน์ พันธกิจ</h2>
-            <div class="grid-3">
-                <div class="card" style="padding: 30px;">
-                    <h3>ปรัชญา</h3>
-                    <p>...</p>
-                </div>
-                <div class="card" style="padding: 30px;">
-                    <h3>วิสัยทัศน์</h3>
-                    <p>...</p>
-                </div>
-                <div class="card" style="padding: 30px;">
-                    <h3>พันธกิจ</h3>
-                    <p>...</p>
-                </div>
-            </div>
+    <section id="page-content" class="section-padding">
+        <div class="container" id="vision-content">
+            <!-- Dynamic Content -->
+            <p class="text-center">กำลังโหลดข้อมูล...</p>
         </div>
     </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (typeof loadPageContent === 'function') {
+                    loadPageContent('ปรัชญา วิสัยทัศน์ พันธกิจ', 'vision-content');
+                }
+            }, 500);
+        });
+    </script>
 
     <!-- Footer -->
     <footer id="contact">

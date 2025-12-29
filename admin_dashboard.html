@@ -129,16 +129,16 @@
                         <div
                             style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px;">
                             <span>ผู้เยี่ยมชมวันนี้</span>
-                            <span style="font-weight: 600; color: var(--cms-primary);">152</span>
+                            <span id="stat-visitors" style="font-weight: 600; color: var(--cms-primary);">152</span>
                         </div>
                         <div
                             style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px;">
                             <span>บทความทั้งหมด</span>
-                            <span style="font-weight: 600; color: var(--cms-primary);">45</span>
+                            <span id="stat-articles" style="font-weight: 600; color: var(--cms-primary);">45</span>
                         </div>
                         <div style="display: flex; justify-content: space-between;">
                             <span>ผู้ใช้งานระบบ</span>
-                            <span style="font-weight: 600; color: var(--cms-primary);">5</span>
+                            <span id="stat-users" style="font-weight: 600; color: var(--cms-primary);">5</span>
                         </div>
                     </div>
 
@@ -235,6 +235,12 @@
     </div>
 
     <script>
+        // Auth Check
+        const token = localStorage.getItem('cms_token');
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
         // Simple Sidebar Toggle
         const sidebarToggle = document.getElementById('sidebarToggle');
         const adminContainer = document.querySelector('.admin-container');
@@ -259,6 +265,25 @@
                 }
             }
         }
+
+        // Fetch Dashboard Stats
+        async function fetchStats() {
+            try {
+                const response = await fetch('/api/dashboard/stats', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('stat-articles').textContent = data.news_count;
+                    document.getElementById('stat-users').textContent = data.user_count;
+                    // document.getElementById('stat-visitors').textContent = ...; // Not implemented in API yet
+                }
+            } catch (e) {
+                console.error("Failed to fetch stats", e);
+            }
+        }
+
+        fetchStats();
     </script>
 </body>
 

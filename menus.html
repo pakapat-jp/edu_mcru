@@ -185,7 +185,7 @@
                             style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
                         <button type="button" onclick="openArticlePicker()"
                             style="background: #17a2b8; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; white-space: nowrap;"><i
-                                class="fa-solid fa-list"></i> เลือกบทความ</button>
+                                class="fa-solid fa-list"></i> เลือกรายการ</button>
                     </div>
                 </div>
 
@@ -207,12 +207,19 @@
         <div
             style="background-color: #fefefe; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 500px; border-radius: 8px; max-height: 70vh; display: flex; flex-direction: column;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3 style="margin: 0;">เลือกบทความ (Select Article)</h3>
+                <h3 style="margin: 0;">เลือกรายการ (Select Link)</h3>
                 <span onclick="closeArticlePicker()"
                     style="color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
             </div>
             <div style="overflow-y: auto; flex: 1; border: 1px solid #eee; border-radius: 4px;">
                 <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #eee; background: #f9f9f9;">
+                            <th style="padding: 10px; text-align: left;">ชื่อ (Name)</th>
+                            <th style="padding: 10px; text-align: left;">หมวดหมู่ (Category)</th>
+                            <th style="padding: 10px; text-align: right;">เลือก</th>
+                        </tr>
+                    </thead>
                     <tbody id="articleList">
                         <!-- JS Generated -->
                     </tbody>
@@ -226,81 +233,201 @@
         const adminContainer = document.querySelector('.admin-container');
         sidebarToggle.addEventListener('click', () => { adminContainer.classList.toggle('sidebar-open'); });
 
-        // Mock Data
-        let menuItems = [
-            { id: 1, title: 'หน้าหลัก', slug: 'home', url: 'index.html', type: 'link', parent_id: 0, status: 1 },
-            { id: 2, title: 'เกี่ยวกับคณะ', slug: 'about', url: '#', type: 'heading', parent_id: 0, status: 1 },
-            { id: 3, title: 'ประวัติความเป็นมา', slug: 'history', url: 'history.html', type: 'link', parent_id: 2, status: 1 },
-            { id: 4, title: 'วิสัยทัศน์ พันธกิจ', slug: 'vision', url: 'vision.html', type: 'link', parent_id: 2, status: 1 },
-            { id: 5, title: 'หลักสูตร', slug: 'courses', url: 'courses.html', type: 'link', parent_id: 0, status: 1 },
-            { id: 6, title: 'ข่าวประชาสัมพันธ์', slug: 'news', url: 'news.html', type: 'link', parent_id: 0, status: 1 },
-            { id: 7, title: 'ติดต่อเรา', slug: 'contact', url: 'contact.html', type: 'link', parent_id: 0, status: 1 }
-        ];
+        // Auth
+        const token = localStorage.getItem('cms_token');
+        if (!token) window.location.href = 'login.html';
 
-        let articles = [
-            { id: 101, title: 'พิธีไหว้ครู ประจำปีการศึกษา 2568', url: 'news-detail.html?id=101' },
-            { id: 102, title: 'การอบรมเชิงปฏิบัติการพัฒนาทักษะดิจิทัล', url: 'news-detail.html?id=102' },
-            { id: 103, title: 'รับสมัครนักศึกษาใหม่ รอบที่ 1 Portfolio', url: 'admission.html' },
-            { id: 104, title: 'ผลงานวิจัยดีเด่น โดยคณาจารย์คณะครุศาสตร์', url: 'research-award.html' }
-        ];
+        let menuItems = [];
+        let articles = []; // Loaded from news for picker
+
+        // --- API Functions ---
+        async function loadMenus() {
+            try {
+                const res = await fetch('/api/menus', { headers: { 'Authorization': `Bearer ${token}` } });
+                menuItems = await res.json();
+                renderMenus();
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadArticlesForPicker() {
+            try {
+                const res = await fetch('/api/news', { headers: { 'Authorization': `Bearer ${token}` } });
+                articles = await res.json(); // Reuses global articles
+            } catch (e) { console.error(e); }
+        }
+
+        async function saveMenu(e) {
+            e.preventDefault();
+            const id = document.getElementById('menuId').value;
+            const title = document.getElementById('menuTitle').value;
+            const slug = document.getElementById('menuSlug').value;
+            const type = document.getElementById('menuType').value;
+            const parent_id = document.getElementById('menuParent').value;
+            const url = document.getElementById('menuUrl').value;
+
+            const body = { title, slug, type, parent_id, url };
+
+            try {
+                const method = id ? 'PUT' : 'POST';
+                const endpoint = id ? `/api/menus/${id}` : '/api/menus';
+
+                const res = await fetch(endpoint, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(body)
+                });
+
+                if (res.ok) {
+                    closeModal();
+                    loadMenus();
+                } else {
+                    alert('Error saving menu');
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function toggleStatus(id) {
+            const item = menuItems.find(m => m.id === id);
+            if (!item) return;
+            const newStatus = item.status === 1 ? 0 : 1;
+
+            try {
+                await fetch(`/api/menus/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                loadMenus();
+            } catch (e) { console.error(e); }
+        }
+
+        async function deleteMenu(id) {
+            if (!confirm('ยืนยันการลบ?')) return;
+            try {
+                await fetch(`/api/menus/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+                loadMenus();
+            } catch (e) { console.error(e); }
+        }
+
+        async function updateOrder(id, order) {
+            await fetch(`/api/menus/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ sort_order: order })
+            });
+        }
+
+        async function moveUp(id) {
+            const currentItem = menuItems.find(m => m.id === id);
+            if (!currentItem) return;
+
+            // Find siblings sorted by order
+            const siblings = menuItems
+                .filter(m => m.parent_id === currentItem.parent_id)
+                .sort((a, b) => a.sort_order - b.sort_order);
+
+            const currentIndex = siblings.findIndex(m => m.id === id);
+            if (currentIndex > 0) {
+                const prevItem = siblings[currentIndex - 1];
+
+                // Swap orders
+                await updateOrder(currentItem.id, prevItem.sort_order);
+                await updateOrder(prevItem.id, currentItem.sort_order);
+
+                loadMenus();
+            }
+        }
+
+        async function moveDown(id) {
+            const currentItem = menuItems.find(m => m.id === id);
+            if (!currentItem) return;
+
+            const siblings = menuItems
+                .filter(m => m.parent_id === currentItem.parent_id)
+                .sort((a, b) => a.sort_order - b.sort_order);
+
+            const currentIndex = siblings.findIndex(m => m.id === id);
+            if (currentIndex < siblings.length - 1) {
+                const nextItem = siblings[currentIndex + 1];
+
+                // Swap orders
+                await updateOrder(currentItem.id, nextItem.sort_order);
+                await updateOrder(nextItem.id, currentItem.sort_order);
+
+                loadMenus();
+            }
+        }
+
+        // --- Render & UI Logic ---
 
         function renderMenus() {
             const tbody = document.getElementById('menuTableBody');
             tbody.innerHTML = '';
 
-            // Allow basic sorting by order in array, but visual hierarchy
-            // For simple table, we list all, but indicate parent
-            menuItems.forEach((item, index) => {
-                const tr = document.createElement('tr');
+            // Helper to get children
+            const getChildren = (parentId) => menuItems.filter(m => m.parent_id === parentId).sort((a, b) => a.sort_order - b.sort_order);
 
-                let typeBadge = '';
-                if (item.type === 'heading') {
-                    typeBadge = '<span style="font-size: 0.8rem; background: #d4edda; color: #155724; padding: 2px 6px; border-radius: 3px;">Heading</span>';
-                } else {
-                    typeBadge = '<span style="font-size: 0.8rem; background: #e2e3e5; color: #383d41; padding: 2px 6px; border-radius: 3px;">Link</span>';
-                }
+            let globalIndex = 0;
 
-                const statusBadge = item.status === 1
-                    ? `<span onclick="toggleStatus(${item.id})" style="color: #28a745; cursor: pointer;" title="คลิกเพื่อซ่อน (Click to Unpublish)"><i class="fa-solid fa-check-circle"></i> แสดงผล</span>`
-                    : `<span onclick="toggleStatus(${item.id})" style="color: #dc3545; cursor: pointer;" title="คลิกเพื่อแสดงผล (Click to Publish)"><i class="fa-solid fa-times-circle"></i> ซ่อน</span>`;
+            const renderRowRecursive = (parentId, level) => {
+                const children = getChildren(parentId);
+                children.forEach((item, index) => {
+                    globalIndex++;
+                    const tr = document.createElement('tr');
 
-                // Indent if child
-                let displayTitle = item.title;
-                if (item.parent_id !== 0) {
-                    displayTitle = '<span style="color: #ccc; margin-right: 5px;">↳</span> ' + item.title;
-                }
+                    // Check if this is Home menu (usually slug 'home' or ID 1, let's use slug check for robustness)
+                    const isHome = item.slug === 'home';
+                    // Check if previous item was Home (to disable shifting above it)
+                    const prevIsHome = index > 0 && children[index - 1].slug === 'home';
 
-                tr.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td style="font-weight: 500;">${displayTitle}</td>
-                    <td style="color: #666; font-size: 0.9rem;">${item.type === 'heading' ? '-' : item.url}</td>
-                    <td>${typeBadge}</td>
-                    <td>${statusBadge}</td>
-                    <td>
-                        <button onclick="moveUp(${index})" style="border: none; background: #fff3cd; width: 30px; height: 30px; border-radius: 4px; cursor: pointer; margin-right: 5px; color: #856404;" title="เลื่อนขึ้น" ${index === 0 ? 'disabled style="opacity:0.3; pointer-events:none; border: none; background: #fff3cd; width: 30px; height: 30px; border-radius: 4px; margin-right: 5px;"' : ''}><i class="fa-solid fa-arrow-up"></i></button>
-                        <button onclick="moveDown(${index})" style="border: none; background: #fff3cd; width: 30px; height: 30px; border-radius: 4px; cursor: pointer; margin-right: 5px; color: #856404;" title="เลื่อนลง" ${index === menuItems.length - 1 ? 'disabled style="opacity:0.3; pointer-events:none; border: none; background: #fff3cd; width: 30px; height: 30px; border-radius: 4px; margin-right: 5px;"' : ''}><i class="fa-solid fa-arrow-down"></i></button>
-                        <button onclick="editMenu(${item.id})" style="border: none; background: #f0f0f0; width: 30px; height: 30px; border-radius: 4px; cursor: pointer; margin-right: 5px; color: #555;" title="แก้ไข"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteMenu(${item.id})" style="border: none; background: #fee; width: 30px; height: 30px; border-radius: 4px; cursor: pointer; color: #dc3545;" title="ลบ"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+                    let typeBadge = item.type === 'heading'
+                        ? '<span style="font-size: 0.8rem; background: #d4edda; color: #155724; padding: 2px 6px; border-radius: 3px;">Heading</span>'
+                        : '<span style="font-size: 0.8rem; background: #e2e3e5; color: #383d41; padding: 2px 6px; border-radius: 3px;">Link</span>';
+
+                    const statusBadge = item.status === 1
+                        ? `<span onclick="toggleStatus(${item.id})" style="color: #28a745; cursor: pointer;"><i class="fa-solid fa-check-circle"></i> แสดงผล</span>`
+                        : `<span onclick="toggleStatus(${item.id})" style="color: #dc3545; cursor: pointer;"><i class="fa-solid fa-times-circle"></i> ซ่อน</span>`;
+
+                    // Indentation
+                    let prefix = '';
+                    if (level > 0) {
+                        prefix = `<span style="color: #ccc; margin-left: ${level * 20}px;">↳</span> `;
+                    }
+
+                    // Button Logic
+                    const canMoveUp = !isHome && !prevIsHome && index > 0;
+                    const canMoveDown = !isHome && index < children.length - 1;
+                    const canDelete = !isHome;
+
+                    tr.innerHTML = `
+                        <td>${item.sort_order}</td>
+                        <td style="font-weight: 500;">${prefix}${item.title} ${isHome ? '<span style="font-size:0.7em; color:#888; margin-left:5px;">(Fixed)</span>' : ''}</td>
+                        <td style="color: #666; font-size: 0.9rem;">${item.type === 'heading' ? '-' : item.url}</td>
+                        <td>${typeBadge}</td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <div style="display:flex; gap:5px;">
+                                <button onclick="moveUp(${item.id})" style="background:${canMoveUp ? '#fff3cd' : '#eee'}; border:none; border-radius:4px; width:30px; height:30px; cursor:${canMoveUp ? 'pointer' : 'not-allowed'};" title="Move Up" ${!canMoveUp ? 'disabled' : ''}><i class="fa-solid fa-arrow-up" style="color:${canMoveUp ? '#000' : '#aaa'}"></i></button>
+                                <button onclick="moveDown(${item.id})" style="background:${canMoveDown ? '#fff3cd' : '#eee'}; border:none; border-radius:4px; width:30px; height:30px; cursor:${canMoveDown ? 'pointer' : 'not-allowed'};" title="Move Down" ${!canMoveDown ? 'disabled' : ''}><i class="fa-solid fa-arrow-down" style="color:${canMoveDown ? '#000' : '#aaa'}"></i></button>
+                                <button onclick="editMenu(${item.id})" style="background:#f0f0f0; border:none; border-radius:4px; width:30px; height:30px; cursor:pointer;"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="deleteMenu(${item.id})" style="background:${canDelete ? '#fee' : '#eee'}; border:none; border-radius:4px; width:30px; height:30px; cursor:${canDelete ? 'pointer' : 'not-allowed'}; color:${canDelete ? '#dc3545' : '#aaa'};" ${!canDelete ? 'disabled' : ''}><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+
+                    // Recursive call for next level
+                    renderRowRecursive(item.id, level + 1);
+                });
+            };
+
+            // Start rendering from root
+            renderRowRecursive(0, 0);
         }
 
-        function toggleStatus(id) {
-            const index = menuItems.findIndex(m => m.id === id);
-            if (index !== -1) {
-                // Toggle 1 <-> 0
-                menuItems[index].status = menuItems[index].status === 1 ? 0 : 1;
-                renderMenus();
-            }
-        }
-
-        // --- Logic Functions ---
-
+        // Modal & Form Helpers (Mostly reused mock logic but updated for API data)
         function generateSlug(val) {
-            const slug = val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-            document.getElementById('menuSlug').value = slug;
+            document.getElementById('menuSlug').value = val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
         }
 
         function toggleUrlField() {
@@ -308,7 +435,7 @@
             const urlSection = document.getElementById('urlSection');
             if (type === 'heading') {
                 urlSection.style.display = 'none';
-                document.getElementById('menuUrl').value = '#'; // Default placeholder
+                document.getElementById('menuUrl').value = '#';
             } else {
                 urlSection.style.display = 'block';
                 if (document.getElementById('menuUrl').value === '#') document.getElementById('menuUrl').value = '';
@@ -319,45 +446,38 @@
             const select = document.getElementById('menuParent');
             select.innerHTML = '<option value="0">- ไม่มี (เป็นเมนูหลัก) -</option>';
 
-            // Build a simplified tree or just linear sort by hierarchy for display
-            // For a flat list, we can just find roots and recursively print children
+            // Helper to find children
+            const getChildren = (parentId) => menuItems.filter(m => m.parent_id === parentId).sort((a, b) => a.sort_order - b.sort_order);
 
-            // Helper to print options recursively
-            function printOptions(parentId, depth) {
-                const children = menuItems.filter(item => item.parent_id === parentId);
-
+            // Recursive function to render options
+            const renderOptionsRecursively = (parentId, level) => {
+                const children = getChildren(parentId);
                 children.forEach(item => {
-                    if (item.id === excludeId) return; // Don't allow selecting self as parent
+                    // Prevent selecting self as parent (cycle)
+                    if (item.id === excludeId) return;
 
                     const option = document.createElement('option');
                     option.value = item.id;
-
-                    let prefix = '';
-                    if (depth > 0) {
-                        prefix = ' '.repeat(depth * 2) + '- '.repeat(depth);
-                    }
-
-                    option.text = prefix + item.title;
+                    // Visual indentation
+                    const prefix = '&nbsp;&nbsp;&nbsp;'.repeat(level);
+                    option.innerHTML = (level > 0 ? prefix + '↳ ' : '') + item.title;
                     select.appendChild(option);
 
-                    // Recursive call for sub-items
-                    printOptions(item.id, depth + 1);
+                    // Render children of this item (next level)
+                    renderOptionsRecursively(item.id, level + 1);
                 });
-            }
+            };
 
-            // Start from root (parent_id = 0)
-            printOptions(0, 0);
+            // Start with root items (parent_id 0)
+            renderOptionsRecursively(0, 0);
         }
 
         function openModal(id = null) {
             const modal = document.getElementById('menuModal');
             const form = document.getElementById('menuForm');
-
-            // reset logic
             renderParentOptions(id);
 
             if (id) {
-                // Edit Mode
                 const item = menuItems.find(m => m.id === id);
                 document.getElementById('modalTitle').innerText = 'แก้ไขรายการเมนู';
                 document.getElementById('menuId').value = item.id;
@@ -366,118 +486,105 @@
                 document.getElementById('menuType').value = item.type;
                 document.getElementById('menuParent').value = item.parent_id;
                 document.getElementById('menuUrl').value = item.url;
-                // Status not in form
             } else {
-                // Add Mode
                 document.getElementById('modalTitle').innerText = 'เพิ่มรายการเมนู';
                 form.reset();
                 document.getElementById('menuId').value = '';
-                document.getElementById('menuType').value = 'link';
+                document.getElementById('menuType').value = 'link'; // Reset
                 document.getElementById('menuParent').value = 0;
             }
-            toggleUrlField(); // Set correct init state
+            toggleUrlField();
             modal.style.display = 'block';
         }
 
-        function closeModal() {
-            document.getElementById('menuModal').style.display = 'none';
-        }
+        function closeModal() { document.getElementById('menuModal').style.display = 'none'; }
+        function editMenu(id) { openModal(id); }
 
-        function saveMenu(e) {
-            e.preventDefault();
-            const id = document.getElementById('menuId').value ? parseInt(document.getElementById('menuId').value) : null;
-            const title = document.getElementById('menuTitle').value;
-            const slug = document.getElementById('menuSlug').value;
-            const type = document.getElementById('menuType').value;
-            const parent_id = parseInt(document.getElementById('menuParent').value);
-            const url = document.getElementById('menuUrl').value;
+        // Article Picker
+        const projectPages = [
+            { title: 'หน้าหลัก (Home)', url: 'index.html', category: 'เมนู' },
+            { title: 'ประวัติความเป็นมา (History)', url: 'history.html', category: 'เมนู' },
+            { title: 'วิสัยทัศน์ (Vision)', url: 'vision.html', category: 'เมนู' },
+            { title: 'โครงสร้างองค์กร (Structure)', url: 'structure.html', category: 'เมนู' },
+            { title: 'ผู้บริหาร (Executive Committee)', url: 'executive_committee.html', category: 'เมนู' },
+            { title: 'ทำเนียบคณบดี (Dean\'s List)', url: 'deans_list.html', category: 'เมนู' },
+            { title: 'คณะกรรมการประจำคณะ (Board)', url: 'board.html', category: 'เมนู' },
+            { title: 'หลักสูตร (Courses)', url: 'courses.html', category: 'เมนู' },
+            { title: 'โรงเรียนสาธิตฯ (Thantawan School)', url: 'thantawan_school.html', category: 'เมนู' },
+            { title: 'โครงการพัฒนาครู (Teacher Pro Dev)', url: 'teacher_pro_dev.html', category: 'เมนู' },
+            { title: 'บริการวิชาการ (Services)', url: 'services.html', category: 'เมนู' },
+            { title: 'ประกันคุณภาพ (QA)', url: 'qa.html', category: 'เมนู' },
+            { title: 'ผลการดำเนินงาน (Operation Results)', url: 'operation_results.html', category: 'เมนู' },
+            { title: 'แผนการดำเนินงาน (Operation Plan)', url: 'operation_plan.html', category: 'เมนู' },
+            { title: 'ITA', url: 'ita.html', category: 'เมนู' },
+            { title: 'เอกสารเผยแพร่ (Documents)', url: 'documents.html', category: 'เมนู' },
+            { title: 'บุคลากร (Personnel)', url: 'personnel.html', category: 'เมนู' },
+            { title: 'ติดต่อเรา (Contact)', url: 'contact.html', category: 'เมนู' }
+        ];
 
-            if (id) {
-                // Update
-                const index = menuItems.findIndex(m => m.id === id);
-                if (index !== -1) {
-                    // Preserve existing status
-                    const currentStatus = menuItems[index].status;
-                    menuItems[index] = { ...menuItems[index], title, slug, type, parent_id, url, status: currentStatus };
-                }
-            } else {
-                // Add - Default Status 1
-                const newId = menuItems.length > 0 ? Math.max(...menuItems.map(m => m.id)) + 1 : 1;
-                menuItems.push({ id: newId, title, slug, type, parent_id, url, status: 1 });
-            }
-
-            renderMenus();
-            closeModal();
-        }
-
-        function editMenu(id) {
-            openModal(id);
-        }
-
-        function deleteMenu(id) {
-            if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบเมนูนี้?')) {
-                menuItems = menuItems.filter(m => m.id !== id);
-                renderMenus();
-            }
-        }
-
-        function moveUp(index) {
-            if (index > 0) {
-                const temp = menuItems[index];
-                menuItems[index] = menuItems[index - 1];
-                menuItems[index - 1] = temp;
-                renderMenus();
-            }
-        }
-
-        function moveDown(index) {
-            if (index < menuItems.length - 1) {
-                const temp = menuItems[index];
-                menuItems[index] = menuItems[index + 1];
-                menuItems[index + 1] = temp;
-                renderMenus();
-            }
-        }
-
-        // --- Article Picker ---
         function openArticlePicker() {
             const modal = document.getElementById('articleModal');
             const list = document.getElementById('articleList');
             list.innerHTML = '';
 
-            articles.forEach(art => {
-                const tr = document.createElement('tr');
-                tr.style.borderBottom = '1px solid #eee';
-                tr.innerHTML = `
-                    <td style="padding: 10px;">${art.title}</td>
-                    <td style="padding: 10px; text-align: right;">
-                        <button type="button" onclick="selectArticle('${art.url}')" style="background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">เลือก</button>
-                    </td>
-                `;
-                list.appendChild(tr);
-            });
+            // Allow loading if likely empty
+            if (articles.length === 0) loadArticlesForPicker();
+
+            // Timeout to allow load or check
+            setTimeout(() => {
+                // Merge static pages and articles
+                const allItems = [
+                    ...projectPages,
+                    ...articles.map(art => ({
+                        title: art.title,
+                        url: `news-detail.html?id=${art.id}`,
+                        category: art.category_name || 'บทความ (Article)' // Use category from API or default
+                    }))
+                ];
+
+                if (allItems.length === 0) {
+                    list.innerHTML = '<tr><td colspan="3" style="padding: 20px; text-align: center;">ไม่พบข้อมูล</td></tr>';
+                    return;
+                }
+
+                allItems.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.style.borderBottom = '1px solid #eee';
+                    tr.innerHTML = `
+                        <td style="padding: 10px;">${item.title}</td>
+                        <td style="padding: 10px;"><span style="font-size: 0.85rem; padding: 2px 6px; background: #e9ecef; border-radius: 4px; color: #495057;">${item.category}</span></td>
+                        <td style="padding: 10px; text-align: right;">
+                            <button type="button" onclick="selectArticle('${item.url}')" style="background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">เลือก</button>
+                        </td>
+                    `;
+                    list.appendChild(tr);
+                });
+            }, 500); // Simple wait
+
             modal.style.display = 'block';
         }
 
-        function closeArticlePicker() {
-            document.getElementById('articleModal').style.display = 'none';
-        }
-
+        function closeArticlePicker() { document.getElementById('articleModal').style.display = 'none'; }
         function selectArticle(url) {
             document.getElementById('menuUrl').value = url;
             closeArticlePicker();
         }
 
-        // Initialize
-        renderMenus();
+        // Init
+        loadMenus();
 
-        // Close modal if clicked outside
         window.onclick = function (event) {
             const menuModal = document.getElementById('menuModal');
             const articleModal = document.getElementById('articleModal');
             if (event.target == menuModal) closeModal();
             if (event.target == articleModal) closeArticlePicker();
+
+            if (!event.target.closest('.user-profile')) {
+                const d = document.getElementById('profileDropdown');
+                if (d && d.classList.contains('show')) d.classList.remove('show');
+            }
         }
+        function toggleProfileDropdown() { document.getElementById('profileDropdown').classList.toggle('show'); }
     </script>
 </body>
 

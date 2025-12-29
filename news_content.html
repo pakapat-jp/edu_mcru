@@ -76,13 +76,13 @@
                     <h1 class="page-title" style="margin-bottom: 0;">จัดการบทความ (Articles)</h1>
                     <div style="display: flex; gap: 10px; align-items: center;">
                         <div id="bulkActions" style="display: none; gap: 5px;">
-                            <button class="btn-login"
+                            <button class="btn-login" onclick="bulkUpdateStatus(1)"
                                 style="width: auto; padding: 10px 15px; background-color: #28a745; border-color: #28a745;"><i
                                     class="fa-solid fa-check"></i> เผยแพร่</button>
-                            <button class="btn-login"
+                            <button class="btn-login" onclick="bulkUpdateStatus(0)"
                                 style="width: auto; padding: 10px 15px; background-color: #ffc107; border-color: #ffc107; color: #000;"><i
                                     class="fa-solid fa-circle-pause"></i> ร่าง</button>
-                            <button class="btn-login"
+                            <button class="btn-login" onclick="bulkDelete()"
                                 style="width: auto; padding: 10px 15px; background-color: #dc3545; border-color: #dc3545;"><i
                                     class="fa-solid fa-trash"></i> ลบ</button>
                         </div>
@@ -94,19 +94,19 @@
 
                 <div class="widget-card">
                     <div style="padding-bottom: 15px; display: flex; gap: 10px;">
-                        <input type="text" placeholder="ค้นหาบทความ..."
+                        <input type="text" id="searchInput" placeholder="ค้นหาบทความ..."
                             style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; flex: 1;">
-                        <select style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                            <option>ทุกหมวดหมู่</option>
-                            <option>ข่าวประชาสัมพันธ์</option>
-                            <option>กิจกรรม</option>
+                        <select id="categoryFilter" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="">ทุกหมวดหมู่</option>
+                            <!-- Options populated via JS -->
                         </select>
-                        <button class="btn-login" style="width: auto; padding: 8px 15px;">ค้นหา</button>
+                        <button class="btn-login" onclick="filterNews()"
+                            style="width: auto; padding: 8px 15px;">ค้นหา</button>
                     </div>
                     <table class="cms-table">
                         <thead>
                             <tr>
-                                <th style="width: 50px;"><input type="checkbox" id="checkAll"></th>
+                                <td><input type="checkbox" id="checkAll"></td>
                                 <th>ชื่อเรื่อง</th>
                                 <th>สถานะ</th>
                                 <th>หมวดหมู่</th>
@@ -116,63 +116,9 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <!-- Data will be loaded via JS -->
                             <tr>
-                                <td><input type="checkbox" class="row-checkbox"></td>
-                                <td><a href="news_form.html"
-                                        style="color: var(--cms-primary); font-weight: 500;">ขอเชิญร่วมงานวันครู
-                                        ประจำปี 2568</a></td>
-                                <td><span style="color: #28a745;"><i class="fa-solid fa-check-circle"></i>
-                                        เผยแพร่</span></td>
-                                <td>กิจกรรม</td>
-                                <td>Admin</td>
-                                <td>10 ธ.ค. 2568</td>
-                                <td style="position: relative;">
-                                    <button class="action-btn" onclick="toggleActionMenu(this)"
-                                        style="border: none; background: none; color: #666; cursor: pointer; padding: 5px;"><i
-                                            class="fa-solid fa-ellipsis-vertical"></i></button>
-                                    <div class="action-menu"
-                                        style="display: none; position: absolute; right: 0; top: 100%; background: #fff; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 100; min-width: 120px; border-radius: 4px;">
-                                        <a href="#"
-                                            style="display: block; padding: 8px 15px; color: #28a745; text-decoration: none; font-size: 0.9rem;"><i
-                                                class="fa-solid fa-check"></i> เผยแพร่</a>
-                                        <a href="#"
-                                            style="display: block; padding: 8px 15px; color: #ffc107; text-decoration: none; font-size: 0.9rem;"><i
-                                                class="fa-solid fa-circle-pause"></i> ร่าง</a>
-                                        <div style="border-top: 1px solid #eee;"></div>
-                                        <a href="#"
-                                            style="display: block; padding: 8px 15px; color: #dc3545; text-decoration: none; font-size: 0.9rem;"><i
-                                                class="fa-solid fa-trash"></i> ลบ</a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="row-checkbox"></td>
-                                <td><a href="news_form.html"
-                                        style="color: var(--cms-primary); font-weight: 500;">ประกาศปิดทำการช่วงเทศกาลปีใหม่</a>
-                                </td>
-                                <td><span style="color: #ffc107;"><i class="fa-solid fa-circle-pause"></i> ร่าง</span>
-                                </td>
-                                <td>ข่าวทั่วไป</td>
-                                <td>Staff 1</td>
-                                <td>05 ธ.ค. 2568</td>
-                                <td style="position: relative;">
-                                    <button class="action-btn" onclick="toggleActionMenu(this)"
-                                        style="border: none; background: none; color: #666; cursor: pointer; padding: 5px;"><i
-                                            class="fa-solid fa-ellipsis-vertical"></i></button>
-                                    <div class="action-menu"
-                                        style="display: none; position: absolute; right: 0; top: 100%; background: #fff; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 100; min-width: 120px; border-radius: 4px;">
-                                        <a href="#"
-                                            style="display: block; padding: 8px 15px; color: #28a745; text-decoration: none; font-size: 0.9rem;"><i
-                                                class="fa-solid fa-check"></i> เผยแพร่</a>
-                                        <a href="#"
-                                            style="display: block; padding: 8px 15px; color: #ffc107; text-decoration: none; font-size: 0.9rem;"><i
-                                                class="fa-solid fa-circle-pause"></i> ร่าง</a>
-                                        <div style="border-top: 1px solid #eee;"></div>
-                                        <a href="#"
-                                            style="display: block; padding: 8px 15px; color: #dc3545; text-decoration: none; font-size: 0.9rem;"><i
-                                                class="fa-solid fa-trash"></i> ลบ</a>
-                                    </div>
-                                </td>
+                                <td colspan="7" style="text-align:center; padding: 20px;">กำลังโหลดข้อมูล...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -191,46 +137,241 @@
             document.getElementById('profileDropdown').classList.toggle('show');
         }
 
+        // Auth Check
+        const token = localStorage.getItem('cms_token');
+        if (!token) window.location.href = 'login.html';
+
+        let allNewsData = [];
+
+        async function fetchCategories() {
+            try {
+                const res = await fetch('/api/categories');
+                const categories = await res.json();
+                const filter = document.getElementById('categoryFilter');
+
+                // Keep first "All" option
+                filter.innerHTML = '<option value="">ทุกหมวดหมู่</option>';
+                categories.forEach(cat => {
+                    const opt = document.createElement('option');
+                    opt.value = cat.id; // Filter by ID
+                    opt.textContent = cat.name;
+                    filter.appendChild(opt);
+                });
+            } catch (e) { console.error('Error fetching categories:', e); }
+        }
+
+        async function fetchNews() {
+            try {
+                const response = await fetch('/api/news', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!response.ok) return;
+
+                allNewsData = await response.json();
+                renderNewsTable(allNewsData);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function renderNewsTable(news) {
+            const tbody = document.querySelector('table.cms-table tbody');
+            tbody.innerHTML = '';
+
+            if (news.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">ไม่พบข้อมูล</td></tr>';
+                document.getElementById('checkAll').checked = false;
+                updateBulkActions();
+                return;
+            }
+
+            news.forEach(item => {
+                const tr = document.createElement('tr');
+                const date = new Date(item.publish_date).toLocaleDateString('th-TH', {
+                    year: 'numeric', month: 'short', day: 'numeric'
+                });
+
+                // Status UI
+                const isPublished = item.status == 1; // 1 or '1'
+                const statusHtml = isPublished
+                    ? '<span style="color: #28a745;"><i class="fa-solid fa-check-circle"></i> เผยแพร่</span>'
+                    : '<span style="color: #ffc107;"><i class="fa-solid fa-circle-pause"></i> ร่าง</span>';
+
+                tr.innerHTML = `
+                    <td><input type="checkbox" class="row-checkbox" value="${item.id}"></td>
+                    <td><a href="news_form.html?id=${item.id}" style="color: var(--cms-primary); font-weight: 500;">${item.title}</a></td>
+                    <td>${statusHtml}</td>
+                    <td>${item.category_name || '-'}</td>
+                    <td>${item.author_name || 'Admin'}</td>
+                    <td>${date}</td>
+                    <td style="position: relative;">
+                        <button class="action-btn" onclick="toggleActionMenu(this)" style="border: none; background: none; color: #666; cursor: pointer; padding: 5px;"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        <div class="action-menu" style="display: none; position: absolute; right: 0; top: 100%; background: #fff; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 100; min-width: 120px; border-radius: 4px;">
+                            <a href="#" onclick="changeStatus(${item.id}, 1)" style="display: block; padding: 8px 15px; color: #28a745; text-decoration: none; font-size: 0.9rem;"><i class="fa-solid fa-check"></i> เผยแพร่</a>
+                            <a href="#" onclick="changeStatus(${item.id}, 0)" style="display: block; padding: 8px 15px; color: #ffc107; text-decoration: none; font-size: 0.9rem;"><i class="fa-solid fa-circle-pause"></i> ร่าง</a>
+                            <div style="border-top: 1px solid #eee;"></div>
+                            <a href="#" onclick="deleteNews(${item.id})" style="display: block; padding: 8px 15px; color: #dc3545; text-decoration: none; font-size: 0.9rem;"><i class="fa-solid fa-trash"></i> ลบ</a>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            bindCheckboxEvents();
+        }
+
+        function filterNews() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const catId = document.getElementById('categoryFilter').value;
+
+            const filtered = allNewsData.filter(item => {
+                const matchesQuery = item.title.toLowerCase().includes(query) || (item.author_name || '').toLowerCase().includes(query);
+                const matchesCategory = catId === '' || item.category_id == catId;
+                return matchesQuery && matchesCategory;
+            });
+            renderNewsTable(filtered);
+        }
+
+        // Enter key for search
+        document.getElementById('searchInput').addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') filterNews();
+        });
+
+        async function changeStatus(id, newStatus) {
+            try {
+                // Fetch latest data first to ensure we don't overwrite with stale content
+                // and to support cases where list API returns truncated content
+                const getRes = await fetch(`/api/news/${id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!getRes.ok) throw new Error('Failed to fetch article details');
+                const item = await getRes.json();
+
+                // Use FormData to be consistent with Form Page and handle potential multipart requirements
+                const formData = new FormData();
+                formData.append('title', item.title);
+                formData.append('content', item.content || ''); // Ensure content is not null
+                formData.append('category_id', item.category_id);
+
+                // Keep the slug!
+                if (item.slug) {
+                    formData.append('slug', item.slug);
+                }
+
+                // Handle Date: Format nicely if needed, or send as is if server parses ISO
+                // Assuming server accepts ISO string or YYYY-MM-DD. 
+                // Getting raw value is safer if server ignores time, but let's send what we got.
+                formData.append('publish_date', item.publish_date);
+
+                formData.append('status', newStatus);
+
+                // Note: We are NOT sending 'image'. If the server replaces image with null if missing, 
+                // this might be an issue. But typically update logic checks "if (req.file) update image".
+
+                const res = await fetch(`/api/news/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                        // do NOT set Content-Type for FormData, browser sets it with boundary
+                    },
+                    body: formData
+                });
+
+                if (res.ok) {
+                    // Update local data immediately to reflect change without full reload if possible, 
+                    // but fetchNews() is safer to ensure consistency.
+                    fetchNews();
+                } else {
+                    const err = await res.json();
+                    alert('Update failed: ' + (err.message || 'Unknown error'));
+                }
+            } catch (e) {
+                console.error(e);
+                alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+            }
+        }
+
+        async function deleteNews(id) {
+            if (!confirm('ยืนยันการลบ?')) return;
+            try {
+                const response = await fetch(`/api/news/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.ok) fetchNews();
+            } catch (e) { console.error(e); }
+        }
+
+        // Bulk Actions
+        async function bulkUpdateStatus(newStatus) {
+            const checked = Array.from(document.querySelectorAll('.row-checkbox:checked')).map(cb => cb.value);
+            if (checked.length === 0) return;
+
+            if (!confirm(`ยืนยันการเปลี่ยนสถานะ ${checked.length} รายการ?`)) return;
+
+            // Process sequentially or parallel
+            for (const id of checked) {
+                await changeStatus(id, newStatus);
+            }
+            // fetchNews is called inside changeStatus, but calling it N times is bad.
+            // Ideal: Optimize. But for now, let it refresh.
+        }
+
+        async function bulkDelete() {
+            const checked = Array.from(document.querySelectorAll('.row-checkbox:checked')).map(cb => cb.value);
+            if (checked.length === 0) return;
+
+            if (!confirm(`ยืนยันการลบ ${checked.length} รายการ?`)) return;
+
+            for (const id of checked) {
+                try {
+                    await fetch(`/api/news/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                } catch (e) { }
+            }
+            fetchNews();
+        }
+
+        fetchNews();
+
         // Bulk Actions Logic
         const bulkActions = document.getElementById('bulkActions');
         const checkAll = document.getElementById('checkAll');
-        const checkboxes = document.querySelectorAll('.row-checkbox');
+
+        function bindCheckboxEvents() {
+            const checkboxes = document.querySelectorAll('.row-checkbox');
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', updateBulkActions);
+            });
+        }
 
         function updateBulkActions() {
+            const checkboxes = document.querySelectorAll('.row-checkbox');
             const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
             bulkActions.style.display = anyChecked ? 'flex' : 'none';
         }
 
         checkAll.addEventListener('change', () => {
+            const checkboxes = document.querySelectorAll('.row-checkbox');
             checkboxes.forEach(cb => cb.checked = checkAll.checked);
             updateBulkActions();
         });
 
-        checkboxes.forEach(cb => {
-            cb.addEventListener('change', updateBulkActions);
-        });
-
         // Inline Action Menu Logic
         function toggleActionMenu(btn) {
-            // Close all other open menus
             document.querySelectorAll('.action-menu').forEach(menu => {
                 if (menu !== btn.nextElementSibling) {
                     menu.style.display = 'none';
                 }
             });
-
             const menu = btn.nextElementSibling;
-            if (menu.style.display === 'block') {
-                menu.style.display = 'none';
-            } else {
-                menu.style.display = 'block';
-            }
-
-            // Prevent event bubbling
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
             event.stopPropagation();
         }
 
-        // Close menus when clicking outside
         document.addEventListener('click', () => {
             document.querySelectorAll('.action-menu').forEach(menu => {
                 menu.style.display = 'none';
