@@ -4,8 +4,7 @@ let slideInterval;
 document.addEventListener('DOMContentLoaded', () => {
     // Start Slider
     if (document.querySelector('.slideshow-container')) {
-        showSlides(slideIndex);
-        startAutoSlide();
+        loadHeroSliders();
     }
 
     // Scroll Animations
@@ -186,6 +185,77 @@ async function loadNewsForHome() {
         });
 
     } catch (e) { console.error('Error loading news:', e); }
+}
+
+async function loadHeroSliders() {
+    try {
+        const res = await fetch('/api/hero-sliders?active=true');
+        if (!res.ok) return; // If API fails, maybe fallback to static or do nothing
+        const sliders = await res.json();
+        const container = document.querySelector('.slideshow-container');
+
+        if (sliders.length === 0) return; // No sliders, maybe keep static or empty?
+
+        // Clear existing static slides if any (except arrows if they are outside? No, they are inside)
+        // Actually, let's keep prev/next buttons if we want to reuse them, or re-render them.
+        // The current HTML has prev/next inside container.
+
+        let slidesHtml = '';
+        let dotsHtml = '';
+
+        sliders.forEach((slide, index) => {
+            const indexPlusOne = index + 1;
+
+            // Slide HTML
+            slidesHtml += `
+                <div class="slide fade">
+                    <img src="${slide.image_url}" alt="${slide.title || 'Slide'}">
+                    ${slide.overlay_enabled ? `
+                    <div class="hero-overlay">
+                        ${slide.title ? `<h2 class="fade-in-up">${slide.title}</h2>` : ''}
+                        ${slide.subtitle ? `<p class="fade-in-up" style="transition-delay: 0.2s;">${slide.subtitle}</p>` : ''}
+                        
+                        ${(slide.button_text && slide.button_link) ? `
+                        <div class="hero-buttons fade-in-up" style="transition-delay: 0.4s;">
+                            <a href="${slide.button_link}" class="btn btn-primary">${slide.button_text}</a>
+                        </div>` : ''}
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+
+            // Dot HTML
+            dotsHtml += `<span class="dot" onclick="currentSlide(${indexPlusOne})"></span>`;
+        });
+
+        // Add Controls
+        const controlsHtml = `
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+            <div class="dots-container">
+                ${dotsHtml}
+            </div>
+        `;
+
+        container.innerHTML = slidesHtml + controlsHtml;
+
+        // Re-attach Observer for Animations
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, observerOptions);
+        container.querySelectorAll('.fade-in-up').forEach((el) => observer.observe(el));
+
+        // Restart Slider Logic
+        slideIndex = 1;
+        showSlides(slideIndex);
+        startAutoSlide();
+
+    } catch (e) {
+        console.error("Error loading sliders:", e);
+    }
 }
 
 // --- Helper Functions ---

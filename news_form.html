@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="th">
 
 <head>
@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="admin_style.css">
+    <!-- CKEditor 5 from CDN -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/super-build/ckeditor.js"></script>
 
     <style>
         /* Toolbar Actions */
@@ -219,40 +221,7 @@
 <body>
     <div class="admin-container">
         <!-- Sidebar -->
-        <aside class="admin-sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <img src="assets/web_admin_logo.png" alt="Admin Logo"
-                    style="width: 30px; height: auto; margin-right: 10px;">
-                Web Admin
-            </div>
-            <ul class="sidebar-menu">
-                <li><a href="admin_dashboard.html"><i class="fa-solid fa-gauge"></i> แดชบอร์ด</a></li>
-                <li
-                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600;">
-                    เนื้อหา</li>
-                <li><a href="news_content.html" class="active"><i class="fa-solid fa-newspaper"></i> บทความ
-                        (Articles)</a></li>
-                <li><a href="news_categories.html"><i class="fa-solid fa-layer-group"></i> หมวดหมู่ (Categories)</a>
-                </li>
-                <li><a href="media.html"><i class="fa-solid fa-images"></i> สื่อ (Media)</a></li>
-                <li
-                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
-                    โครงสร้างเว็บ</li>
-                <li><a href="menus.html"><i class="fa-solid fa-bars"></i> เมนู (Menus)</a></li>
-                <li><a href="header_settings.html"><i class="fa-solid fa-heading"></i> ส่วนหัว (Header)</a></li>
-                <li><a href="footer_settings.html"><i class="fa-solid fa-shoe-prints"></i> ส่วนท้าย (Footer)</a></li>
-                <li
-                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
-                    ผู้ใช้งาน</li>
-                <li><a href="users.html"><i class="fa-solid fa-users"></i> จัดการผู้ใช้</a></li>
-                <li
-                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
-                    ระบบ</li>
-                <li><a href="settings.html"><i class="fa-solid fa-gears"></i> ตั้งค่าทั่วไป</a></li>
-                <li><a href="theme_color.html"><i class="fa-solid fa-palette"></i> ธีมสี (Theme Color)</a></li>
-                <li><a href="fonts.html"><i class="fa-solid fa-font"></i> ฟ้อนต์ (Fonts)</a></li>
-            </ul>
-        </aside>
+        <aside class="admin-sidebar" id="sidebar"><!-- Loading Sidebar... --></aside>
 
         <main class="admin-content">
             <header class="admin-topbar">
@@ -749,7 +718,10 @@
                 // --- Handle Content ---
                 const content = data.content || '';
 
-                document.getElementById('editor').value = content;
+                // document.getElementById('editor').value = content;
+                if (editors.main) {
+                    editors.main.setData(content);
+                }
 
                 // Image Preview
                 if (data.image_url) {
@@ -787,8 +759,14 @@
             const categoryId = document.getElementById('categoryIdSelect').value;
             const publishDate = document.getElementById('publishedDateInput').value;
 
-            const finalContent = document.getElementById('editor').value;
-
+            // Get content from CKEditor
+            let finalContent = '';
+            if (editors.main) {
+                finalContent = editors.main.getData();
+            } else {
+                // Fallback if no editor?
+                finalContent = document.getElementById('editor').value;
+            }
             if (!title) {
                 alert('กรุณากรอกหัวข้อ');
                 return;
@@ -866,10 +844,109 @@
             }
         };
 
+        let editors = {};
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            // Init Single Editor
+            CKEDITOR.ClassicEditor.create(document.getElementById("editor"), {
+                toolbar: {
+                    items: [
+                        'sourceEditing', '|',
+                        'heading', '|',
+                        'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'removeFormat', '|',
+                        'bulletedList', 'numberedList', 'todoList', '|',
+                        'outdent', 'indent', '|',
+                        'undo', 'redo',
+                        '-',
+                        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
+                        'alignment', '|',
+                        'link', 'uploadImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
+                        'specialCharacters', 'horizontalLine', 'pageBreak', '|',
+                        'textPartLanguage', '|',
+                    ],
+                    shouldNotGroupWhenFull: true
+                },
+                list: {
+                    properties: {
+                        styles: true,
+                        startIndex: true,
+                        reversed: true
+                    }
+                },
+                heading: {
+                    options: [
+                        { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                        { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+                        { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+                        { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+                        { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
+                    ]
+                },
+                fontFamily: {
+                    options: [
+                        'default',
+                        'Kanit, Arial, sans-serif',
+                        'Arial, Helvetica, sans-serif',
+                        'Courier New, Courier, monospace',
+                        'Georgia, serif',
+                        'Lucida Sans Unicode, Lucida Grande, sans-serif',
+                        'Tahoma, Geneva, sans-serif',
+                        'Times New Roman, Times, serif',
+                        'Trebuchet MS, Helvetica, sans-serif',
+                        'Verdana, Geneva, sans-serif'
+                    ],
+                    supportAllValues: true
+                },
+                fontSize: {
+                    options: [10, 12, 14, 'default', 18, 20, 22],
+                    supportAllValues: true
+                },
+                htmlSupport: {
+                    allow: [
+                        {
+                            name: /.*/,
+                            attributes: true,
+                            classes: true,
+                            styles: true
+                        }
+                    ]
+                },
+                removePlugins: [
+                    'CKBox',
+                    'CKFinder',
+                    'EasyImage',
+                    'RealTimeCollaborativeComments',
+                    'RealTimeCollaborativeTrackChanges',
+                    'RealTimeCollaborativeRevisionHistory',
+                    'PresenceList',
+                    'Comments',
+                    'TrackChanges',
+                    'TrackChangesData',
+                    'RevisionHistory',
+                    'Pagination',
+                    'WProofreader',
+                    'MathType',
+                    'SlashCommand',
+                    'Template',
+                    'DocumentOutline',
+                    'FormatPainter',
+                    'TableOfContents'
+                ]
+            })
+                .then(newEditor => {
+                    editors.main = newEditor;
+                    loadNewsData(); // Load data after editor is ready
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+
             loadCategories();
-            loadNewsData();
+            // loadNewsData is called inside then() of editor creation
         });
 
 
@@ -1097,6 +1174,7 @@
         }
 
     </script>
+    <script src="js/global-loader.js"></script>
 </body>
 
 </html>

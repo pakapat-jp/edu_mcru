@@ -138,3 +138,21 @@ CREATE TABLE IF NOT EXISTS media (
     parent_id INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Hero Sliders Table
+CREATE TABLE IF NOT EXISTS hero_sliders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    image_url VARCHAR(255) NOT NULL,
+    title VARCHAR(255),
+    subtitle VARCHAR(255),
+    button_text VARCHAR(100),
+    button_link VARCHAR(255),
+    overlay_enabled BOOLEAN DEFAULT TRUE,
+    sort_order INT DEFAULT 0,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT IGNORE INTO hero_sliders (image_url, title, subtitle, button_text, button_link, overlay_enabled, sort_order, is_active) VALUES 
+('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80', 'ครุศาสตร์ สร้างครู ครูสร้างชาติเพื่อการพัฒนาที่ยั่งยืน', 'คณะครุศาสตร์ มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง', 'หลักสูตร', 'courses.html', true, 1, true),
+('https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80', '', '', '', '', true, 2, true);

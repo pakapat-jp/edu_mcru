@@ -29,6 +29,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Load Footer
     loadComponent("global-footer", "components/footer.html");
+
+    // Load Admin Sidebar
+    loadComponent("sidebar", "components/admin_sidebar.html", () => {
+        highlightAdminMenu();
+    });
 });
 
 function highlightActiveMenu() {
@@ -40,6 +45,21 @@ function highlightActiveMenu() {
         if (href === currentPath || (currentPath === "index.html" && href === "#home")) {
             link.classList.add("active");
         } else {
+            link.classList.remove("active");
+        }
+    });
+}
+
+function highlightAdminMenu() {
+    const currentPath = window.location.pathname.split("/").pop() || "index.html";
+    const sidebarLinks = document.querySelectorAll(".sidebar-menu a");
+
+    sidebarLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPath) {
+            link.classList.add("active");
+        } else {
+            // Also check for sub-pages if strictly needed, but basic match is ok
             link.classList.remove("active");
         }
     });

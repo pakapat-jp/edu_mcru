@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จัดการแบนเนอร์ (Hero Slider) - CMS Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin_style.css">
+</head>
+
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="sidebar"></aside>
+
+        <main class="admin-content">
+            <header class="admin-topbar">
+                <button class="toggle-sidebar" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+                <div class="topbar-right">
+                    <a href="index.html" target="_blank"
+                        style="color: var(--cms-text); text-decoration: none; font-size: 0.9rem;"><i
+                            class="fa-solid fa-external-link-alt"></i> ดูหน้าเว็บไซต์</a>
+                    <div class="user-profile" id="userProfileDropdown" onclick="toggleProfileDropdown()">
+                        <div class="user-avatar">A</div>
+                        <span style="font-size: 0.9rem; font-weight: 500;">Super Admin</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i>
+
+                        <div class="dropdown-menu" id="profileDropdown">
+                            <a href="user_profile.html" class="dropdown-item"><i class="fa-solid fa-user-cog"
+                                    style="margin-right: 8px;"></i> ตั้งค่าผู้ใช้งาน</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="index.html" class="dropdown-item" style="color: #dc3545;"><i
+                                    class="fa-solid fa-sign-out-alt" style="margin-right: 8px;"></i> ออกจากระบบ</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h1 class="page-title" style="margin-bottom: 0;">จัดการแบนเนอร์ (Hero Slider)</h1>
+                    <button id="addSliderBtn" class="btn-login" style="width: auto; padding: 10px 20px;"><i
+                            class="fa-solid fa-plus"></i>
+                        เพิ่มสไลด์ใหม่</button>
+                </div>
+
+                <div class="widget-card">
+                    <table class="cms-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">ลำดับ</th>
+                                <th style="width: 150px;">รูปภาพ</th>
+                                <th>ข้อความ (Title/Subtitle)</th>
+                                <th>ปุ่ม (Text/Link)</th>
+                                <th>สถานะ</th>
+                                <th>เครื่องมือ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamic Content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="sliderModal" class="modal"
+        style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+        <div class="modal-content"
+            style="background-color: #fefefe; margin: 5% auto; padding: 0; border: 1px solid #888; width: 60%; border-radius: 8px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); animation: animatetop 0.4s">
+            <div class="modal-header"
+                style="padding: 15px 20px; background-color: var(--cms-primary); color: white; border-top-left-radius: 8px; border-top-right-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin: 0; font-size: 1.2rem;" id="modalTitle">เพิ่มสไลด์ใหม่</h2>
+                <span class="close-modal"
+                    style="color: white; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+            </div>
+            <div class="modal-body" style="padding: 20px;">
+                <form id="sliderForm">
+                    <input type="hidden" id="sliderId">
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">รูปภาพ <span
+                                style="color: red;">*</span></label>
+                        <div style="display: flex; gap: 10px; align-items: flex-start;">
+                            <div style="flex: 1;">
+                                <input type="text" id="imageUrlInput" placeholder="กรุณาเลือกรูปภาพจากคลังสื่อ..."
+                                    readonly
+                                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 10px; background-color: #f9f9f9; cursor: not-allowed;">
+                                <button type="button" class="btn-login" id="openMediaBtn"
+                                    style="padding: 8px 15px; width: auto; font-size: 0.9rem;">
+                                    <i class="fa-solid fa-images"></i> เลือกจากคลังสื่อ
+                                </button>
+                                <span style="font-size: 0.8rem; color: #666; margin-left: 10px;">* ขนาดที่แนะนำ:
+                                    1200x225 px</span>
+                            </div>
+                            <div id="imagePreview"
+                                style="width: 150px; height: 100px; border: 1px solid #ddd; border-radius: 4px; display: flex; align-items: center; justify-content: center; background: #f9f9f9; overflow: hidden;">
+                                <span style="color: #ccc; font-size: 0.8rem;">ตัวอย่างภาพ</span>
+                                <img src="" alt="Preview"
+                                    style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 20px;">
+                        <div class="form-group" style="flex: 1; margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 500;">หัวข้อหลัก
+                                (Title)</label>
+                            <input type="text" id="titleInput" placeholder="เช่น ครุศาสตร์ สร้างครู"
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <div class="form-group" style="flex: 1; margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 500;">หัวข้อรอง
+                                (Subtitle)</label>
+                            <input type="text" id="subtitleInput" placeholder="เช่น มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง"
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 20px;">
+                        <div class="form-group" style="flex: 1; margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 500;">ข้อความบนปุ่ม (Button
+                                Text)</label>
+                            <input type="text" id="btnTextInput" placeholder="เช่น อ่านเพิ่มเติม"
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <div class="form-group" style="flex: 1; margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 500;">ลิงก์ปุ่ม (URL)</label>
+                            <input type="text" id="btnLinkInput" placeholder="https://..."
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 20px;">
+                        <input type="hidden" id="sortOrderInput" value="0">
+                        <div class="form-group" style="flex: 1; margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 500;">สถานะ</label>
+                            <select id="statusInput"
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                                <option value="true">แสดงผล (Active)</option>
+                                <option value="false">ซ่อน (Inactive)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 1; margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 500;">แสดงข้อความทับ
+                                (Overlay)</label>
+                            <select id="overlayInput"
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                                <option value="false" selected>ไม่แสดง (No)</option>
+                                <option value="true">แสดง (Yes)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions" style="text-align: right; margin-top: 20px;">
+                        <button type="button" class="btn-cancel close-modal-btn"
+                            style="padding: 10px 20px; border: 1px solid #ddd; background: #fff; color: #333; border-radius: 4px; cursor: pointer; margin-right: 10px;">ยกเลิก</button>
+                        <button type="submit" class="btn-save"
+                            style="padding: 10px 20px; border: none; background: var(--cms-primary); color: #fff; border-radius: 4px; cursor: pointer;">บันทึก</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Media Selector Modal -->
+    <div id="mediaSelectorModal" class="modal"
+        style="display: none; position: fixed; z-index: 1002; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+        <div class="modal-content"
+            style="background-color: #fefefe; margin: 5% auto; padding: 0; border: 1px solid #888; width: 70%; height: 80vh; border-radius: 8px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); display: flex; flex-direction: column;">
+            <div class="modal-header"
+                style="padding: 15px 20px; background-color: var(--cms-primary); color: white; border-top-left-radius: 8px; border-top-right-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin: 0; font-size: 1.2rem;">เลือกรูปภาพจากคลังสื่อ</h2>
+                <span class="close-media-modal"
+                    style="color: white; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+            </div>
+            <div class="modal-body" style="padding: 20px; flex: 1; overflow-y: auto;">
+                <div id="media-grid"
+                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px;">
+                    <!-- Media Items -->
+                    <p>กำลังโหลด...</p>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding: 15px; border-top: 1px solid #ddd; text-align: right;">
+                <button type="button" class="close-media-btn"
+                    style="padding: 10px 20px; border: 1px solid #ddd; background: #fff; color: #333; border-radius: 4px; cursor: pointer;">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/global-loader.js"></script>
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const adminContainer = document.querySelector('.admin-container');
+        sidebarToggle.addEventListener('click', () => { adminContainer.classList.toggle('sidebar-open'); });
+
+        function toggleProfileDropdown() {
+            document.getElementById('profileDropdown').classList.toggle('show');
+        }
+
+        const token = localStorage.getItem('cms_token');
+        if (!token) window.location.href = 'login.html';
+
+        const modal = document.getElementById("sliderModal");
+        const btn = document.getElementById("addSliderBtn");
+        const span = document.getElementsByClassName("close-modal")[0];
+        const cancelBtn = document.getElementsByClassName("close-modal-btn")[0];
+        const form = document.getElementById('sliderForm');
+
+        function openModal(editMode = false, data = null) {
+            modal.style.display = "block";
+            if (editMode && data) {
+                document.getElementById('modalTitle').textContent = 'แก้ไขสไลด์';
+                document.getElementById('sliderId').value = data.id;
+                document.getElementById('titleInput').value = data.title || '';
+                document.getElementById('subtitleInput').value = data.subtitle || '';
+                document.getElementById('btnTextInput').value = data.button_text || '';
+                document.getElementById('btnLinkInput').value = data.button_link || '';
+                document.getElementById('sortOrderInput').value = data.sort_order || 0;
+                document.getElementById('statusInput').value = data.is_active ? 'true' : 'false';
+                document.getElementById('overlayInput').value = data.overlay_enabled ? 'true' : 'false';
+
+                if (data.image_url) {
+                    const imgPreview = document.getElementById('imagePreview');
+                    imgPreview.style.display = 'block';
+                    imgPreview.querySelector('img').src = data.image_url;
+                }
+                document.getElementById('imagePreview').querySelector('span').style.display = 'none';
+            } else {
+                document.getElementById('modalTitle').textContent = 'เพิ่มสไลด์ใหม่';
+                form.reset();
+                document.getElementById('sliderId').value = '';
+                document.getElementById('imageUrlInput').value = '';
+                document.getElementById('imagePreview').querySelector('img').style.display = 'none';
+                document.getElementById('imagePreview').querySelector('span').style.display = 'block';
+                document.getElementById('overlayInput').value = 'false';
+            }
+        }
+
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        btn.onclick = () => openModal(false);
+        span.onclick = closeModal;
+        cancelBtn.onclick = closeModal;
+        window.onclick = (event) => {
+            if (event.target == modal) closeModal();
+            else if (!event.target.closest('.user-profile')) {
+                const dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    if (dropdowns[i].classList.contains('show')) dropdowns[i].classList.remove('show');
+                }
+            }
+        }
+
+        let allSliders = [];
+
+        async function updateOrder(id, order) {
+            const formData = new FormData();
+            formData.append('sort_order', order);
+
+            await fetch(`/api/hero-sliders/${id}`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${token}` },
+                body: formData
+            });
+        }
+
+        async function moveUp(id) {
+            const currentItem = allSliders.find(s => s.id === id);
+            if (!currentItem) return;
+
+            const currentIndex = allSliders.findIndex(s => s.id === id);
+            if (currentIndex > 0) {
+                const prevItem = allSliders[currentIndex - 1];
+
+                // Swap orders
+                // We use the current visual indices as the reference for new sort_orders to ensures they are sequential
+                // effectively swapping their sort_order values
+                const currentOrder = currentItem.sort_order;
+                const prevOrder = prevItem.sort_order;
+
+                await updateOrder(currentItem.id, prevOrder);
+                await updateOrder(prevItem.id, currentOrder);
+
+                fetchSliders();
+            }
+        }
+
+        async function moveDown(id) {
+            const currentItem = allSliders.find(s => s.id === id);
+            if (!currentItem) return;
+
+            const currentIndex = allSliders.findIndex(s => s.id === id);
+            if (currentIndex < allSliders.length - 1) {
+                const nextItem = allSliders[currentIndex + 1];
+
+                const currentOrder = currentItem.sort_order;
+                const nextOrder = nextItem.sort_order;
+
+                await updateOrder(currentItem.id, nextOrder);
+                await updateOrder(nextItem.id, currentOrder);
+
+                fetchSliders();
+            }
+        }
+
+        async function fetchSliders() {
+            try {
+                const res = await fetch('/api/hero-sliders', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                allSliders = await res.json();
+                // Ensure sorted by sort_order
+                allSliders.sort((a, b) => a.sort_order - b.sort_order);
+
+                const tbody = document.querySelector('table.cms-table tbody');
+                tbody.innerHTML = '';
+
+                if (allSliders.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">ไม่พบข้อมูล</td></tr>';
+                    return;
+                }
+
+                allSliders.forEach((slide, index) => {
+                    const tr = document.createElement('tr');
+
+                    const canMoveUp = index > 0;
+                    const canMoveDown = index < allSliders.length - 1;
+
+                    tr.innerHTML = `
+                        <td style="text-align: center;">${slide.sort_order}</td>
+                        <td><img src="${slide.image_url}" style="width: 100px; height: 60px; object-fit: cover; border-radius: 4px;"></td>
+                        <td>
+                            <div style="font-weight: 500;">${slide.title || '-'}</div>
+                            <div style="font-size: 0.8rem; color: #666;">${slide.subtitle || ''}</div>
+                        </td>
+                        <td>
+                            ${slide.button_text ? `<a href="${slide.button_link || '#'}" target="_blank" style="font-size: 0.8rem; color: var(--cms-primary);">${slide.button_text}</a>` : '-'}
+                        </td>
+                        <td>${slide.is_active ? '<span style="color: #28a745;"><i class="fa-solid fa-check-circle"></i> แสดงผล</span>' : '<span style="color: #dc3545;"><i class="fa-solid fa-times-circle"></i> ซ่อน</span>'}</td>
+                        <td>
+                            <div style="display:flex; gap:5px; justify-content: start;">
+                                <button onclick="window.moveUp(${slide.id})" style="background:${canMoveUp ? '#fff3cd' : '#eee'}; border:none; border-radius:4px; width:30px; height:30px; cursor:${canMoveUp ? 'pointer' : 'not-allowed'};" title="Move Up" ${!canMoveUp ? 'disabled' : ''}><i class="fa-solid fa-arrow-up" style="color:${canMoveUp ? '#000' : '#aaa'}"></i></button>
+                                <button onclick="window.moveDown(${slide.id})" style="background:${canMoveDown ? '#fff3cd' : '#eee'}; border:none; border-radius:4px; width:30px; height:30px; cursor:${canMoveDown ? 'pointer' : 'not-allowed'};" title="Move Down" ${!canMoveDown ? 'disabled' : ''}><i class="fa-solid fa-arrow-down" style="color:${canMoveDown ? '#000' : '#aaa'}"></i></button>
+                                <button class="edit-btn" style="border: none; background: none; color: #ffc107; cursor: pointer; margin-right: 5px;"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button class="delete-btn" style="border: none; background: none; color: #dc3545; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                    `;
+
+                    tr.querySelector('.edit-btn').onclick = () => openModal(true, slide);
+                    tr.querySelector('.delete-btn').onclick = () => deleteSlider(slide.id);
+
+                    tbody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('sliderId').value;
+            const formData = new FormData();
+
+
+            const imageUrlInput = document.getElementById('imageUrlInput');
+
+            // Logic: URL > Existing (if edit and no change)
+            if (imageUrlInput.value) {
+                formData.append('image_url', imageUrlInput.value);
+            } else if (!id) {
+                return alert('กรุณาเลือกรูปภาพจากคลังสื่อ');
+            }
+
+            formData.append('title', document.getElementById('titleInput').value);
+            formData.append('subtitle', document.getElementById('subtitleInput').value);
+            formData.append('button_text', document.getElementById('btnTextInput').value);
+            formData.append('button_link', document.getElementById('btnLinkInput').value);
+            formData.append('sort_order', document.getElementById('sortOrderInput').value);
+            formData.append('is_active', document.getElementById('statusInput').value);
+            formData.append('overlay_enabled', document.getElementById('overlayInput').value);
+
+            const url = id ? `/api/hero-sliders/${id}` : '/api/hero-sliders';
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                if (res.ok) {
+                    alert('บันทึกสำเร็จ');
+                    closeModal();
+                    fetchSliders();
+                } else {
+                    const err = await res.json();
+                    alert('Error: ' + err.message);
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Failed to save');
+            }
+        });
+
+        // Image Preview Logic (URL input)
+        document.getElementById('imageUrlInput').addEventListener('input', function () {
+            const val = this.value;
+            const img = document.getElementById('imagePreview').querySelector('img');
+            const span = document.getElementById('imagePreview').querySelector('span');
+            if (val) {
+                img.src = val;
+                img.style.display = 'block';
+                span.style.display = 'none';
+            } else {
+                img.style.display = 'none';
+                span.style.display = 'block';
+            }
+        });
+
+
+
+        // --- Media Selector Logic ---
+        const mediaModal = document.getElementById('mediaSelectorModal');
+        const openMediaBtn = document.getElementById('openMediaBtn');
+        const closeMediaSpan = document.getElementsByClassName("close-media-modal")[0];
+        const closeMediaBtn = document.getElementsByClassName("close-media-btn")[0];
+
+        let currentFolderId = 0;
+        let folderHistory = [];
+
+        openMediaBtn.onclick = () => {
+            mediaModal.style.display = 'block';
+            currentFolderId = 0;
+            folderHistory = [];
+            loadMediaLibrary(0);
+        }
+
+        const closeMedia = () => { mediaModal.style.display = 'none'; }
+        closeMediaSpan.onclick = closeMedia;
+        closeMediaBtn.onclick = closeMedia;
+
+        async function loadMediaLibrary(folderId = 0) {
+            const grid = document.getElementById('media-grid');
+            grid.innerHTML = '<p>กำลังโหลด...</p>';
+            try {
+                // Fetch root media (parent_id=0) or flat list? 
+                // Let's assume fetching all for simplicity or root if nested. 
+                // The current API /api/media returns by parent_id. 
+                // Getting ALL files might be better if we don't have folder nav UI in this modal yet.
+                // Or let's just reuse the /api/media logic but maybe we need a way to browse?
+                // For now, let's fetch root and maybe files? 
+
+                // Fetching root folder content for now
+                const res = await fetch(`/api/media?parent_id=${folderId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const mediaItems = await res.json();
+
+                grid.innerHTML = '';
+
+                // Add Back Button if not root
+                if (folderId !== 0) {
+                    const div = document.createElement('div');
+                    div.style.border = '1px solid #ddd';
+                    div.style.borderRadius = '4px';
+                    div.style.cursor = 'pointer';
+                    div.style.overflow = 'hidden';
+                    div.style.position = 'relative';
+                    div.className = 'media-item-selector';
+                    div.innerHTML = `
+                        <div style="height: 80px; background: #e9ecef; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #495057;"><i class="fa-solid fa-arrow-turn-up"></i></div>
+                        <div style="padding: 5px; font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; font-weight: bold;">.. ย้อนกลับ</div>
+                    `;
+                    div.onclick = () => {
+                        if (folderHistory.length > 0) {
+                            const prev = folderHistory.pop();
+                            currentFolderId = prev;
+                            loadMediaLibrary(prev);
+                        } else {
+                            currentFolderId = 0;
+                            loadMediaLibrary(0);
+                        }
+                    };
+                    grid.appendChild(div);
+                }
+
+                if (mediaItems.length === 0 && folderId === 0) {
+                    grid.innerHTML = '<p>ไม่พบไฟล์สื่อ</p>';
+                    return;
+                }
+
+                mediaItems.forEach(item => {
+                    const div = document.createElement('div');
+                    div.style.border = '1px solid #ddd';
+                    div.style.borderRadius = '4px';
+                    div.style.cursor = 'pointer';
+                    div.style.overflow = 'hidden';
+                    div.style.position = 'relative';
+                    div.className = 'media-item-selector';
+
+                    let thumb = '';
+                    if (item.is_folder) {
+                        thumb = `<div style="height: 80px; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #ffc107;"><i class="fa-solid fa-folder"></i></div>`;
+                    } else if (['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(item.file_type.toLowerCase())) {
+                        thumb = `<img src="${item.file_path}" style="width: 100%; height: 80px; object-fit: cover;">`;
+                    } else {
+                        thumb = `<div style="height: 80px; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #6c757d;"><i class="fa-solid fa-file"></i></div>`;
+                    }
+
+                    div.innerHTML = `
+                        ${thumb}
+                        <div style="padding: 5px; font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.file_name}</div>
+                    `;
+
+                    div.onclick = () => {
+                        if (item.is_folder) {
+                            folderHistory.push(currentFolderId);
+                            currentFolderId = item.id;
+                            loadMediaLibrary(item.id);
+                        } else {
+                            selectMedia(item.file_path);
+                        }
+                    };
+
+                    grid.appendChild(div);
+                });
+
+            } catch (e) {
+                console.error(e);
+                grid.innerHTML = '<p style="color:red">Error loading media</p>';
+            }
+        }
+
+        function selectMedia(path) {
+            document.getElementById('imageUrlInput').value = path;
+            // Trigger preview
+            const img = document.getElementById('imagePreview').querySelector('img');
+            const span = document.getElementById('imagePreview').querySelector('span');
+            img.src = path;
+            img.style.display = 'block';
+            span.style.display = 'none';
+            closeMedia();
+        }
+
+        async function deleteSlider(id) {
+            if (!confirm('ยืนยันการลบ?')) return;
+            try {
+                const res = await fetch(`/api/hero-sliders/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) fetchSliders();
+                else alert('Failed to delete');
+            } catch (e) { console.error(e); }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchSliders);
+    </script>
+</body>
+
+</html>

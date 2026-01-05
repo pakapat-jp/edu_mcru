@@ -64,6 +64,23 @@ async function ensureTables() {
             await pool.query("ALTER TABLE articles ADD COLUMN gallery_images JSON COMMENT 'JSON Array of image URLs' AFTER author_id");
         }
 
+        // Hero Sliders Table
+        const createSlidersTableQuery = `
+            CREATE TABLE IF NOT EXISTS hero_sliders (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                image_url VARCHAR(255) NOT NULL,
+                title VARCHAR(255),
+                subtitle VARCHAR(255),
+                button_text VARCHAR(100),
+                button_link VARCHAR(255),
+                overlay_enabled BOOLEAN DEFAULT TRUE,
+                sort_order INT DEFAULT 0,
+                is_active BOOLEAN DEFAULT TRUE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `;
+        await pool.query(createSlidersTableQuery);
+
         console.log("Verified 'articles' table schemas.");
     } catch (error) {
         console.error("Error creating/migrating articles table:", error);
@@ -356,6 +373,105 @@ app.delete('/api/menus/:id', authenticateToken, async (req, res) => {
     try {
         await pool.query('DELETE FROM menus WHERE id = ?', [req.params.id]);
         res.json({ message: 'Menu deleted' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// --- Hero Sliders ---
+app.get('/api/hero-sliders', async (req, res) => {
+    try {
+        // Only active sliders for public? Or all for admin? 
+        // Let's return all and let frontend filter if needed, 
+        // or add query param ?active=true
+        let query = 'SELECT * FROM hero_sliders';
+        let params = [];
+        if (req.query.active === 'true') {
+            query += ' WHERE is_active = TRUE';
+        }
+        query += ' ORDER BY sort_order ASC, created_at DESC';
+
+        const [rows] = await pool.query(query, params);
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/hero-sliders', authenticateToken, upload.single('image'), async (req, res) => {
+    try {
+        const { title, subtitle, button_text, button_link, overlay_enabled, sort_order, is_active } = req.body;
+
+        if (!req.file && !req.body.image_url) {
+            return res.status(400).json({ message: 'Image is required' });
+        }
+
+        const image_url = (req.file) ? `/uploads/${req.file.filename}` : req.body.image_url;
+
+        // Auto sort order
+        let finalSortOrder = sort_order;
+        if (finalSortOrder === undefined) {
+            const [maxRes] = await pool.query('SELECT MAX(sort_order) as maxOrder FROM hero_sliders');
+            finalSortOrder = (maxRes[0].maxOrder || 0) + 1;
+        }
+
+        // Fix boolean parsing from FormData (strings 'true'/'false')
+        const overlayBool = overlay_enabled === 'true' || overlay_enabled === true || overlay_enabled === '1';
+        const activeBool = (is_active === undefined) ? true : (is_active === 'true' || is_active === true || is_active === '1');
+
+        const [result] = await pool.query(
+            'INSERT INTO hero_sliders (image_url, title, subtitle, button_text, button_link, overlay_enabled, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [image_url, title, subtitle, button_text, button_link, overlayBool, finalSortOrder, activeBool]
+        );
+        res.status(201).json({ id: result.insertId, message: 'Slider created', image_url });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.put('/api/hero-sliders/:id', authenticateToken, upload.single('image'), async (req, res) => {
+    try {
+        const { title, subtitle, button_text, button_link, overlay_enabled, sort_order, is_active } = req.body;
+        const { id } = req.params;
+
+        let fields = [];
+        let params = [];
+
+        if (req.file) {
+            fields.push('image_url = ?');
+            params.push(`/uploads/${req.file.filename}`);
+        } else if (req.body.image_url) {
+            fields.push('image_url = ?');
+            params.push(req.body.image_url);
+        }
+        if (title !== undefined) { fields.push('title = ?'); params.push(title); }
+        if (subtitle !== undefined) { fields.push('subtitle = ?'); params.push(subtitle); }
+        if (button_text !== undefined) { fields.push('button_text = ?'); params.push(button_text); }
+        if (button_link !== undefined) { fields.push('button_link = ?'); params.push(button_link); }
+        if (overlay_enabled !== undefined) {
+            fields.push('overlay_enabled = ?');
+            params.push(overlay_enabled === 'true' || overlay_enabled === true || overlay_enabled === '1');
+        }
+        if (sort_order !== undefined) { fields.push('sort_order = ?'); params.push(sort_order); }
+        if (is_active !== undefined) {
+            fields.push('is_active = ?');
+            params.push(is_active === 'true' || is_active === true || is_active === '1');
+        }
+
+        if (fields.length === 0) return res.json({ message: 'No changes' });
+
+        params.push(id);
+        await pool.query(`UPDATE hero_sliders SET ${fields.join(', ')} WHERE id = ?`, params);
+        res.json({ message: 'Slider updated' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.delete('/api/hero-sliders/:id', authenticateToken, async (req, res) => {
+    try {
+        await pool.query('DELETE FROM hero_sliders WHERE id = ?', [req.params.id]);
+        res.json({ message: 'Slider deleted' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

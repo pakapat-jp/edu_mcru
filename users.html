@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="th">
 
 <head>
@@ -13,39 +13,7 @@
 <body>
     <div class="admin-container">
         <!-- Sidebar -->
-        <aside class="admin-sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <img src="assets/web_admin_logo.png" alt="Admin Logo"
-                    style="width: 30px; height: auto; margin-right: 10px;">
-                Web Admin
-            </div>
-            <ul class="sidebar-menu">
-                <li><a href="admin_dashboard.html"><i class="fa-solid fa-gauge"></i> แดชบอร์ด</a></li>
-                <li
-                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600;">
-                    เนื้อหา</li>
-                <li><a href="news_content.html"><i class="fa-solid fa-newspaper"></i> บทความ (Articles)</a></li>
-                <li><a href="news_categories.html"><i class="fa-solid fa-layer-group"></i> หมวดหมู่ (Categories)</a>
-                </li>
-                <li><a href="media.html"><i class="fa-solid fa-images"></i> สื่อ (Media)</a></li>
-                <li
-                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
-                    โครงสร้างเว็บ</li>
-                <li><a href="menus.html"><i class="fa-solid fa-bars"></i> เมนู (Menus)</a></li>
-                <li><a href="header_settings.html"><i class="fa-solid fa-heading"></i> ส่วนหัว (Header)</a></li>
-                <li><a href="footer_settings.html"><i class="fa-solid fa-shoe-prints"></i> ส่วนท้าย (Footer)</a></li>
-                <li
-                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
-                    ผู้ใช้งาน</li>
-                <li><a href="users.html" class="active"><i class="fa-solid fa-users"></i> จัดการผู้ใช้</a></li>
-                <li
-                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
-                    ระบบ</li>
-                <li><a href="settings.html"><i class="fa-solid fa-gears"></i> ตั้งค่าทั่วไป</a></li>
-                <li><a href="theme_color.html"><i class="fa-solid fa-palette"></i> ธีมสี (Theme Color)</a></li>
-                <li><a href="fonts.html"><i class="fa-solid fa-font"></i> ฟ้อนต์ (Fonts)</a></li>
-            </ul>
-        </aside>
+        <aside class="admin-sidebar" id="sidebar"><!-- Loading Sidebar... --></aside>
 
         <main class="admin-content">
             <header class="admin-topbar">
@@ -61,7 +29,8 @@
                                     style="margin-right: 8px;"></i> ตั้งค่าผู้ใช้งาน</a>
                             <div class="dropdown-divider"></div>
                             <a href="index.html" class="dropdown-item" style="color: #dc3545;"><i
-                                    class="fa-solid fa-sign-out-alt" style="margin-right: 8px;"></i> ออกจากระบบ</a>
+                                    class="fa-solid fa-sign-out-alt" style="margin-right: 8px;"></i>
+                                ออกจากระบบ</a>
                         </div>
                     </div>
                 </div>
@@ -69,7 +38,8 @@
 
             <div class="dashboard-container">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h1 class="page-title" style="margin-bottom: 0;">จัดการผู้ใช้ (User Manager)</h1>
+                    <h1 class="page-title" style="margin-bottom: 0;">จัดการผู้ใช้ (User Manager)
+                    </h1>
                     <button class="btn-login" style="width: auto; padding: 10px 20px;"><i
                             class="fa-solid fa-user-plus"></i> เพิ่มผู้ใช้ใหม่</button>
                 </div>
@@ -118,41 +88,42 @@
             </div>
         </main>
     </div>
-    const sidebarToggle = document.getElementById('sidebarToggle');
-    const adminContainer = document.querySelector('.admin-container');
-    sidebarToggle.addEventListener('click', () => { adminContainer.classList.toggle('sidebar-open'); });
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const adminContainer = document.querySelector('.admin-container');
+        sidebarToggle.addEventListener('click', () => { adminContainer.classList.toggle('sidebar-open'); });
 
-    function toggleProfileDropdown() {
-    document.getElementById('profileDropdown').classList.toggle('show');
-    }
+        function toggleProfileDropdown() {
+            document.getElementById('profileDropdown').classList.toggle('show');
+        }
 
-    window.onclick = function (event) {
-    if (!event.target.closest('.user-profile')) {
-    const d = document.getElementById('profileDropdown');
-    if (d && d.classList.contains('show')) d.classList.remove('show');
-    }
-    if (event.target == document.getElementById('userModal')) closeModal();
-    }
+        window.onclick = function (event) {
+            if (!event.target.closest('.user-profile')) {
+                const d = document.getElementById('profileDropdown');
+                if (d && d.classList.contains('show')) d.classList.remove('show');
+            }
+            if (event.target == document.getElementById('userModal')) closeModal();
+        }
 
-    // --- API Integration ---
-    const token = localStorage.getItem('cms_token');
-    if (!token) window.location.href = 'login.html';
+        // --- API Integration ---
+        const token = localStorage.getItem('cms_token');
+        if (!token) window.location.href = 'login.html';
 
-    async function fetchUsers() {
-    try {
-    const res = await fetch('/api/users', { headers: { 'Authorization': `Bearer ${token}` } });
-    const users = await res.json();
-    renderUsers(users);
-    } catch (e) { console.error(e); }
-    }
+        async function fetchUsers() {
+            try {
+                const res = await fetch('/api/users', { headers: { 'Authorization': `Bearer ${token}` } });
+                const users = await res.json();
+                renderUsers(users);
+            } catch (e) { console.error(e); }
+        }
 
-    function renderUsers(users) {
-    const tbody = document.querySelector('table.cms-table tbody');
-    tbody.innerHTML = '';
+        function renderUsers(users) {
+            const tbody = document.querySelector('table.cms-table tbody');
+            tbody.innerHTML = '';
 
-    users.forEach(user => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
+            users.forEach(user => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
     <td><input type="checkbox"></td>
     <td><a href="#" style="color: var(--cms-primary); font-weight: 500;">${user.username}</a></td>
     <td>${user.username}</td>
@@ -168,106 +139,108 @@
                 class="fa-solid fa-trash"></i></button>
     </td>
     `;
-    tbody.appendChild(tr);
-    });
-    }
+                tbody.appendChild(tr);
+            });
+        }
 
-    // Modal Logic
-    function openModal(mode, id = null) {
-    const modal = document.getElementById('userModal');
-    document.getElementById('modalTitle').innerText = mode === 'add' ? 'เพิ่มผู้ใช้ใหม่' : 'แก้ไขผู้ใช้';
-    document.getElementById('userId').value = id || '';
+        // Modal Logic
+        function openModal(mode, id = null) {
+            const modal = document.getElementById('userModal');
+            document.getElementById('modalTitle').innerText = mode === 'add' ? 'เพิ่มผู้ใช้ใหม่' : 'แก้ไขผู้ใช้';
+            document.getElementById('userId').value = id || '';
 
-    if (mode === 'add') {
-    document.getElementById('userForm').reset();
-    document.getElementById('passwordGroup').style.display = 'block'; // Always show for add
-    document.getElementById('passwordHelp').style.display = 'none';
-    } else {
-    document.getElementById('passwordGroup').style.display = 'block';
-    document.getElementById('passwordHelp').style.display = 'block'; // Optional for edit
-    // Pre-fill logic handled in editUser
-    }
-    modal.style.display = 'block';
-    }
+            if (mode === 'add') {
+                document.getElementById('userForm').reset();
+                document.getElementById('passwordGroup').style.display = 'block'; // Always show for add
+                document.getElementById('passwordHelp').style.display = 'none';
+            } else {
+                document.getElementById('passwordGroup').style.display = 'block';
+                document.getElementById('passwordHelp').style.display = 'block'; // Optional for edit
+                // Pre-fill logic handled in editUser
+            }
+            modal.style.display = 'block';
+        }
 
-    function closeModal() {
-    document.getElementById('userModal').style.display = 'none';
-    }
+        function closeModal() {
+            document.getElementById('userModal').style.display = 'none';
+        }
 
-    window.editUser = function(id, username, email, role) {
-    openModal('edit', id);
-    document.getElementById('username').value = username;
-    document.getElementById('email').value = email;
-    document.getElementById('role').value = role;
-    // Username is typically immutable or primary, but here we allow editing fields except ID
-    // Ideally username shouldn't change if it's a key, but depends on DB. We'll disable username edit for safety
-    document.getElementById('username').disabled = true;
-    }
+        window.editUser = function (id, username, email, role) {
+            openModal('edit', id);
+            document.getElementById('username').value = username;
+            document.getElementById('email').value = email;
+            document.getElementById('role').value = role;
+            // Username is typically immutable or primary, but here we allow editing fields except ID
+            // Ideally username shouldn't change if it's a key, but depends on DB. We'll disable username edit for safety
+            document.getElementById('username').disabled = true;
+        }
 
-    window.deleteUser = async function(id) {
-    if(!confirm('ยืนยันลบผู้ใช้งาน?')) return;
-    try {
-    const res = await fetch(`/api/users/${id}`, {
-    method: 'DELETE',
-    headers: { 'Authorization': `Bearer ${token}` }
-    });
-    if(res.ok) fetchUsers();
-    else {
-    const d = await res.json();
-    alert(d.message);
-    }
-    } catch(e) { console.error(e); }
-    }
+        window.deleteUser = async function (id) {
+            if (!confirm('ยืนยันลบผู้ใช้งาน?')) return;
+            try {
+                const res = await fetch(`/api/users/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) fetchUsers();
+                else {
+                    const d = await res.json();
+                    alert(d.message);
+                }
+            } catch (e) { console.error(e); }
+        }
 
-    document.querySelector('.btn-login').addEventListener('click', () => {
-    openModal('add');
-    document.getElementById('username').disabled = false;
-    });
+        document.querySelector('.btn-login').addEventListener('click', () => {
+            openModal('add');
+            document.getElementById('username').disabled = false;
+        });
 
-    document.getElementById('userForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const id = document.getElementById('userId').value;
-    const username = document.getElementById('username').value;
-    const email = document.getElementById('email').value;
-    const role = document.getElementById('role').value;
-    const password = document.getElementById('password').value;
+        document.getElementById('userForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('userId').value;
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const role = document.getElementById('role').value;
+            const password = document.getElementById('password').value;
 
-    const body = { username, email, role };
-    if (password) body.password = password;
+            const body = { username, email, role };
+            if (password) body.password = password;
 
-    try {
-    let res;
-    if (id) {
-    res = await fetch(`/api/users/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-    body: JSON.stringify(body)
-    });
-    } else {
-    res = await fetch('/api/users', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-    body: JSON.stringify(body)
-    });
-    }
+            try {
+                let res;
+                if (id) {
+                    res = await fetch(`/api/users/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                        body: JSON.stringify(body)
+                    });
+                } else {
+                    res = await fetch('/api/users', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                        body: JSON.stringify(body)
+                    });
+                }
 
-    if (res.ok) {
-    closeModal();
-    fetchUsers();
-    } else {
-    alert('Error saving user');
-    }
-    } catch (e) { console.error(e); }
-    });
+                if (res.ok) {
+                    closeModal();
+                    fetchUsers();
+                } else {
+                    alert('Error saving user');
+                }
+            } catch (e) { console.error(e); }
+        });
 
-    fetchUsers();
+        fetchUsers();
+    </script>
     <!-- Add User Modal -->
     <div id="userModal" class="modal"
         style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);">
         <div class="modal-content"
             style="background-color: #fefefe; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 400px; border-radius: 8px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <h2 id="modalTitle" style="margin:0; font-size:1.2rem;">เพิ่มผู้ใช้ใหม่</h2>
+                <h2 id="modalTitle" style="margin:0; font-size:1.2rem;">เพิ่มผู้ใช้ใหม่
+                </h2>
                 <span onclick="closeModal()"
                     style="color:#aaa; float:right; font-size:28px; font-weight:bold; cursor:pointer;">&times;</span>
             </div>
@@ -307,6 +280,7 @@
             </form>
         </div>
     </div>
+    <script src="js/global-loader.js"></script>
 </body>
 
 </html>

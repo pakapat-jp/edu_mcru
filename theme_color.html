@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="th">
 
 <head>
@@ -13,40 +13,7 @@
 <body>
     <div class="admin-container">
         <!-- Sidebar -->
-        <aside class="admin-sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <img src="assets/web_admin_logo.png" alt="Admin Logo"
-                    style="width: 30px; height: auto; margin-right: 10px;">
-                Web Admin
-            </div>
-            <ul class="sidebar-menu">
-                <li><a href="admin_dashboard.html"><i class="fa-solid fa-gauge"></i> แดชบอร์ด</a></li>
-                <li
-                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600;">
-                    เนื้อหา</li>
-                <li><a href="news_content.html"><i class="fa-solid fa-newspaper"></i> บทความ (Articles)</a></li>
-                <li><a href="news_categories.html"><i class="fa-solid fa-layer-group"></i> หมวดหมู่ (Categories)</a>
-                </li>
-                <li><a href="media.html"><i class="fa-solid fa-images"></i> สื่อ (Media)</a></li>
-                <li
-                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
-                    โครงสร้างเว็บ</li>
-                <li><a href="menus.html"><i class="fa-solid fa-bars"></i> เมนู (Menus)</a></li>
-                <li><a href="header_settings.html"><i class="fa-solid fa-heading"></i> ส่วนหัว (Header)</a></li>
-                <li><a href="footer_settings.html"><i class="fa-solid fa-shoe-prints"></i> ส่วนท้าย (Footer)</a></li>
-                <li
-                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
-                    ผู้ใช้งาน</li>
-                <li><a href="users.html"><i class="fa-solid fa-users"></i> จัดการผู้ใช้</a></li>
-                <li
-                    style="padding: 10px 20px; font-size: 0.75rem; text-transform: uppercase; color: #5d6b82; font-weight: 600; margin-top: 10px;">
-                    ระบบ</li>
-                <li><a href="settings.html"><i class="fa-solid fa-gears"></i> ตั้งค่าทั่วไป</a></li>
-                <li><a href="theme_color.html" class="active"><i class="fa-solid fa-palette"></i> ธีมสี (Theme
-                        Color)</a></li>
-                <li><a href="fonts.html"><i class="fa-solid fa-font"></i> ฟ้อนต์ (Fonts)</a></li>
-            </ul>
-        </aside>
+        <aside class="admin-sidebar" id="sidebar"><!-- Loading Sidebar... --></aside>
 
         <main class="admin-content">
             <header class="admin-topbar">
@@ -160,12 +127,6 @@
 
         // Bind updates for color picker text
         document.addEventListener('DOMContentLoaded', () => {
-            const p = document.querySelector('input[type="color"]:nth-of-type(1)'); // or update HTML IDs
-            // Actually, let's inject IDs into HTML first or handle via querySelector if ids not present
-            // Since I can only replace script here easily without multi-edits being messy, I'll update HTML around inputs in next step or try to selector smartly.
-            // Looking at original file (Step 127), inputs have no IDs.
-            // I will use querySelectorAll.
-
             const inputs = document.querySelectorAll('input[type="color"]');
             const spans = document.querySelectorAll('.widget-card span'); // Ensure this selects the text spans next to inputs
 
@@ -176,14 +137,17 @@
                 inputs[0].addEventListener('input', (e) => spans[0].innerText = e.target.value);
                 inputs[1].addEventListener('input', (e) => spans[1].innerText = e.target.value);
 
-                spans[0].id = 'primaryColorText';
-                spans[1].id = 'secondaryColorText';
+                if (spans.length >= 2) {
+                    spans[0].id = 'primaryColorText';
+                    spans[1].id = 'secondaryColorText';
+                }
             }
 
             document.querySelector('form').addEventListener('submit', saveThemeSettings);
             loadThemeSettings();
         });
     </script>
+    <script src="js/global-loader.js"></script>
 </body>
 
 </html>
