@@ -11,6 +11,180 @@
     <link rel="icon" href="assets/logo.png" type="image/png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .personnel-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            padding: 20px 0;
+            justify-content: center;
+        }
+
+        /* Specific for Dean to be centered */
+        .dean-section {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 50px;
+        }
+
+        .personnel-card {
+            width: 300px;
+            /* Standard fixed width */
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            padding-bottom: 20px;
+            border: 1px solid #eee;
+        }
+
+        .personnel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .person-img {
+            width: 100%;
+            height: 320px;
+            /* Portrait aspect ratio */
+            object-fit: cover;
+            object-position: top;
+            background-color: #f0f0f0;
+        }
+
+        /* Fallback if no image */
+        .person-img.placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #ccc;
+            background: #f8f9fa;
+        }
+
+        .person-info {
+            padding: 20px 15px 5px;
+        }
+
+        .person-name {
+            font-size: 1.1rem;
+            /* Reduced from 1.25rem */
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            line-height: 1.4;
+            padding: 0 10px;
+        }
+
+        .person-position {
+            font-size: 0.9rem;
+            /* Reduced from 1rem */
+            color: #666;
+            font-weight: 300;
+            line-height: 1.4;
+            padding: 0 10px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        /* Loading State */
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        /* Accordion Styles */
+        .accordion-item {
+            margin-bottom: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #f0f4f8;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+        }
+
+        .accordion-header {
+            background-color: #f8fbff;
+            padding: 20px 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background-color 0.2s;
+        }
+
+        .accordion-header:hover {
+            background-color: #f1f8fe;
+        }
+
+        .accordion-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.2rem;
+            color: #1a3c6d;
+            /* Dark Blue from theme */
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .accordion-icon-left {
+            color: #6c757d;
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Specific colors for icon if needed, e.g. based on faculty. For now generic. */
+        .accordion-icon-left i {
+            /* Gradient text? No, simple color */
+            color: #5a7499;
+        }
+
+        .accordion-icon-right {
+            color: #adb5bd;
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-content {
+            display: none;
+            /* Default hidden */
+            padding: 30px 20px;
+            background: #fff;
+            border-top: 1px solid #f0f4f8;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dean-section {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 50px;
+        }
+    </style>
 </head>
 
 <body>
@@ -95,73 +269,288 @@
                 <button class="tab-btn" onclick="openTab(event, 'staff')">บุคลากร</button>
             </div>
 
-            <!-- Tab 1: Executives (Data from current_executives.html) -->
+            <!-- Tab 1: Executives -->
             <div id="executives" class="tab-content" style="display: block;">
-                <!-- Dean -->
-                <div class="text-center" style="margin-bottom: 60px;">
-                    <div class="card fade-in-up" style="max-width: 400px; margin: 0 auto;">
-                        <div class="card-img"
-                            style="height: 400px; background-image: url('https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
-                        </div>
-                        <div class="card-body">
-                            <h4 style="font-size: 1.5rem; color: var(--primary-color);">อาจารย์ ดร.เกียงวุธ นีละคุปต์
-                            </h4>
-                            <p style="font-size: 1.1rem; color: var(--text-light);">คณบดีคณะครุศาสตร์</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Vice Deans -->
-                <h2 class="section-title text-center fade-in-up">รองคณบดี</h2>
-                <div class="grid-3">
-                    <div class="card fade-in-up" style="transition-delay: 0.1s;">
-                        <div class="card-img"
-                            style="background-image: url('https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');">
-                        </div>
-                        <div class="card-body">
-                            <h4>อาจารย์สุชาติ เพชรเทียนชัย</h4>
-                            <p>รองคณบดี</p>
-                        </div>
-                    </div>
-                    <div class="card fade-in-up" style="transition-delay: 0.2s;">
-                        <div class="card-img"
-                            style="background-image: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');">
-                        </div>
-                        <div class="card-body">
-                            <h4>อาจารย์ ดร.อินธรา เกื้อเสนาะ</h4>
-                            <p>รองคณบดี</p>
-                        </div>
-                    </div>
-                    <div class="card fade-in-up" style="transition-delay: 0.3s;">
-                        <div class="card-img"
-                            style="background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');">
-                        </div>
-                        <div class="card-body">
-                            <h4>อาจารย์ ดร.ประภาช วิวรรธมงคล</h4>
-                            <p>รองคณบดี</p>
-                        </div>
-                    </div>
+                <div id="executives-list" class="fade-in-up">
+                    <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin fa-2x"></i></div>
                 </div>
             </div>
 
-            <!-- Tab 2: Lecturers (Placeholder) -->
+            <!-- Tab 2: Lecturers -->
             <div id="lecturers" class="tab-content">
-                <h2 class="section-title text-center fade-in-up">อาจารย์</h2>
-                <div class="text-center">
-                    <p style="color: var(--text-light); font-size: 1.1rem;">(อยู่ระหว่างปรับปรุงข้อมูลอาจารย์)</p>
+                <div id="lecturers-list" class="fade-in-up">
+                    <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin fa-2x"></i></div>
                 </div>
             </div>
 
-            <!-- Tab 3: Staff (Placeholder) -->
+            <!-- Tab 3: Staff -->
             <div id="staff" class="tab-content">
-                <h2 class="section-title text-center fade-in-up">บุคลากรสายสนับสนุน</h2>
-                <div class="text-center">
-                    <p style="color: var(--text-light); font-size: 1.1rem;">(อยู่ระหว่างปรับปรุงข้อมูลบุคลากร)</p>
+                <div id="staff-list" class="fade-in-up">
+                    <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin fa-2x"></i></div>
                 </div>
             </div>
 
         </div>
     </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPersonnel('executive', 'executives-list');
+            loadPersonnel('lecturer', 'lecturers-list');
+            loadPersonnel('staff', 'staff-list');
+        });
+
+        async function loadPersonnel(type, containerId) {
+            const container = document.getElementById(containerId);
+            try {
+                const res = await fetch(`/api/personnel?type=${type}`);
+                if (!res.ok) throw new Error('API Error');
+                // Force retry once if 500 (might be db connection warming up)
+
+                const data = await res.json();
+
+                // Custom Sort for Staff
+                if (type === 'staff') {
+                    data.sort((a, b) => {
+                        const posA = (a.position || '').trim();
+                        const posB = (b.position || '').trim();
+
+                        // Check for 'Head of Office' (หัวหน้าสำนักงาน)
+                        const isHeadA = posA.includes('หัวหน้าสำนักงาน');
+                        const isHeadB = posB.includes('หัวหน้าสำนักงาน');
+
+                        // 1. Head of Office first
+                        if (isHeadA && !isHeadB) return -1;
+                        if (!isHeadA && isHeadB) return 1;
+
+                        // Check if meaningful position exists (not empty or '-')
+                        const hasPosA = posA && posA !== '-';
+                        const hasPosB = posB && posB !== '-';
+
+                        // 2. Has Position comes before No Position
+                        if (hasPosA && !hasPosB) return -1;
+                        if (!hasPosA && hasPosB) return 1;
+
+                        // 3. Alphabetical Sort by Position (Thai)
+                        if (hasPosA && hasPosB) {
+                            return posA.localeCompare(posB, 'th');
+                        }
+
+                        // 4. If same position status, sort by Name
+                        return a.name.localeCompare(b.name, 'th');
+                    });
+                }
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    // If purely empty
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: #999;">
+                            <i class="fa-regular fa-user" style="font-size: 3rem; margin-bottom: 10px;"></i>
+                            <p>ยังไม่มีข้อมูลในส่วนนี้</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Special layout for Executives: Dean separate, Vice Deans in grid
+                let htmlStr = '';
+
+                if (type === 'executive') {
+                    // Executive: Dean first (no change)
+                    const dean = data.find(p => (p.group_name === 'Dean') || p.position === 'คณบดีคณะครุศาสตร์');
+                    // Others: Vice Deans, sort by Name if multiple? Or position? Default by name for now unless specified.
+                    // User didn't specify sort for Vice Deans, lets do Name.
+                    const others = data.filter(p => p !== dean).sort((a, b) => a.name.localeCompare(b.name, 'th'));
+
+                    if (dean) {
+                        // Combined Name
+                        const deanName = (dean.academic_title || '') + dean.name;
+                        htmlStr += `
+                            <div class="dean-section">
+                                <div class="personnel-card">
+                                    ${renderImage(dean)}
+                                    <div class="person-info">
+                                        <div class="person-name">${deanName}</div>
+                                        <div class="person-position">${dean.position}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    if (others.length > 0) {
+                        htmlStr += `<div class="section-header"><h2>รองคณบดี</h2></div>`;
+                        htmlStr += '<div class="personnel-grid">';
+                        others.forEach(p => {
+                            htmlStr += renderCard(p);
+                        });
+                        htmlStr += '</div>';
+                    }
+
+                } else if (type === 'staff') {
+                    // Staff: Head of Office first
+                    const head = data.find(p => (p.position || '').includes('หัวหน้าสำนักงาน'));
+
+                    // Sorting Rule 2: If Staff, Sort Position by Alphabet. Empty position goes last.
+                    let others = data.filter(p => p !== head);
+                    others.sort((a, b) => {
+                        let posA = a.position ? a.position.trim() : '';
+                        let posB = b.position ? b.position.trim() : '';
+
+                        if (posA === '-') posA = '';
+                        if (posB === '-') posB = '';
+
+                        if (posA && !posB) return -1;
+                        if (!posA && posB) return 1;
+
+                        return posA.localeCompare(posB, 'th');
+                    });
+
+                    if (head) {
+                        htmlStr += `
+                            <div class="dean-section">
+                                ${renderCard(head, true)} 
+                            </div>
+                        `;
+                    }
+
+                    if (others.length > 0) {
+                        htmlStr += '<div class="personnel-grid">';
+                        others.forEach(p => {
+                            htmlStr += renderCard(p);
+                        });
+                        htmlStr += '</div>';
+                    }
+
+                } else if (type === 'lecturer') {
+                    // Lecturer: Group by Department
+                    const depts = [...new Set(data.map(p => p.department || 'อื่นๆ'))].sort((a, b) => {
+                        if (a === 'อื่นๆ') return 1;
+                        if (b === 'อื่นๆ') return -1;
+                        return a.localeCompare(b, 'th');
+                    });
+
+                    depts.forEach((dept, index) => {
+                        const deptMembers = data.filter(p => (p.department || 'อื่นๆ') === dept);
+                        if (deptMembers.length === 0) return;
+
+                        const chair = deptMembers.find(p => (p.position || '').includes('ประธานสาขา'));
+                        const members = deptMembers.filter(p => p !== chair).sort((a, b) => a.name.localeCompare(b.name, 'th'));
+
+                        const deptId = `dept-${index}`;
+
+                        // Icon selection based on dept (Optional simple mapping)
+                        let iconClass = 'fa-graduation-cap';
+                        if (dept.includes('เทคโนโลยี')) iconClass = 'fa-desktop';
+                        else if (dept.includes('ภาษา')) iconClass = 'fa-language';
+                        else if (dept.includes('ปฐมวัย')) iconClass = 'fa-shapes';
+                        else if (dept.includes('ประถม')) iconClass = 'fa-book-open';
+                        else if (dept.includes('พลศึกษา')) iconClass = 'fa-person-running';
+                        else if (dept.includes('วิชาชีพครู')) iconClass = 'fa-chalkboard-user';
+
+                        htmlStr += `
+                            <div class="accordion-item">
+                                <div class="accordion-header" onclick="toggleDept('${deptId}')">
+                                    <div class="accordion-title">
+                                        <div class="accordion-icon-left"><i class="fa-solid ${iconClass}"></i></div>
+                                        <span>${dept}</span>
+                                    </div>
+                                    <div class="accordion-icon-right">
+                                        <i id="icon-${deptId}" class="fa-solid fa-chevron-down"></i>
+                                    </div>
+                                </div>
+                                
+                                <div id="${deptId}" class="accordion-content">
+                         `;
+
+                        if (chair) {
+                            htmlStr += `
+                                <div class="dean-section">
+                                     ${renderCard(chair, true)}
+                                </div>
+                            `;
+                        }
+
+                        if (members.length > 0) {
+                            htmlStr += '<div class="personnel-grid">';
+                            members.forEach(p => {
+                                htmlStr += renderCard(p);
+                            });
+                            htmlStr += '</div>';
+                        }
+
+                        htmlStr += '</div>'; // End content
+                        htmlStr += '</div>'; // End item
+                    });
+                } else {
+                    // Fallback
+                    htmlStr += '<div class="personnel-grid">';
+                    data.forEach(p => {
+                        htmlStr += renderCard(p);
+                    });
+                    htmlStr += '</div>';
+                }
+
+                container.innerHTML = htmlStr;
+
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = '<p class="text-center text-danger">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
+            }
+        }
+
+        function toggleDept(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id);
+
+            // Toggle Logic
+            if (getComputedStyle(content).display === 'none') {
+                content.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)'; // Chevron up
+            } else {
+                content.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)'; // Chevron down
+            }
+        }
+
+        function renderCard(person) {
+            const fullName = (person.academic_title || '') + person.name;
+            let deptText = person.department ? `<div style="font-size:0.9rem; margin-top:5px; color:#888;">${person.department}</div>` : '';
+            if (person.type === 'lecturer') deptText = '';
+
+            return `
+                <div class="personnel-card">
+                    ${renderImage(person)}
+                    <div class="person-info">
+                        <div class="person-name">${fullName}</div>
+                        <div class="person-position">${person.position}</div>
+                        ${deptText}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderImage(person) {
+            let content = '';
+            if (person.image_url) {
+                // Ensure absolute path if relative
+                // API saves as /uploads/filename.ext
+                const imgPath = person.image_url.startsWith('http') || person.image_url.startsWith('/') ? person.image_url : '/' + person.image_url;
+                content = `<img src="${imgPath}" alt="${person.name}" class="person-img">`;
+            } else {
+                content = `
+                    <div class="person-img placeholder">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                `;
+            }
+
+            if (person.profile_link) {
+                return `<a href="${person.profile_link}" target="_blank" rel="noopener noreferrer" style="display:block; text-decoration:none;">${content}</a>`;
+            }
+            return content;
+        }
+    </script>
 
     <footer id="contact">
         <div class="container">
@@ -190,7 +579,7 @@
                 </div>
                 <div class="footer-col">
                     <h3>สำหรับผู้ดูแลระบบ</h3>
-                    <a href="#" class="btn btn-outline text-white btn-sm">เข้าสู่ระบบ</a>
+                    <a href="login.html" class="btn btn-outline text-white btn-sm">เข้าสู่ระบบ</a>
                 </div>
             </div>
             <div class="footer-bottom">

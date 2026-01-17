@@ -86,38 +86,22 @@
         </div>
     </header>
 
-    <section class="section-padding">
-        <div class="container">
-            <!-- Tabs Navigation -->
-            <div class="tab-nav">
-                <button class="tab-btn active"
-                    onclick="openTab(event, 'network-schools')">ข้อมูลโรงเรียนเครือข่าย</button>
-                <button class="tab-btn" onclick="openTab(event, 'supervision-teachers')">รายชื่ออาจารย์นิเทศ</button>
-            </div>
-
-            <!-- Tab 1: Network Schools -->
-            <div id="network-schools" class="tab-content" style="display: block;">
-                <h3 class="text-center" style="margin-bottom: 30px; color: var(--primary-dark);">ข้อมูลโรงเรียนเครือข่าย
-                </h3>
-                <div class="card" style="padding: 40px; text-align: center;">
-                    <i class="fa-solid fa-school"
-                        style="font-size: 3rem; color: var(--primary-light); margin-bottom: 20px;"></i>
-                    <p style="color: var(--text-light);">อยู่ระหว่างการรวบรวมข้อมูลโรงเรียนเครือข่าย</p>
-                </div>
-            </div>
-
-            <!-- Tab 2: Supervision Teachers -->
-            <div id="supervision-teachers" class="tab-content">
-                <h3 class="text-center" style="margin-bottom: 30px; color: var(--primary-dark);">รายชื่ออาจารย์นิเทศ
-                </h3>
-                <div class="card" style="padding: 40px; text-align: center;">
-                    <i class="fa-solid fa-chalkboard-user"
-                        style="font-size: 3rem; color: var(--primary-light); margin-bottom: 20px;"></i>
-                    <p style="color: var(--text-light);">อยู่ระหว่างการรวบรวมรายชื่ออาจารย์นิเทศ</p>
-                </div>
-            </div>
+    <section id="page-content" class="section-padding">
+        <div class="container" id="teacher-pro-dev-content">
+            <!-- Dynamic Content -->
+            <p class="text-center">กำลังโหลดข้อมูล...</p>
         </div>
     </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (typeof loadPageContent === 'function') {
+                    loadPageContent('ศูนย์พัฒนาวิชาชีพครู', 'teacher-pro-dev-content');
+                }
+            }, 500);
+        });
+    </script>
 
     <footer id="contact">
         <div class="container">

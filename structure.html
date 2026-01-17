@@ -74,19 +74,22 @@
         </div>
     </nav>
 
-    <section class="section-padding">
-        <div class="container">
-            <h2 class="section-title text-center">โครงสร้างการบริหาร</h2>
-            <div class="bg-light" style="padding: 40px; border-radius: 12px; text-align: center;">
-                <p>แผนผังโครงสร้าง (ใส่รูปภาพ)</p>
-                <!-- Place holder for diagram -->
-                <div
-                    style="background-color: #ddd; height: 300px; display: flex; align-items: center; justify-content: center; border-radius: 12px; margin-top: 20px;">
-                    <i class="fa-solid fa-sitemap" style="font-size: 50px; color: #aaa;"></i>
-                </div>
-            </div>
+    <section id="page-content" class="section-padding">
+        <div class="container" id="structure-content">
+            <!-- Dynamic Content -->
+            <p class="text-center">กำลังโหลดข้อมูล...</p>
         </div>
     </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (typeof loadPageContent === 'function') {
+                    loadPageContent('โครงสร้าง', 'structure-content');
+                }
+            }, 500);
+        });
+    </script>
 
     <!-- Footer -->
     <footer id="contact">

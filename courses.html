@@ -43,80 +43,49 @@
 
             <!-- Bachelor's Degree -->
             <div id="bachelor" class="tab-content fade-in-up" style="display: block;">
-                <h2 class="section-title"
-                    style="text-align: left; border-left: 5px solid var(--primary-color); padding-left: 15px;">
-                    หลักสูตรปริญญาตรี</h2>
-                <div class="grid-3">
-                    <div class="course-card">
-                        <div class="course-icon"><i class="fa-solid fa-child-reaching"></i></div>
-                        <h3>สาขาวิชาการศึกษาปฐมวัย</h3>
-                        <p>ครุศาสตรบัณฑิต (ค.บ.) หลักสูตรปรับปรุง พ.ศ. 2566</p>
-                    </div>
-                    <div class="course-card">
-                        <div class="course-icon"><i class="fa-solid fa-computer"></i></div>
-                        <h3>สาขาวิชาเทคโนโลยีดิจิทัลเพื่อการศึกษา</h3>
-                        <p>ครุศาสตรบัณฑิต (ค.บ.) หลักสูตรปรับปรุง พ.ศ. 2566</p>
-                    </div>
-                    <div class="course-card">
-                        <div class="course-icon"><i class="fa-solid fa-language"></i></div>
-                        <h3>สาขาวิชาภาษาอังกฤษ</h3>
-                        <p>ครุศาสตรบัณฑิต (ค.บ.) หลักสูตรปรับปรุง พ.ศ. 2566</p>
-                    </div>
-                    <div class="course-card">
-                        <div class="course-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
-                        <h3>สาขาวิชาการประถมศึกษา</h3>
-                        <p>ครุศาสตรบัณฑิต (ค.บ.) หลักสูตรใหม่ พ.ศ. 2565</p>
-                    </div>
-                    <div class="course-card">
-                        <div class="course-icon"><i class="fa-solid fa-person-running"></i></div>
-                        <h3>สาขาวิชาพลศึกษา</h3>
-                        <p>ครุศาสตรบัณฑิต (ค.บ.) หลักสูตรปรับปรุง พ.ศ. 2566</p>
-                    </div>
+                <div id="bachelor-content">
+                    <p class="text-center">กำลังโหลดข้อมูล...</p>
                 </div>
             </div>
 
             <!-- Master's Degree -->
             <div id="master" class="tab-content fade-in-up">
-                <h2 class="section-title"
-                    style="text-align: left; border-left: 5px solid var(--secondary-color); padding-left: 15px;">
-                    หลักสูตรปริญญาโท</h2>
-                <div class="grid-3">
-                    <div class="course-card">
-                        <div class="course-icon"><i class="fa-solid fa-user-graduate"></i></div>
-                        <h3>สาขาวิชาการบริหารการศึกษา</h3>
-                        <p>ครุศาสตรมหาบัณฑิต (ค.ม.) พ.ศ. 2564</p>
-                    </div>
+                <div id="master-content">
+                    <p class="text-center">กำลังโหลดข้อมูล...</p>
                 </div>
             </div>
 
             <!-- Doctoral Degree -->
             <div id="doctoral" class="tab-content fade-in-up">
-                <h2 class="section-title"
-                    style="text-align: left; border-left: 5px solid var(--accent-color); padding-left: 15px;">
-                    หลักสูตรปริญญาเอก</h2>
-                <div class="grid-3">
-                    <div class="course-card">
-                        <div class="course-icon"><i class="fa-solid fa-user-doctor"></i></div>
-                        <h3>สาขาวิชาการบริหารการศึกษา</h3>
-                        <p>ครุศาสตรดุษฎีบัณฑิต (ค.ด.)</p>
-                    </div>
+                <div id="doctoral-content">
+                    <p class="text-center">กำลังโหลดข้อมูล...</p>
                 </div>
             </div>
 
             <!-- Diploma -->
             <div id="diploma" class="tab-content fade-in-up">
-                <h2 class="section-title" style="text-align: left; border-left: 5px solid #333; padding-left: 15px;">
-                    หลักสูตรประกาศนียบัตร</h2>
-                <div class="grid-3">
-                    <div class="course-card">
-                        <div class="course-icon"><i class="fa-solid fa-certificate"></i></div>
-                        <h3>วิชาชีพครู</h3>
-                        <p>ประกาศนียบัตรวิชาชีพครู (ป.บัณฑิต)</p>
-                    </div>
+                <div id="diploma-content">
+                    <p class="text-center">กำลังโหลดข้อมูล...</p>
                 </div>
             </div>
 
         </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (typeof loadPageContent === 'function') {
+                    loadPageContent('หลักสูตรปริญญาตรี', 'bachelor-content');
+                    loadPageContent('หลักสูตรปริญญาโท', 'master-content');
+                    loadPageContent('หลักสูตรปริญญาเอก', 'doctoral-content');
+                    loadPageContent('หลักสูตรประกาศนียบัตร', 'diploma-content');
+                }
+            }, 500);
+        });
+    </script>
+
+    </div>
     </section>
 
     <!-- Footer -->

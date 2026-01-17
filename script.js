@@ -316,10 +316,10 @@ async function loadPageContent(categoryName, containerId = 'content-container') 
 
         const allNews = await res.json();
 
-        // Filter by Category Name and Status=1 (Published)
+        // Filter by Category ID = 10 (Menu) and match Title
         // Taking the latest one
         const article = allNews
-            .filter(n => n.category_name === categoryName && n.status == 1)
+            .filter(n => n.category_id == 10 && n.title === categoryName && n.status == 1)
             .sort((a, b) => new Date(b.publish_date) - new Date(a.publish_date))[0];
 
         if (article) {
@@ -356,3 +356,20 @@ async function loadPageContent(categoryName, containerId = 'content-container') 
         container.innerHTML = '<p class="text-center">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
     }
 }
+// Accordion Functionality for Custom Content
+document.addEventListener('click', function (e) {
+    if (e.target && e.target.closest('.custom-accordion-header')) {
+        const header = e.target.closest('.custom-accordion-header');
+        const content = header.nextElementSibling;
+
+        // Toggle Active Class
+        header.classList.toggle('active');
+
+        // Toggle Content Visibility
+        if (content.style.display === "block") {
+            content.style.display = "none";
+        } else {
+            content.style.display = "block";
+        }
+    }
+});

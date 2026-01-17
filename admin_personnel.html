@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จัดการบุคลากร (Personnel) - CMS Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin_style.css">
+</head>
+
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="sidebar"><!-- Loading Sidebar... --></aside>
+
+        <main class="admin-content">
+            <header class="admin-topbar">
+                <button class="toggle-sidebar" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+                <div class="topbar-right">
+                    <div class="user-profile" id="userProfileDropdown" onclick="toggleProfileDropdown()">
+                        <div class="user-avatar">A</div>
+                        <span style="font-size: 0.9rem; font-weight: 500;">Super Admin</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i>
+
+                        <div class="dropdown-menu" id="profileDropdown">
+                            <a href="user_profile.html" class="dropdown-item"><i class="fa-solid fa-user-cog"
+                                    style="margin-right: 8px;"></i> ตั้งค่าผู้ใช้งาน</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="index.html" class="dropdown-item" style="color: #dc3545;"><i
+                                    class="fa-solid fa-sign-out-alt" style="margin-right: 8px;"></i>
+                                ออกจากระบบ</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h1 class="page-title" style="margin-bottom: 0;">จัดการบุคลากร (Personnel)
+                    </h1>
+                    <button class="btn-login" style="width: auto; padding: 10px 20px;"><i
+                            class="fa-solid fa-plus-circle"></i> เพิ่มบุคลากร</button>
+                </div>
+
+                <div class="widget-card">
+                    <div
+                        style="padding: 15px; border-bottom: 1px solid #eee; display: flex; gap: 10px; background-color: #f8f9fa;">
+                        <select id="filterType"
+                            style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; min-width: 150px;">
+                            <option value="">ทุกประเภท (Type)</option>
+                            <option value="executive">ผู้บริหาร</option>
+                            <option value="lecturer">อาจารย์</option>
+                            <option value="staff">บุคลากร</option>
+                        </select>
+                        <select id="filterDept"
+                            style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; min-width: 200px;">
+                            <option value="">ทุกสาขาวิชา (Department)</option>
+                        </select>
+                    </div>
+                    <table class="cms-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">รูปภาพ</th>
+                                <th>ชื่อ - นามสกุล</th>
+                                <th>ตำแหน่ง</th>
+                                <th>สาขาวิชา</th>
+                                <th>ประเภท</th>
+
+                                <th>จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="personnelTableBody">
+                            <!-- JS Render -->
+                            <tr>
+                                <td colspan="7" style="text-align:center; padding: 20px;">Loading Personnel Data...
+                                    (Please Wait)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="personnelModal" class="modal"
+        style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-content"
+            style="background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 500px; border-radius: 8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h2 id="modalTitle" style="margin:0; font-size:1.2rem;">เพิ่มบุคลากร</h2>
+                <span onclick="closeModal()"
+                    style="color:#aaa; float:right; font-size:28px; font-weight:bold; cursor:pointer;">&times;</span>
+            </div>
+            <form id="personnelForm">
+                <input type="hidden" id="personId">
+
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">รูปภาพโปรไฟล์</label>
+                    <input type="file" id="image" name="image" accept="image/*"
+                        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    <img id="imagePreview" src=""
+                        style="width: 100px; height: 100px; object-fit: cover; margin-top: 10px; display: none; border-radius: 8px;">
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">ตำแหน่งวิชาการ / คำนำหน้าชื่อ <span
+                            style="color:red">*</span></label>
+                    <input type="text" id="academic_title" name="academic_title" required
+                        placeholder="เช่น อาจารย์ ดร., ผศ. ดร., นาย, นางสาว"
+                        style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">ชื่อ - นามสกุล <span
+                            style="color:red">*</span></label>
+                    <input type="text" id="name" name="name" required
+                        style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">ตำแหน่ง <span style="color:red">*</span></label>
+                    <input type="text" id="position" name="position" required
+                        style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">สาขาวิชา</label>
+                    <input type="text" id="department" name="department"
+                        style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px;">
+                    <select id="departmentSelect"
+                        style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px; display: none;">
+                        <option value="">-- เลือกสาขาวิชา --</option>
+                        <option value="สาขาวิชาการศึกษาปฐมวัย">สาขาวิชาการศึกษาปฐมวัย</option>
+                        <option value="สาขาวิชาเทคโนโลยีดิจิทัลเพื่อการศึกษา">สาขาวิชาเทคโนโลยีดิจิทัลเพื่อการศึกษา
+                        </option>
+                        <option value="สาขาวิชาภาษาอังกฤษ">สาขาวิชาภาษาอังกฤษ</option>
+                        <option value="สาขาวิชาการประถมศึกษา">สาขาวิชาการประถมศึกษา</option>
+                        <option value="สาขาวิชาพลศึกษา">สาขาวิชาพลศึกษา</option>
+                        <option value="กลุ่มวิชาชีพครู">กลุ่มวิชาชีพครู</option>
+
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">ลิงก์ประวัติ (Profile Link)</label>
+                    <input type="text" id="profile_link" name="profile_link" placeholder="https://..."
+                        style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <div style="flex: 1;">
+                        <label style="display: block; margin-bottom: 5px;">ประเภท</label>
+                        <select id="type" name="type"
+                            style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="executive">ผู้บริหาร (Executive)</option>
+                            <option value="lecturer">อาจารย์ (Lecturer)</option>
+                            <option value="staff">บุคลากร (Staff)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">กลุ่มพิเศษ (Optional)</label>
+                    <input type="text" id="group_name" name="group_name"
+                        placeholder="เช่น Dean, Vice Dean (ใช้จัดกลุ่มผู้บริหาร)"
+                        style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+
+                <div style="text-align: right; margin-top: 20px;">
+                    <button type="button" onclick="closeModal()"
+                        style="padding: 10px 20px; margin-right: 10px; border: 1px solid #ddd; background: #fff; cursor: pointer; border-radius: 4px;">ยกเลิก</button>
+                    <button type="submit"
+                        style="padding: 10px 20px; background: #28a745; color: #fff; border: none; cursor: pointer; border-radius: 4px;">บันทึก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let allPersonnelData = []; // Store full list
+        let personnelMap = {};
+        const API_BASE = '/api';
+        const TOKEN_KEY = 'cms_token';
+
+        // Elements
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const adminContainer = document.querySelector('.admin-container');
+        const profileDropdown = document.getElementById('profileDropdown');
+        const personnelModal = document.getElementById('personnelModal');
+        const personnelForm = document.getElementById('personnelForm');
+        const modalTitle = document.getElementById('modalTitle');
+        const imagePreview = document.getElementById('imagePreview');
+        const tbody = document.getElementById('personnelTableBody');
+
+        // Filters
+        const filterType = document.getElementById('filterType');
+        const filterDept = document.getElementById('filterDept');
+
+        // Toggle Sidebar
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', () => {
+                adminContainer.classList.toggle('sidebar-open');
+            });
+        }
+
+        // Profile Dropdown
+        window.toggleProfileDropdown = function () {
+            if (profileDropdown) profileDropdown.classList.toggle('show');
+        }
+
+        window.onclick = function (event) {
+            if (!event.target.closest('.user-profile') && profileDropdown) {
+                profileDropdown.classList.remove('show');
+            }
+            if (event.target == personnelModal) closeModal();
+        }
+
+        // Auth Check
+        const token = localStorage.getItem(TOKEN_KEY);
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
+        // --- API Functions ---
+        async function apiFetch(endpoint, options = {}) {
+            options.headers = options.headers || {};
+            if (token) options.headers['Authorization'] = `Bearer ${token}`;
+
+            // Prevent caching for GET
+            if (options.method === 'GET' || !options.method) {
+                const separator = endpoint.includes('?') ? '&' : '?';
+                endpoint += `${separator}t=${Date.now()}`;
+            }
+
+            const res = await fetch(`${API_BASE}${endpoint}`, options);
+
+            if (res.status === 401 || res.status === 403) {
+                alert('Session expired. Please login again.');
+                window.location.href = 'login.html';
+                throw new Error('Unauthorized');
+            }
+
+            return res;
+        }
+
+        async function fetchPersonnel() {
+            try {
+                // Remove debug calls
+                const res = await apiFetch('/personnel');
+                if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+
+                const list = await res.json();
+                allPersonnelData = list; // Store global
+
+                populateFilters(list);
+                applyFilters(); // Initial Render
+            } catch (e) {
+                console.error(e);
+                tbody.innerHTML = `<tr>
+        <td colspan="7" style="text-align:center; color:red; padding: 20px;">
+            Error: ${e.message} <br> <button onclick="fetchPersonnel()">Try Again</button>
+        </td>
+    </tr>`;
+            }
+        }
+
+        function populateFilters(list) {
+            // Get unique departments
+            const depts = [...new Set(list.map(p => p.department || '-'))].filter(d => d !== '-' && d.trim() !== '').sort();
+
+            // Keep selected value if any
+            const currentVal = filterDept.value;
+
+            filterDept.innerHTML = '<option value="">ทุกสาขาวิชา (Department)</option>';
+            depts.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d;
+                opt.textContent = d;
+                filterDept.appendChild(opt);
+            });
+
+            if (depts.includes(currentVal)) {
+                filterDept.value = currentVal;
+            }
+        }
+
+        function applyFilters() {
+            const typeVal = filterType.value;
+            const deptVal = filterDept.value;
+
+            const filtered = allPersonnelData.filter(p => {
+                const pDept = p.department || '';
+
+                const matchType = !typeVal || p.type === typeVal;
+                // Strict match for department usually, but lets match exact string
+                const matchDept = !deptVal || pDept === deptVal;
+
+                return matchType && matchDept;
+            });
+
+            renderPersonnel(filtered);
+        }
+
+        // Event Listeners for Filters
+        filterType.addEventListener('change', applyFilters);
+        filterDept.addEventListener('change', applyFilters);
+
+        function renderPersonnel(list) {
+            tbody.innerHTML = '';
+            personnelMap = {}; // Reset map
+
+            if (!list || list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 20px;">ไม่พบข้อมูลบุคลากร</td></tr>';
+                return;
+            }
+
+            list.forEach(p => {
+                personnelMap[p.id] = p; // Store for edit
+
+                const tr = document.createElement('tr');
+                const img = p.image_url ? (p.image_url.startsWith('http') || p.image_url.startsWith('/') ? p.image_url : '/' +
+                    p.image_url) : 'https://via.placeholder.com/50';
+
+                let typeLabel = p.type;
+                if (p.type === 'executive') typeLabel = '<span class="badge" style="background:#007bff; color:white; padding: 2px 5px; border-radius: 4px;">ผู้บริหาร</span>';
+                if (p.type === 'lecturer') typeLabel = '<span class="badge" style="background:#28a745; color:white; padding: 2px 5px; border-radius: 4px;">อาจารย์</span>';
+                if (p.type === 'staff') typeLabel = '<span class="badge" style="background:#6c757d; color:white; padding: 2px 5px; border-radius: 4px;">บุคลากร</span>';
+
+                const fullName = (p.academic_title || '') + p.name;
+
+                // Removed Sort Order Column
+                tr.innerHTML = `
+    <td><img src="${img}" style="width:40px; height:40px; object-fit:cover; border-radius:50%;"></td>
+    <td>${fullName}</td>
+    <td>${p.position}</td>
+    <td>${p.department || '-'}</td>
+    <td>${typeLabel}</td>
+    <td>
+        <button class="btn-edit" data-id="${p.id}"
+            style="border: none; background: none; color: #666; cursor: pointer; margin-right: 5px;">
+            <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+        <button class="btn-delete" data-id="${p.id}"
+            style="border: none; background: none; color: #dc3545; cursor: pointer;">
+            <i class="fa-solid fa-trash"></i>
+        </button>
+    </td>
+    `;
+                tbody.appendChild(tr);
+            });
+
+            // Attach Events
+            document.querySelectorAll('.btn-edit').forEach(btn => {
+                btn.onclick = (e) => {
+                    const id = e.currentTarget.dataset.id;
+                    editPersonnel(id);
+                };
+            });
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.onclick = (e) => {
+                    const id = e.currentTarget.dataset.id;
+                    deletePersonnel(id);
+                };
+            });
+        }
+
+        // --- CRUD Operations ---
+
+        // Open Modal
+
+
+        function handleTypeChange() {
+            const type = document.getElementById('type').value;
+            const deptInput = document.getElementById('department');
+            const deptSelect = document.getElementById('departmentSelect');
+
+            if (type === 'lecturer') {
+                deptInput.style.display = 'none';
+                deptSelect.style.display = 'block';
+            } else {
+                deptInput.style.display = 'block';
+                deptSelect.style.display = 'none';
+            }
+        }
+
+        document.getElementById('type').addEventListener('change', handleTypeChange);
+
+        window.openModal = function (mode, data = null) {
+            personnelModal.style.display = 'block';
+
+            if (mode === 'add') {
+                modalTitle.innerText = 'เพิ่มบุคลากร';
+                personnelForm.reset();
+                document.getElementById('personId').value = '';
+                imagePreview.style.display = 'none';
+                imagePreview.src = '';
+
+                // Reset to default view
+                handleTypeChange();
+
+            } else if (mode === 'edit' && data) {
+                modalTitle.innerText = 'แก้ไขข้อมูลบุคลากร';
+                document.getElementById('personId').value = data.id;
+                document.getElementById('academic_title').value = data.academic_title || '';
+                document.getElementById('name').value = data.name;
+                document.getElementById('position').value = data.position;
+
+                // Set type first so handler knows what to show
+                document.getElementById('type').value = data.type;
+                handleTypeChange();
+
+                // Set values for both (one will be hidden)
+                document.getElementById('department').value = data.department || '';
+                document.getElementById('departmentSelect').value = data.department || '';
+
+                document.getElementById('profile_link').value = data.profile_link || '';
+                document.getElementById('group_name').value = data.group_name || '';
+
+                if (data.image_url) {
+                    imagePreview.src = data.image_url;
+                    imagePreview.style.display = 'block';
+                } else {
+                    imagePreview.style.display = 'none';
+                }
+            }
+        }
+
+        window.closeModal = function () {
+            personnelModal.style.display = 'none';
+        }
+
+        window.editPersonnel = function (id) {
+            const data = personnelMap[id];
+            if (data) openModal('edit', data);
+        }
+
+        window.deletePersonnel = async function (id) {
+            if (!confirm('ยืนยันลบข้อมูล?')) return;
+            try {
+                const res = await apiFetch(`/personnel/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    fetchPersonnel();
+                    // Removed UpdateDebug
+                } else {
+                    alert('ลบไม่สำเร็จ: ' + await res.text());
+                }
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+        }
+
+        // Helper: Resize Image
+        function resizeImage(file, maxWidth, maxHeight, quality) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function (event) {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = function () {
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > maxWidth) {
+                                height = Math.round(height * (maxWidth / width));
+                                width = maxWidth;
+                            }
+                        } else {
+                            if (height > maxHeight) {
+                                width = Math.round(width * (maxHeight / height));
+                                height = maxHeight;
+                            }
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        canvas.toBlob((blob) => {
+                            if (blob) {
+                                resolve(blob);
+                            } else {
+                                reject(new Error('Canvas to Blob failed'));
+                            }
+                        }, 'image/jpeg', quality);
+                    };
+                    img.onerror = error => reject(error);
+                };
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Form Submit
+        if (personnelForm) {
+            personnelForm.addEventListener('submit', async (e) => {
+                e.preventDefault(); // CRITICAL: Stop reload
+
+                const id = document.getElementById('personId').value;
+                const formData = new FormData(personnelForm);
+                const fileInput = document.getElementById('image');
+
+                // Handle Department override
+                if (document.getElementById('type').value === 'lecturer') {
+                    formData.set('department', document.getElementById('departmentSelect').value);
+                } else {
+                    formData.set('department', document.getElementById('department').value);
+                }
+
+                // Resize Image if selected
+                if (fileInput && fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    if (file.type.startsWith('image/')) {
+                        try {
+                            const resizedBlob = await resizeImage(file, 1024, 1024, 0.85); // Max 1024px, 85% Quality
+                            // Replace 'image' field with resized blob
+                            const newFileName = file.name.replace(/\.[^/.]+$/, "") + ".jpg";
+                            formData.set('image', resizedBlob, newFileName);
+                        } catch (err) {
+                            console.error("Image resize failed:", err);
+                        }
+                    }
+                }
+
+                try {
+                    const url = id ? `/personnel/${id}` : '/personnel';
+                    const method = id ? 'PUT' : 'POST';
+
+                    const res = await apiFetch(url, {
+                        method: method,
+                        body: formData
+                    });
+
+                    if (res.ok) {
+                        closeModal();
+                        fetchPersonnel();
+                        alert('บันทึกข้อมูลเรียบร้อย');
+                    } else {
+                        throw new Error(await res.text());
+                    }
+                } catch (e) {
+                    console.error(e);
+                    alert('บันทึกไม่สำเร็จ: ' + e.message);
+                }
+            });
+        } else {
+            console.error("Critical: Form 'personnelForm' not found!");
+        }
+
+        // Add Button
+        const addBtn = document.querySelector('.btn-login'); // Reusing class from style
+        if (addBtn) {
+            addBtn.addEventListener('click', () => openModal('add'));
+        }
+
+        // Image Preview
+        const imgInput = document.getElementById('image');
+        if (imgInput) {
+            imgInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (evt) {
+                        imagePreview.src = evt.target.result;
+                        imagePreview.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Initial Load
+        fetchPersonnel();
+
+
+
+    </script>
+    <script src="js/global-loader.js"></script>
+</body>
+
+</html>

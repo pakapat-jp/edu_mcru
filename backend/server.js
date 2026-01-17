@@ -23,19 +23,33 @@ const pool = mysql.createPool({
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || 'root',
     database: process.env.DB_NAME || 'edu_mcru',
+    charset: 'utf8mb4',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
 });
 
-// Automatic Migration for published_at
-// Automatic Migration for publish_date (and recovery from published_at)
-// Automatic Migration (Disabled as we are switching to 'articles' table driven by init.sql)
-// async function migrateDatabase() { ... }
+async function waitForDB(retries = 20, delay = 5000) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const [rows] = await pool.query('SELECT 1');
+            console.log('Database connected successfully.');
+            return true;
+        } catch (err) {
+            console.log(`Database connection failed (Attempt ${i + 1}/${retries}). Retrying in ${delay / 1000}s...`);
+            console.error(err.message);
+            await new Promise(res => setTimeout(res, delay));
+        }
+    }
+    throw new Error('Could not connect to database after multiple retries.');
+}
 
-// Ensure Articles Table Exists and has gallery_images (Runtime Migration)
-async function ensureTables() {
+// Ensure Tables (Articles & Personnel)
+async function initializeDatabase() {
     try {
+        await waitForDB(); // Block until DB is ready
+
+        // 1. Articles
         const createTableQuery = `
             CREATE TABLE IF NOT EXISTS articles (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -57,7 +71,18 @@ async function ensureTables() {
         `;
         await pool.query(createTableQuery);
 
-        // Check for gallery_images column and add if missing
+        // Runtime Migration: Drop sort_order if exists
+        try {
+            const [columns] = await pool.query("SHOW COLUMNS FROM personnel");
+            const columnNames = columns.map(c => c.Field);
+            if (columnNames.includes('sort_order')) {
+                console.log("Migrating: Dropping sort_order from personnel table...");
+                await pool.query("ALTER TABLE personnel DROP COLUMN sort_order");
+            }
+        } catch (e) { console.error("Drop column error", e); }
+
+
+        // Check for gallery_images column
         const [columns] = await pool.query("SHOW COLUMNS FROM articles LIKE 'gallery_images'");
         if (columns.length === 0) {
             console.log("Migrating: Adding gallery_images to articles table...");
@@ -74,24 +99,28 @@ async function ensureTables() {
                 button_text VARCHAR(100),
                 button_link VARCHAR(255),
                 overlay_enabled BOOLEAN DEFAULT TRUE,
-                sort_order INT DEFAULT 0,
                 is_active BOOLEAN DEFAULT TRUE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `;
         await pool.query(createSlidersTableQuery);
+        console.log("Verified 'articles' and 'hero_sliders' tables.");
 
-        console.log("Verified 'articles' table schemas.");
+        // 2. Personnel
+        await ensurePersonnelTable(); // Call the function defined later
+
     } catch (error) {
-        console.error("Error creating/migrating articles table:", error);
+        console.error("Initialization Error:", error);
     }
 }
-ensureTables();
 
-// Setup DB Route
+// Start Initialization
+initializeDatabase();
+
+// Setup DB Route (Manual Trigger)
 app.get('/api/setup-db', async (req, res) => {
     try {
-        await ensureTables();
+        await initializeDatabase();
         res.json({ message: 'Database setup verified.' });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -113,15 +142,31 @@ const authenticateToken = (req, res, next) => {
 };
 
 // Multer Setup for Image Uploads
+const fs = require('fs');
+
+// Ensure directories exist
+const uploadDir = 'uploads/';
+const personnelDir = 'uploads/personnel/';
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
+if (!fs.existsSync(personnelDir)) fs.mkdirSync(personnelDir);
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+        // Check if the request is for personnel API
+        if (req.originalUrl.includes('/api/personnel')) {
+            cb(null, 'uploads/personnel/');
+        } else {
+            cb(null, 'uploads/');
+        }
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname));
     }
 });
-const upload = multer({ storage: storage });
+const upload = multer({
+    storage: storage,
+    limits: { fieldSize: 25 * 1024 * 1024 } // 25MB limit for text fields (Base64 images)
+});
 
 const uploadFields = upload.fields([
     { name: 'image', maxCount: 1 },
@@ -205,7 +250,7 @@ app.post('/api/news', authenticateToken, uploadFields, async (req, res) => {
 
     try {
         const [result] = await pool.query(
-            'INSERT INTO articles (title, slug, content, image_url, category_id, publish_date, status, author_id, gallery_images) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO articles (title, slug, content, image_url, category_id, publish_date, status, author_id, gallery_images) VALUES (?)',
             [title, finalSlug, content, image_url, category_id, publish_date || new Date(), status || 1, author_id, galleryJson]
         );
         res.status(201).json({ id: result.insertId, message: 'Article created successfully' });
@@ -336,8 +381,8 @@ app.post('/api/menus', authenticateToken, async (req, res) => {
         const sort_order = (maxRes[0].maxOrder || 0) + 1;
 
         const [result] = await pool.query(
-            'INSERT INTO menus (title, slug, type, parent_id, url, sort_order) VALUES (?, ?, ?, ?, ?, ?)',
-            [title, slug, type, parent_id || 0, url, sort_order]
+            'INSERT INTO menus (title, slug, type, parent_id, url) VALUES (?)',
+            [title, slug, type, parent_id || 0, url]
         );
         res.status(201).json({ id: result.insertId, message: 'Menu created' });
     } catch (error) {
@@ -347,7 +392,7 @@ app.post('/api/menus', authenticateToken, async (req, res) => {
 
 app.put('/api/menus/:id', authenticateToken, async (req, res) => {
     try {
-        const { title, slug, type, parent_id, url, status, sort_order } = req.body;
+        const { title, slug, type, parent_id, url, status } = req.body;
         // Dynamic update
         let fields = [];
         let params = [];
@@ -357,7 +402,7 @@ app.put('/api/menus/:id', authenticateToken, async (req, res) => {
         if (parent_id !== undefined) { fields.push('parent_id = ?'); params.push(parent_id); }
         if (url !== undefined) { fields.push('url = ?'); params.push(url); }
         if (status !== undefined) { fields.push('status = ?'); params.push(status); }
-        if (sort_order !== undefined) { fields.push('sort_order = ?'); params.push(sort_order); }
+
 
         if (fields.length === 0) return res.json({ message: 'No changes' });
 
@@ -400,7 +445,7 @@ app.get('/api/hero-sliders', async (req, res) => {
 
 app.post('/api/hero-sliders', authenticateToken, upload.single('image'), async (req, res) => {
     try {
-        const { title, subtitle, button_text, button_link, overlay_enabled, sort_order, is_active } = req.body;
+        const { title, subtitle, button_text, button_link, overlay_enabled, is_active } = req.body;
 
         if (!req.file && !req.body.image_url) {
             return res.status(400).json({ message: 'Image is required' });
@@ -408,19 +453,14 @@ app.post('/api/hero-sliders', authenticateToken, upload.single('image'), async (
 
         const image_url = (req.file) ? `/uploads/${req.file.filename}` : req.body.image_url;
 
-        // Auto sort order
-        let finalSortOrder = sort_order;
-        if (finalSortOrder === undefined) {
-            const [maxRes] = await pool.query('SELECT MAX(sort_order) as maxOrder FROM hero_sliders');
-            finalSortOrder = (maxRes[0].maxOrder || 0) + 1;
-        }
+
 
         // Fix boolean parsing from FormData (strings 'true'/'false')
         const overlayBool = overlay_enabled === 'true' || overlay_enabled === true || overlay_enabled === '1';
         const activeBool = (is_active === undefined) ? true : (is_active === 'true' || is_active === true || is_active === '1');
 
         const [result] = await pool.query(
-            'INSERT INTO hero_sliders (image_url, title, subtitle, button_text, button_link, overlay_enabled, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO hero_sliders (image_url, title, subtitle, button_text, button_link, overlay_enabled, is_active) VALUES (?)',
             [image_url, title, subtitle, button_text, button_link, overlayBool, finalSortOrder, activeBool]
         );
         res.status(201).json({ id: result.insertId, message: 'Slider created', image_url });
@@ -431,7 +471,7 @@ app.post('/api/hero-sliders', authenticateToken, upload.single('image'), async (
 
 app.put('/api/hero-sliders/:id', authenticateToken, upload.single('image'), async (req, res) => {
     try {
-        const { title, subtitle, button_text, button_link, overlay_enabled, sort_order, is_active } = req.body;
+        const { title, subtitle, button_text, button_link, overlay_enabled, is_active } = req.body;
         const { id } = req.params;
 
         let fields = [];
@@ -497,7 +537,7 @@ app.post('/api/settings', authenticateToken, async (req, res) => {
         const settings = req.body; // Expect { key: value, key2: value2 }
         const promises = Object.keys(settings).map(key => {
             return pool.query(
-                'INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?',
+                'INSERT INTO site_settings (setting_key, setting_value) VALUES (?) ON DUPLICATE KEY UPDATE setting_value = ?',
                 [key, settings[key], settings[key]]
             );
         });
@@ -542,7 +582,7 @@ app.get('/api/media', async (req, res) => {
 app.post('/api/media/folder', authenticateToken, async (req, res) => {
     try {
         const { name, parent_id } = req.body;
-        await pool.query('INSERT INTO media (file_name, file_type, is_folder, parent_id, file_path) VALUES (?, ?, ?, ?, ?)',
+        await pool.query('INSERT INTO media (file_name, file_type, is_folder, parent_id, file_path) VALUES (?)',
             [name, 'folder', true, parent_id || 0, '']);
         res.json({ message: 'Folder created' });
     } catch (error) {
@@ -555,7 +595,7 @@ app.post('/api/media/upload', authenticateToken, upload.single('file'), async (r
         const { parent_id } = req.body;
         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
 
-        await pool.query('INSERT INTO media (file_name, file_path, file_type, file_size, is_folder, parent_id) VALUES (?, ?, ?, ?, ?, ?)',
+        await pool.query('INSERT INTO media (file_name, file_path, file_type, file_size, is_folder, parent_id) VALUES (?)',
             [req.file.originalname, `/uploads/${req.file.filename}`, path.extname(req.file.originalname), req.file.size, false, parent_id || 0]);
 
         res.json({ message: 'File uploaded' });
@@ -572,6 +612,17 @@ app.delete('/api/media/:id', authenticateToken, async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
+});
+
+// --- CKEditor Upload ---
+app.post('/api/ckeditor/upload', authenticateToken, upload.single('upload'), (req, res) => {
+    if (!req.file) return res.status(400).json({ error: { message: 'No file uploaded' } });
+
+    // CKEditor generic upload adapter expects { default: 'url' } or just return JSON with properties.
+    // We will use a custom adapter on frontend to match this.
+    res.json({
+        url: `/uploads/${req.file.filename}`
+    });
 });
 
 // --- Dashboard Stats ---
@@ -591,12 +642,12 @@ app.get('/api/dashboard/stats', authenticateToken, async (req, res) => {
     }
 });
 
-// Initialize uploads dir
-const fs = require('fs');
-const uploadDir = './uploads';
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
-}
+// Uploads dir initialized at top
+// const fs = require('fs');
+// const uploadDir = './uploads';
+// if (!fs.existsSync(uploadDir)) {
+//    fs.mkdirSync(uploadDir);
+// }
 
 // --- User Management ---
 app.get('/api/users', authenticateToken, async (req, res) => {
@@ -616,7 +667,7 @@ app.post('/api/users', authenticateToken, async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        await pool.query('INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)',
+        await pool.query('INSERT INTO users (username, password, email, role) VALUES (?)',
             [username, hashedPassword, email, role || 'user']);
 
         res.status(201).json({ message: 'User created' });
@@ -662,6 +713,230 @@ app.delete('/api/users/:id', authenticateToken, async (req, res) => {
         }
         await pool.query('DELETE FROM users WHERE id = ?', [req.params.id]);
         res.json({ message: 'User deleted' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// --- Personnel ---
+
+// Ensure Personnel Table Exists and Seed Data
+async function ensurePersonnelTable() {
+    try {
+        const createTableQuery = `
+            CREATE TABLE IF NOT EXISTS personnel (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                academic_title VARCHAR(100), -- 2. คำนำหน้า/ตําแหน่งวิชาการ
+                name VARCHAR(255) NOT NULL,    -- 3. ชื่อ-นามสกุล
+                position VARCHAR(255),         -- 4. ตำแหน่ง
+                department VARCHAR(255),       -- 5. สาขาวิชา
+                profile_link VARCHAR(500),      -- 6. Link Profile
+                image_url VARCHAR(255),
+                type ENUM('executive', 'lecturer', 'staff') DEFAULT 'staff', -- 7. ประเภท
+                group_name VARCHAR(100) DEFAULT NULL,
+                sort_order INT DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `;
+        await pool.query(createTableQuery);
+
+        // Runtime Migration: Add columns if they don't exist
+        const [columns] = await pool.query("SHOW COLUMNS FROM personnel");
+        const columnNames = columns.map(c => c.Field);
+
+        if (!columnNames.includes('academic_title')) {
+            console.log("Migrating: Adding academic_title to personnel table...");
+            await pool.query("ALTER TABLE personnel ADD COLUMN academic_title VARCHAR(100) AFTER id");
+        }
+        if (!columnNames.includes('department')) {
+            console.log("Migrating: Adding department to personnel table...");
+            await pool.query("ALTER TABLE personnel ADD COLUMN department VARCHAR(255) AFTER position");
+        }
+        if (!columnNames.includes('profile_link')) {
+            console.log("Migrating: Adding profile_link to personnel table...");
+            await pool.query("ALTER TABLE personnel ADD COLUMN profile_link VARCHAR(500) AFTER department");
+        }
+
+        // Seed Data if empty
+        const [rows] = await pool.query('SELECT COUNT(*) as count FROM personnel');
+        if (rows[0].count === 0) {
+            console.log('Seeding Personnel Data...');
+            const seedData = [
+                {
+                    academic_title: 'อาจารย์ ดร.',
+                    name: 'เกรียงวุธ นีละคุปต์',
+                    position: 'คณบดีคณะครุศาสตร์',
+                    department: '',
+                    type: 'executive',
+                    group_name: 'Dean',
+
+                    image_url: ''
+                },
+                {
+                    academic_title: 'อาจารย์',
+                    name: 'สุชาติ เพชรเทียนชัย',
+                    position: 'รองคณบดี',
+                    department: '',
+                    type: 'executive',
+                    group_name: 'Vice Dean',
+
+                    image_url: ''
+                },
+                {
+                    academic_title: 'อาจารย์ ดร.',
+                    name: 'อินธิรา เกื้อเสนาะ',
+                    position: 'รองคณบดี',
+                    department: '',
+                    type: 'executive',
+                    group_name: 'Vice Dean',
+
+                    image_url: ''
+                },
+                {
+                    academic_title: 'อาจารย์ ดร.',
+                    name: 'ประภาช วิวรรธมงคล',
+                    position: 'รองคณบดี',
+                    department: '',
+                    type: 'executive',
+                    group_name: 'Vice Dean',
+
+                    image_url: ''
+                }
+            ];
+
+            for (const person of seedData) {
+                await pool.query(
+                    'INSERT INTO personnel (academic_title, name, position, department, type, group_name, image_url) VALUES (?)',
+                    [person.academic_title, person.name, person.position, person.department, person.type, person.group_name, person.sort_order, person.image_url]
+                );
+            }
+            console.log('Personnel Data Seeded.');
+        }
+
+    } catch (error) {
+        console.error("Error creating/migrating personnel table:", error);
+    }
+}
+// ensurePersonnelTable() is called in initializeDatabase
+// ensurePersonnelTable();
+
+// Get All Personnel
+app.get('/api/personnel', async (req, res) => {
+    try {
+        // Optional filter by type
+        let query = 'SELECT * FROM personnel';
+        const params = [];
+        if (req.query.type) {
+            query += ' WHERE type = ?';
+            params.push(req.query.type);
+        }
+        query += ' ORDER BY id ASC';
+
+        const [rows] = await pool.query(query, params);
+        console.log(`GET /api/personnel: Found ${rows.length} records`);
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Helper to ensure 'personnel' folder exists in Media Library and return ID
+async function getPersonnelFolderId() {
+    const folderName = 'personnel';
+    const [rows] = await pool.query('SELECT id FROM media WHERE file_name = ? AND is_folder = TRUE AND parent_id = 0', [folderName]);
+
+    if (rows.length > 0) {
+        return rows[0].id;
+    } else {
+        const [result] = await pool.query('INSERT INTO media (file_name, file_type, is_folder, parent_id, file_path) VALUES (?)',
+            [folderName, 'folder', true, 0, '']);
+        return result.insertId;
+    }
+}
+
+// Create Personnel
+app.post('/api/personnel', authenticateToken, upload.single('image'), async (req, res) => {
+    try {
+        console.log("POST /api/personnel Body:", req.body);
+        console.log("POST /api/personnel File:", req.file);
+        const { academic_title, name, position, department, profile_link, type, group_name } = req.body;
+
+        let image_url = (req.body.image_url || '');
+
+        // If file uploaded, save to Media Library
+        if (req.file) {
+            image_url = `/uploads/personnel/${req.file.filename}`;
+            try {
+                const folderId = await getPersonnelFolderId();
+                await pool.query('INSERT INTO media (file_name, file_path, file_type, file_size, is_folder, parent_id) VALUES (?)',
+                    [req.file.originalname, image_url, path.extname(req.file.originalname), req.file.size, false, folderId]);
+            } catch (mediaErr) {
+                console.error("Error saving to media library:", mediaErr);
+                // Non-critical, continue
+            }
+        }
+
+        const [result] = await pool.query(
+            'INSERT INTO personnel (academic_title, name, position, department, profile_link, image_url, type, group_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [academic_title || '', name, position, department || '', profile_link || '', image_url, type || 'staff', group_name]
+        );
+        res.status(201).json({ id: result.insertId, message: 'Personnel created' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Update Personnel
+app.put('/api/personnel/:id', authenticateToken, upload.single('image'), async (req, res) => {
+    try {
+        const { academic_title, name, position, department, profile_link, type, group_name } = req.body;
+        const { id } = req.params;
+
+        let fields = [];
+        let params = [];
+
+        if (req.file) {
+            const uploadedPath = `/uploads/personnel/${req.file.filename}`;
+            fields.push('image_url = ?');
+            params.push(uploadedPath);
+
+            // Save to Media Library
+            try {
+                const folderId = await getPersonnelFolderId();
+                await pool.query('INSERT INTO media (file_name, file_path, file_type, file_size, is_folder, parent_id) VALUES (?, ?, ?, ?, ?, ?)',
+                    [req.file.originalname, uploadedPath, path.extname(req.file.originalname), req.file.size, false, folderId]);
+            } catch (mediaErr) {
+                console.error("Error saving to media library:", mediaErr);
+            }
+
+        } else if (req.body.image_url !== undefined) {
+            fields.push('image_url = ?');
+            params.push(req.body.image_url);
+        }
+
+        if (academic_title !== undefined) { fields.push('academic_title = ?'); params.push(academic_title); }
+        if (name !== undefined) { fields.push('name = ?'); params.push(name); }
+        if (position !== undefined) { fields.push('position = ?'); params.push(position); }
+        if (department !== undefined) { fields.push('department = ?'); params.push(department); }
+        if (profile_link !== undefined) { fields.push('profile_link = ?'); params.push(profile_link); }
+        if (type !== undefined) { fields.push('type = ?'); params.push(type); }
+        if (group_name !== undefined) { fields.push('group_name = ?'); params.push(group_name); }
+
+        if (fields.length === 0) return res.json({ message: 'No changes' });
+
+        params.push(id);
+        await pool.query(`UPDATE personnel SET ${fields.join(', ')} WHERE id = ?`, params);
+        res.json({ message: 'Personnel updated' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Delete Personnel
+app.delete('/api/personnel/:id', authenticateToken, async (req, res) => {
+    try {
+        await pool.query('DELETE FROM personnel WHERE id = ?', [req.params.id]);
+        res.json({ message: 'Personnel deleted' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

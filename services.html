@@ -86,48 +86,22 @@
         </div>
     </header>
 
-    <section class="section-padding">
-        <div class="container">
-            <div class="grid-2">
-                <!-- Left Column: For Staff -->
-                <div class="service-column">
-                    <h2 class="section-title"
-                        style="font-size: 1.8rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-bottom: 20px;">
-                        <i class="fa-solid fa-chalkboard-user"
-                            style="color: var(--primary-color); margin-right: 10px;"></i>
-                        บริการสำหรับอาจารย์/บุคลากร
-                    </h2>
-                    <ul class="feature-list">
-                        <li><i class="fa-solid fa-check-circle"></i> <a href="#">ระบบสารสนเทศเพื่อการบริหาร (MIS)</a>
-                        </li>
-                        <li><i class="fa-solid fa-check-circle"></i> <a href="#">ระบบจองห้องประชุม/ยานพาหนะ</a></li>
-                        <li><i class="fa-solid fa-check-circle"></i> <a href="#">ดาวน์โหลดแบบฟอร์มต่างๆ</a></li>
-                        <li><i class="fa-solid fa-check-circle"></i> <a href="#">ระบบประเมินการเรียนการสอน</a></li>
-                        <li><i class="fa-solid fa-check-circle"></i> <a href="#">บริการวิชาการ</a></li>
-                        <li><i class="fa-solid fa-check-circle"></i> <a href="#">คู่มือการปฏิบัติงาน</a></li>
-                    </ul>
-                </div>
-
-                <!-- Right Column: For Students -->
-                <div class="service-column">
-                    <h2 class="section-title"
-                        style="font-size: 1.8rem; border-bottom: 2px solid var(--accent-color); padding-bottom: 10px; margin-bottom: 20px;">
-                        <i class="fa-solid fa-user-graduate"
-                            style="color: var(--accent-color); margin-right: 10px;"></i>
-                        บริการสำหรับนักศึกษา
-                    </h2>
-                    <ul class="feature-list">
-                        <li><i class="fa-solid fa-check-circle"></i> <a href="#">ระบบบริการการศึกษา (Reg)</a></li>
-                        <li><i class="fa-solid fa-check-circle"></i> <a href="#">ปฏิทินวิชาการ</a></li>
-                        <li><i class="fa-solid fa-check-circle"></i> <a href="#">ตารางเรียน/ตารางสอบ</a></li>
-                        <li><i class="fa-solid fa-check-circle"></i> <a href="#">คำร้องออนไลน์</a></li>
-                        <li><i class="fa-solid fa-check-circle"></i> <a href="#">ทุนการศึกษา</a></li>
-                        <li><i class="fa-solid fa-check-circle"></i> <a href="#">กิจกรรมนักศึกษา</a></li>
-                    </ul>
-                </div>
-            </div>
+    <section id="page-content" class="section-padding">
+        <div class="container" id="services-content">
+            <!-- Dynamic Content -->
+            <p class="text-center">กำลังโหลดข้อมูล...</p>
         </div>
     </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (typeof loadPageContent === 'function') {
+                    loadPageContent('บริการ', 'services-content');
+                }
+            }, 500);
+        });
+    </script>
 
     <footer id="contact">
         <div class="container">

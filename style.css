@@ -846,3 +846,171 @@ footer {
         padding: 20px;
     }
 }
+
+/* CKEditor Content Styles in News Detail */
+.news-body figure.image {
+    display: block;
+    margin: 1.5em 0;
+    max-width: 100%;
+    text-align: center;
+}
+
+.news-body figure.image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.news-body figure.media {
+    margin: 1.5em 0;
+    width: 100%;
+    max-width: 100%;
+}
+
+.news-body figure.media iframe {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure oembed/iframe containers from CKEditor respond well */
+.news-body .media>div {
+    position: relative;
+    width: 100%;
+}
+
+/* --- Accordion Styles (Custom Content) --- */
+.custom-accordion {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.custom-accordion-item {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.custom-accordion-item:last-child {
+    border-bottom: none;
+}
+
+.custom-accordion-header {
+    background-color: #f8f9fa;
+    padding: 15px 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 500;
+    color: #333;
+    transition: background-color 0.3s;
+}
+
+.custom-accordion-header:hover {
+    background-color: #e9ecef;
+}
+
+.custom-accordion-header.active {
+    background-color: #e3f2fd;
+    color: var(--primary-color);
+}
+
+.custom-accordion-header i {
+    transition: transform 0.3s;
+}
+
+.custom-accordion-header.active i {
+    transform: rotate(180deg);
+}
+
+.custom-accordion-body {
+    display: none;
+    /* Hidden by default */
+    padding: 20px;
+    background-color: #fff;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.custom-accordion-body.show {
+    display: block;
+}
+
+/* --- Card Grid Layout (Custom Content) --- */
+.grid-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.custom-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    background: #fff;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.custom-card:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    transform: translateY(-5px);
+    border-color: var(--primary-color);
+}
+
+.custom-card-icon {
+    width: 60px;
+    height: 60px;
+    background-color: #f0f7ff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.custom-card-icon img {
+    max-width: 30px;
+    max-height: 30px;
+}
+
+.custom-card-icon i {
+    font-size: 24px;
+    color: var(--primary-color);
+}
+
+.custom-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.custom-card-subtitle {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.custom-btn-outline {
+    display: inline-block;
+    padding: 8px 25px;
+    border: 1px solid var(--primary-color);
+    border-radius: 20px;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    background: transparent;
+}
+
+.custom-btn-outline:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+}
