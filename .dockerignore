@@ -1,6 +1,14 @@
 .git
 .github
 .env
-db
+.env.example
+db/
 docker-compose.yml
 Dockerfile
+backend/
+ckeditor5/
+node_modules/
+**/node_modules/
+edu_mcru.tar
+*.tar
+.DS_Store

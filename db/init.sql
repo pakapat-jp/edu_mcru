@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS edu_mcru;
+CREATE DATABASE IF NOT EXISTS edu_mcru CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE edu_mcru;
 
 -- Users Table
