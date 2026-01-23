@@ -14,8 +14,9 @@ const SECRET_KEY = process.env.JWT_SECRET || 'your_secret_key';
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/assets', express.static(path.join(__dirname, '../assets')));
+app.use(express.static(path.join(__dirname, '../'))); // Serve frontend files
 
 // Database Connection
 const pool = mysql.createPool({
@@ -230,16 +231,50 @@ app.get('/api/news/:id', async (req, res) => {
     }
 });
 
+// Helper to clean FormData values
+const parseNullableInt = (val) => {
+    if (val === 'null' || val === '' || val === null || val === undefined) return null;
+    const num = parseInt(val);
+    return isNaN(num) ? null : num;
+};
+
+const parseDateOrNull = (val) => {
+    if (val === 'null' || val === '' || val === null || val === undefined) return null;
+    return val; // Let MySQL handle valid date string
+};
+
+// ... News Routes ...
+
+// Create News
+// Create News
 app.post('/api/news', authenticateToken, uploadFields, async (req, res) => {
-    const { title, content, category_id, publish_date, status, slug, image_url: bodyImageUrl } = req.body;
+    const { title, content, slug, image_url: bodyImageUrl } = req.body;
+
+    // Parse fields
+    const category_id = parseNullableInt(req.body.category_id);
+    const publish_date = parseDateOrNull(req.body.publish_date) || new Date();
+    // Handle status: if 0, we want 0, not 1.
+    let status = 1;
+    if (req.body.status !== undefined && req.body.status !== '' && req.body.status !== 'null') {
+        status = parseInt(req.body.status);
+    }
 
     // Main Cover Image
     const image_url = (req.files && req.files['image']) ? `/uploads/${req.files['image'][0].filename}` : (bodyImageUrl || null);
 
     // Gallery Images
     let gallery_images = [];
+    // 1. Existing from Body (JSON)
+    if (req.body.existing_gallery_images) {
+        try {
+            const existing = JSON.parse(req.body.existing_gallery_images);
+            if (Array.isArray(existing)) gallery_images = existing;
+        } catch (e) { }
+    }
+    // 2. New Uploads
     if (req.files && req.files['gallery']) {
-        gallery_images = req.files['gallery'].map(file => `/uploads/${file.filename}`);
+        const newImages = req.files['gallery'].map(file => `/uploads/${file.filename}`);
+        gallery_images = [...gallery_images, ...newImages];
     }
     const galleryJson = JSON.stringify(gallery_images);
 
@@ -251,7 +286,7 @@ app.post('/api/news', authenticateToken, uploadFields, async (req, res) => {
     try {
         const [result] = await pool.query(
             'INSERT INTO articles (title, slug, content, image_url, category_id, publish_date, status, author_id, gallery_images) VALUES (?)',
-            [title, finalSlug, content, image_url, category_id, publish_date || new Date(), status || 1, author_id, galleryJson]
+            [[title, finalSlug, content, image_url, category_id, publish_date, status, author_id, galleryJson]]
         );
         res.status(201).json({ id: result.insertId, message: 'Article created successfully' });
     } catch (error) {
@@ -261,12 +296,21 @@ app.post('/api/news', authenticateToken, uploadFields, async (req, res) => {
 
 // Update News
 app.put('/api/news/:id', authenticateToken, uploadFields, async (req, res) => {
-    const { title, content, category_id, publish_date, status, slug } = req.body;
+    const { title, content, slug } = req.body;
     const { id } = req.params;
+
+    // Parse fields
+    const category_id = parseNullableInt(req.body.category_id);
+    const publish_date = parseDateOrNull(req.body.publish_date);
+
+    let status = 1;
+    if (req.body.status !== undefined && req.body.status !== '' && req.body.status !== 'null') {
+        status = parseInt(req.body.status);
+    }
 
     try {
         let query = 'UPDATE articles SET title = ?, content = ?, category_id = ?, publish_date = ?, status = ?';
-        let params = [title, content, category_id, publish_date, status || 1];
+        let params = [title, content, category_id, publish_date, status];
 
         if (slug) {
             query += ', slug = ?';
@@ -461,7 +505,7 @@ app.post('/api/hero-sliders', authenticateToken, upload.single('image'), async (
 
         const [result] = await pool.query(
             'INSERT INTO hero_sliders (image_url, title, subtitle, button_text, button_link, overlay_enabled, is_active) VALUES (?)',
-            [image_url, title, subtitle, button_text, button_link, overlayBool, finalSortOrder, activeBool]
+            [[image_url, title, subtitle, button_text, button_link, overlayBool, activeBool]]
         );
         res.status(201).json({ id: result.insertId, message: 'Slider created', image_url });
     } catch (error) {
@@ -492,7 +536,7 @@ app.put('/api/hero-sliders/:id', authenticateToken, upload.single('image'), asyn
             fields.push('overlay_enabled = ?');
             params.push(overlay_enabled === 'true' || overlay_enabled === true || overlay_enabled === '1');
         }
-        if (sort_order !== undefined) { fields.push('sort_order = ?'); params.push(sort_order); }
+        // sort_order removed
         if (is_active !== undefined) {
             fields.push('is_active = ?');
             params.push(is_active === 'true' || is_active === true || is_active === '1');
@@ -583,7 +627,7 @@ app.post('/api/media/folder', authenticateToken, async (req, res) => {
     try {
         const { name, parent_id } = req.body;
         await pool.query('INSERT INTO media (file_name, file_type, is_folder, parent_id, file_path) VALUES (?)',
-            [name, 'folder', true, parent_id || 0, '']);
+            [[name, 'folder', true, parent_id || 0, '']]);
         res.json({ message: 'Folder created' });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -596,7 +640,7 @@ app.post('/api/media/upload', authenticateToken, upload.single('file'), async (r
         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
 
         await pool.query('INSERT INTO media (file_name, file_path, file_type, file_size, is_folder, parent_id) VALUES (?)',
-            [req.file.originalname, `/uploads/${req.file.filename}`, path.extname(req.file.originalname), req.file.size, false, parent_id || 0]);
+            [[req.file.originalname, `/uploads/${req.file.filename}`, path.extname(req.file.originalname), req.file.size, false, parent_id || 0]]);
 
         res.json({ message: 'File uploaded' });
     } catch (error) {

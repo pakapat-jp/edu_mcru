@@ -13,124 +13,422 @@
 
 <body>
 
-    <!-- Top Banner -->
-    <div class="page-banner">
-        <img src="assets/edu-topbanner.png" alt="Top Banner" style="width: 100%; height: auto; display: block;">
-    </div>
+    <!-- Global Header -->
+    <div id="global-header"></div>
 
-    <nav class="navbar">
-        <div class="container">
-            <a href="index.html" class="logo">
-                <img src="assets/logo-name.png" alt="EDU MCRU">
-            </a>
-            <div class="menu-toggle" id="mobile-menu">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="index.html" class="nav-link">หน้าหลัก</a></li>
-                <li class="dropdown">
-                    <a href="#" class="nav-link">เกี่ยวกับคณะ <i class="fa-solid fa-chevron-down"></i></a>
-                    <ul class="dropdown-menu">
-                        <!-- 2.1 General Info -->
-                        <li class="dropdown-submenu">
-                            <a href="#" class="dropdown-item dropdown-submenu-toggle">ข้อมูลทั่วไป</a>
-                            <ul class="dropdown-menu">
-                                <li><a href="history.html">ประวัติความเป็นมา</a></li>
-                                <li><a href="vision.html">ปรัชญา วิสัยทัศน์ พันธกิจ</a></li>
-                            </ul>
-                        </li>
-                        <!-- 2.2 Administration -->
-                        <li class="dropdown-submenu">
-                            <a href="#" class="dropdown-item dropdown-submenu-toggle">การบริหาร</a>
-                            <ul class="dropdown-menu">
-                                <li><a href="structure.html">โครงสร้าง</a></li>
-                                <li><a href="board.html">คณะกรรมการประจำคณะ</a></li>
-                                <li><a href="deans_list.html">ทำเนียบคณบดี</a></li>
-                                <li><a href="personnel.html">ผู้บริหาร อาจารย์ บุคลากร</a></li>
-                            </ul>
-                        </li>
-                        <!-- Other Items -->
-                        <li><a href="operation_plan.html">แผนการดำเนินงาน</a></li>
-                        <li><a href="operation_results.html">ผลการดำเนินงาน</a></li>
-                        <li><a href="qa.html">ประกันคุณภาพการศึกษา</a></li>
-                        <li><a href="ita.html">ความโปร่งใส่ (ITA)</a></li>
-                    </ul>
-                </li>
-                <li><a href="courses.html" class="nav-link">หลักสูตร</a></li>
-                <li class="dropdown">
-                    <a href="#departments" class="nav-link">หน่วยงาน <i class="fa-solid fa-chevron-down"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="teacher_pro_dev.html">ศูนย์พัฒนาวิชาชีพครู</a></li>
-                        <li><a href="thantawan_school.html">โรงเรียนสาธิตอนุบาลทานตะวัน</a></li>
-                    </ul>
-                </li>
-                <li><a href="documents.html" class="nav-link">เอกสารเผยแพร่</a></li>
-                <li><a href="services.html" class="nav-link">บริการ</a></li>
-                <li><a href="index.html#contact" class="nav-link">ติดต่อเรา</a></li>
-
-            </ul>
+    <!-- Page Header -->
+    <header class="page-header"
+        style="background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); padding: 60px 0; color: white;">
+        <div class="container"
+            style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <h1 class="fade-in-up text-center">ประวัติความเป็นมา</h1>
+            <p class="fade-in-up text-center" style="transition-delay: 0.1s;">คณะครุศาสตร์
+                มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง</p>
         </div>
-    </nav>
+    </header>
 
-    <!-- About/History Section moved from Index -->
+    <!-- Content Section -->
     <section id="page-content" class="section-padding">
         <div class="container" id="history-content">
-            <!-- Dynamic Content -->
-            <p class="text-center">กำลังโหลดข้อมูล...</p>
+            <style>
+                /* ตั้งค่า Font และพื้นฐาน */
+                @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@400;500;700&display=swap');
+
+                .history-wrapper {
+                    font-family: 'Sarabun', sans-serif;
+                    background-color: #f8faff;
+                    padding: 40px 0;
+                    box-sizing: border-box;
+                    color: #333;
+                    line-height: 1.6;
+                    border-radius: 10px;
+                    overflow: hidden;
+                }
+
+                .history-wrapper h2,
+                .history-wrapper h3,
+                .history-wrapper h4 {
+                    font-family: 'Prompt', sans-serif;
+                }
+
+                /* Header ของ Section */
+                .history-header {
+                    text-align: center;
+                    margin-bottom: 60px;
+                    padding: 0 20px;
+                }
+
+                .history-header h2 {
+                    color: #003399;
+                    /* สีน้ำเงินคณะ */
+                    font-size: 2.2rem;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                    position: relative;
+                    display: inline-block;
+                }
+
+                .history-header h2::after {
+                    content: "";
+                    display: block;
+                    width: 60px;
+                    height: 4px;
+                    background: #eeb528;
+                    /* สีเหลืองทอง */
+                    margin: 10px auto 0;
+                    border-radius: 2px;
+                }
+
+                .history-header p {
+                    color: #666;
+                    font-size: 1.1rem;
+                }
+
+                /* Timeline Container */
+                .timeline {
+                    position: relative;
+                    max-width: 1000px;
+                    margin: 0 auto;
+                }
+
+                /* เส้นแกนกลาง */
+                .timeline::after {
+                    content: '';
+                    position: absolute;
+                    width: 4px;
+                    background-color: #e0e0e0;
+                    top: 0;
+                    bottom: 0;
+                    left: 50%;
+                    margin-left: -2px;
+                    border-radius: 2px;
+                }
+
+                /* กล่องข้อความ (Container ของแต่ละปี) */
+                .timeline-container {
+                    padding: 10px 25px;
+                    position: relative;
+                    background-color: inherit;
+                    width: 50%;
+                    box-sizing: border-box;
+                }
+
+                /* ด้านซ้าย */
+                .timeline-container.left {
+                    left: 0;
+                }
+
+                /* ด้านขวา */
+                .timeline-container.right {
+                    left: 50%;
+                }
+
+                /* จุดวงกลมบนเส้น */
+                .timeline-container::after {
+                    content: '';
+                    position: absolute;
+                    width: 20px;
+                    height: 20px;
+                    right: -11.5px;
+                    background-color: #fff;
+                    border: 4px solid #003399;
+                    top: 25px;
+                    border-radius: 50%;
+                    z-index: 10;
+                    transition: all 0.3s ease;
+                }
+
+                .timeline-container.right::after {
+                    left: -11.5px;
+                }
+
+                .timeline-container:hover::after {
+                    background-color: #eeb528;
+                    transform: scale(1.2);
+                }
+
+                /* กล่องเนื้อหา */
+                .content {
+                    padding: 25px;
+                    background-color: white;
+                    position: relative;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                    transition: transform 0.3s ease;
+                    border-top: 4px solid #003399;
+                    text-align: left;
+                    /* บังคับให้ข้อความชิดซ้ายเสมอ */
+                }
+
+                .timeline-container:hover .content {
+                    transform: translateY(-5px);
+                }
+
+                /* ลูกศรชี้ไปที่เส้น */
+                /* ซ้าย */
+                .timeline-container.left .content::before {
+                    content: " ";
+                    height: 0;
+                    position: absolute;
+                    top: 25px;
+                    width: 0;
+                    z-index: 1;
+                    right: -10px;
+                    border: medium solid white;
+                    border-width: 10px 0 10px 10px;
+                    border-color: transparent transparent transparent white;
+                }
+
+                /* ขวา */
+                .timeline-container.right .content::before {
+                    content: " ";
+                    height: 0;
+                    position: absolute;
+                    top: 25px;
+                    width: 0;
+                    z-index: 1;
+                    left: -10px;
+                    border: medium solid white;
+                    border-width: 10px 10px 10px 0;
+                    border-color: transparent white transparent transparent;
+                }
+
+                .content h3 {
+                    color: #003399;
+                    font-size: 1.3rem;
+                    margin-top: 0;
+                    margin-bottom: 10px;
+                    font-weight: 600;
+                }
+
+                .year-badge {
+                    display: inline-block;
+                    background-color: #eeb528;
+                    color: #000;
+                    padding: 4px 12px;
+                    border-radius: 20px;
+                    font-weight: 600;
+                    font-size: 0.9rem;
+                    margin-bottom: 15px;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                }
+
+                .content p {
+                    margin-bottom: 0;
+                    color: #555;
+                    font-size: 0.95rem;
+                }
+
+                /* การเน้นปีปัจจุบัน */
+                .current-year .content {
+                    background: linear-gradient(135deg, #003399, #001f5c);
+                    color: white;
+                    border-top: none;
+                }
+
+                /* ปรับสีลูกศรปีปัจจุบัน */
+                .timeline-container.left.current-year .content::before {
+                    border-color: transparent transparent transparent #001f5c;
+                    /* สีใกล้เคียง gradient */
+                }
+
+                .current-year .content h3 {
+                    color: #eeb528;
+                }
+
+                .current-year .content p,
+                .current-year .course-list li {
+                    color: #e0e0e0;
+                }
+
+                .current-year .year-badge {
+                    background-color: #fff;
+                    color: #003399;
+                }
+
+                .current-year .course-list li::before {
+                    color: #eeb528;
+                }
+
+                /* รายการหลักสูตร */
+                .course-list {
+                    list-style: none;
+                    padding: 0;
+                    margin-top: 15px;
+                    text-align: left;
+                }
+
+                .course-list li {
+                    margin-bottom: 8px;
+                    padding-left: 20px;
+                    position: relative;
+                    font-size: 0.9rem;
+                }
+
+                .course-list li::before {
+                    content: "•";
+                    color: #eeb528;
+                    font-weight: bold;
+                    position: absolute;
+                    left: 0;
+                }
+
+                /* Responsive Design (มือถือ) */
+                @media screen and (max-width: 768px) {
+                    .timeline::after {
+                        left: 20px;
+                    }
+
+                    .timeline-container {
+                        width: 100%;
+                        padding-left: 50px;
+                        padding-right: 20px;
+                    }
+
+                    /* Reset container positions */
+                    .timeline-container.left,
+                    .timeline-container.right {
+                        left: 0;
+                    }
+
+                    /* Adjust dots */
+                    .timeline-container::after {
+                        left: 10px;
+                        /* Center at 20px */
+                        right: auto;
+                    }
+
+                    .timeline-container.left::after {
+                        left: 10px;
+                    }
+
+                    /* Adjust arrows to always point left */
+                    .timeline-container.left .content::before,
+                    .timeline-container.right .content::before {
+                        left: -10px;
+                        right: auto;
+                        border-width: 10px 10px 10px 0;
+                        border-color: transparent white transparent transparent;
+                    }
+
+                    .timeline-container.left.current-year .content::before {
+                        border-color: transparent #001f5c transparent transparent;
+                    }
+
+                    .history-header h2 {
+                        font-size: 1.8rem;
+                    }
+                }
+            </style>
+
+            <div class="history-wrapper">
+
+                <div class="history-header">
+                    <h2>ประวัติความเป็นมา</h2>
+                    <p>เส้นทางแห่งการพัฒนา คณะครุศาสตร์ มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง</p>
+                </div>
+
+                <div class="timeline">
+
+                    <div class="timeline-container left">
+                        <div class="content">
+                            <span class="year-badge">พ.ศ. 2518</span>
+                            <h3>จุดเริ่มต้น "วิทยาลัยครู"</h3>
+                            <p>จัดตั้งขึ้นตาม พ.ร.บ. วิทยาลัยครู พ.ศ. 2518 โดยใช้ชื่อ "คณะวิชาครุศาสตร์"
+                                เปิดสอนปริญญาตรี สาขาวิชาการศึกษา (ค.บ.) ประกอบด้วย 6 ภาควิชา</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-container right">
+                        <div class="content">
+                            <span class="year-badge">พ.ศ. 2527</span>
+                            <h3>ขยายโอกาสทางการศึกษา</h3>
+                            <p>ประกาศใช้ พ.ร.บ. วิทยาลัยครู ฉบับที่ 2 เปิดสอนสาขาวิชาอื่นเพิ่มเติม ได้แก่
+                                วิทยาศาสตรบัณฑิต (ว.ท.บ.) และศิลปศาสตรบัณฑิต (ศศ.บ.)</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-container left">
+                        <div class="content">
+                            <span class="year-badge">พ.ศ. 2535 - 2538</span>
+                            <h3>นามพระราชทาน "สถาบันราชภัฏ"</h3>
+                            <p>ในหลวงรัชกาลที่ 9 พระราชทานนาม "สถาบันราชภัฏ" เปลี่ยนชื่อหน่วยงานเป็น "คณะครุศาสตร์"
+                                และเปลี่ยนชื่อตำแหน่งผู้บริหารเป็น "คณบดี"</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-container right">
+                        <div class="content">
+                            <span class="year-badge">พ.ศ. 2541 - 2542</span>
+                            <h3>ก้าวสู่ระดับบัณฑิตศึกษา</h3>
+                            <p>เริ่มเปิดสอนระดับปริญญาโท "สาขาบริหารการศึกษา" (ปี 2541)
+                                และปรับโครงสร้างการบริหารจากภาควิชาเป็น "โปรแกรมวิชา" (ปี 2542) เพื่อเพิ่มประสิทธิภาพ
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-container left">
+                        <div class="content">
+                            <span class="year-badge">พ.ศ. 2545</span>
+                            <h3>รวมพลังสร้างเอกภาพ</h3>
+                            <p>ย้ายโปรแกรมวิชาทางครุศาสตร์ (ค.บ.) จากคณะอื่นมารวมที่คณะครุศาสตร์
+                                ทำให้มีโปรแกรมวิชาเพิ่มเป็น 11 สาขา เพื่อความเป็นเอกภาพในการผลิตครู</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-container right">
+                        <div class="content">
+                            <span class="year-badge">พ.ศ. 2547</span>
+                            <h3>สู่ "มหาวิทยาลัยราชภัฏ"</h3>
+                            <p>ยกฐานะเป็น "มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง" และเริ่มเปิดสอนหลักสูตรครุศาสตร์ (ครู 5 ปี)
+                                ตาม พ.ร.บ. สภาครูและบุคลากรทางการศึกษา</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-container left">
+                        <div class="content">
+                            <span class="year-badge">พ.ศ. 2563</span>
+                            <h3>โครงการ "ครูรัก(ษ์)ถิ่น"</h3>
+                            <p>ร่วมมือกับ กสศ. สร้างโอกาสให้นักเรียนในพื้นที่ห่างไกลเรียนครู
+                                เพื่อกลับไปพัฒนาโรงเรียนในท้องถิ่น (Community Teacher)</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-container right">
+                        <div class="content">
+                            <span class="year-badge">พ.ศ. 2565</span>
+                            <h3>เปิดสอน "สาขาวิชาประถมศึกษา"</h3>
+                            <p>คณะครุศาสตร์ได้กลับมาเปิดสอนหลักสูตรปริญญาตรี สาขาวิชาประถมศึกษา
+                                อีกครั้งเพื่อตอบสนองความต้องการบุคลากรครูขั้นพื้นฐาน</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-container left current-year">
+                        <div class="content">
+                            <span class="year-badge">ปัจจุบัน (ปีการศึกษา 2566)</span>
+                            <h3>หลักสูตรที่เปิดสอน (4 ระดับ)</h3>
+                            <p>ปัจจุบันมีการปรับปรุงหลักสูตรเพื่อผลิตครูคุณภาพสู่สังคม ดังนี้:</p>
+                            <ul class="course-list">
+                                <li><strong>ป.ตรี (4 ปี):</strong> เทคโนโลยีดิจิทัลเพื่อการศึกษา,
+                                    เทคโนโลยีดิจิทัลและคณิตศาสตร์, การศึกษาปฐมวัย, ภาษาอังกฤษ, พลศึกษา, ประถมศึกษา</li>
+                                <li><strong>ป.บัณฑิต:</strong> วิชาชีพครู</li>
+                                <li><strong>ป.โท:</strong> บริหารการศึกษา, นวัตกรรมการจัดการเรียนรู้คณิตศาสตร์</li>
+                                <li><strong>ป.เอก:</strong> บริหารการศึกษา</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </section>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Function defined in script.js
-            setTimeout(() => {
-                if (typeof loadPageContent === 'function') {
-                    loadPageContent('ประวัติความเป็นมา', 'history-content');
-                } else {
-                    console.error('loadPageContent not found');
-                }
-            }, 500); // Small delay to ensure script.js loaded
-        });
-    </script>
 
-    <!-- Footer (Same as index) -->
-    <footer id="contact">
-        <div class="container">
-            <div class="footer-content grid-4">
-                <div class="footer-col">
-                    <h3>ติดต่อเรา</h3>
-                    <p>คณะครุศาสตร์ <br>มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง</p>
-                    <p>46 หมู่ 3 ต.จอมบึง อ.จอมบึง <br>จ.ราชบุรี 70150</p>
-                </div>
-                <div class="footer-col">
-                    <h3>ลิงก์ด่วน</h3>
-                    <ul>
-                        <li><a href="#">ระบบบริการการศึกษา</a></li>
-                        <li><a href="#">ห้องสมุด</a></li>
-                        <li><a href="#">ปฏิทินวิชาการ</a></li>
-                        <li><a href="#">ดาวน์โหลดเอกสาร</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h3>ติดตามเรา</h3>
-                    <div class="social-links">
-                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="#"><i class="fa-brands fa-line"></i></a>
-                        <a href="#"><i class="fa-brands fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="footer-col">
-                    <h3>สำหรับผู้ดูแลระบบ</h3>
-                    <a href="#" class="btn btn-outline text-white btn-sm">เข้าสู่ระบบ</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Education Faculty, Muban Chombueng Rajabhat University. All Rights Reserved.</p>
-            </div>
-        </div>
-    </footer>
+
+    <!-- Global Footer -->
+    <div id="global-footer"></div>
+
+    <script src="js/global-loader.js"></script>
     <script src="script.js"></script>
 </body>
 

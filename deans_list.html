@@ -15,66 +15,8 @@
 
 <body>
 
-    <!-- Top Banner -->
-    <div class="page-banner">
-        <img src="assets/edu-topbanner.png" alt="Top Banner" style="width: 100%; height: auto; display: block;">
-    </div>
-
-    <nav class="navbar">
-        <div class="container">
-            <a href="index.html" class="logo">
-                <img src="assets/logo-name.png" alt="EDU MCRU">
-            </a>
-            <div class="menu-toggle" id="mobile-menu">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="index.html" class="nav-link">หน้าหลัก</a></li>
-                <li class="dropdown">
-                    <a href="#" class="nav-link active">เกี่ยวกับคณะ <i class="fa-solid fa-chevron-down"></i></a>
-                    <ul class="dropdown-menu">
-                        <!-- 2.1 General Info -->
-                        <li class="dropdown-submenu">
-                            <a href="#" class="dropdown-item dropdown-submenu-toggle">ข้อมูลทั่วไป</a>
-                            <ul class="dropdown-menu">
-                                <li><a href="history.html">ประวัติความเป็นมา</a></li>
-                                <li><a href="vision.html">ปรัชญา วิสัยทัศน์ พันธกิจ</a></li>
-                            </ul>
-                        </li>
-                        <!-- 2.2 Administration -->
-                        <li class="dropdown-submenu">
-                            <a href="#" class="dropdown-item dropdown-submenu-toggle">การบริหาร</a>
-                            <ul class="dropdown-menu">
-                                <li><a href="structure.html">โครงสร้าง</a></li>
-                                <li><a href="board.html">คณะกรรมการประจำคณะ</a></li>
-                                <li><a href="deans_list.html">ทำเนียบคณบดี</a></li>
-                                <li><a href="personnel.html">ผู้บริหาร อาจารย์ บุคลากร</a></li>
-                            </ul>
-                        </li>
-                        <!-- Other Items -->
-                        <li><a href="operation_plan.html">แผนการดำเนินงาน</a></li>
-                        <li><a href="operation_results.html">ผลการดำเนินงาน</a></li>
-                        <li><a href="qa.html">ประกันคุณภาพการศึกษา</a></li>
-                        <li><a href="ita.html">ความโปร่งใส่ (ITA)</a></li>
-                    </ul>
-                </li>
-                <li><a href="courses.html" class="nav-link">หลักสูตร</a></li>
-                <li class="dropdown">
-                    <a href="#departments" class="nav-link">หน่วยงาน <i class="fa-solid fa-chevron-down"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="teacher_pro_dev.html">ศูนย์พัฒนาวิชาชีพครู</a></li>
-                        <li><a href="thantawan_school.html">โรงเรียนสาธิตอนุบาลทานตะวัน</a></li>
-                    </ul>
-                </li>
-                <li><a href="documents.html" class="nav-link">เอกสารเผยแพร่</a></li>
-                <li><a href="services.html" class="nav-link">บริการ</a></li>
-                <li><a href="index.html#contact" class="nav-link">ติดต่อเรา</a></li>
-
-            </ul>
-        </div>
-    </nav>
+    <!-- Global Header -->
+    <div id="global-header"></div>
 
     <header class="page-header"
         style="background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); padding: 60px 0; color: white;">
@@ -86,59 +28,466 @@
         </div>
     </header>
 
-    <section id="page-content" class="section-padding">
-        <div class="container" id="deans-list-content">
-            <!-- Dynamic Content -->
-            <p class="text-center">กำลังโหลดข้อมูล...</p>
+    <style>
+        /* CSS สำหรับทำเนียบคณบดี */
+        .dean-hall-container {
+            font-family: 'Sarabun', 'Prompt', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #f8faff;
+            /* พื้นหลังสีฟ้าอ่อนจางๆ */
+            box-sizing: border-box;
+        }
+
+        .dean-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .dean-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #003366;
+            /* สีน้ำเงินเข้ม */
+            margin: 0;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+
+        .dean-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: #ffcc00;
+            /* เส้นขีดสีทอง */
+            border-radius: 2px;
+        }
+
+        /* Grid Layout matching personnel.html styles */
+        .dean-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            padding: 20px 0;
+            justify-content: center;
+        }
+
+        /* Card Style matching personnel.html */
+        .dean-card {
+            width: 300px;
+            /* Standard fixed width */
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            padding-bottom: 20px;
+            border: 1px solid #eee;
+            /* Reset specific dean styles to match personnel */
+            border-top: 1px solid #eee;
+            display: block;
+            /* Reset flex */
+            padding: 0 0 20px 0;
+            /* Reset padding */
+        }
+
+        .dean-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Current Dean Special Style - keep slightly distinct but use structure matching personnel */
+        .current-dean-section {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 60px;
+        }
+
+        /* Current dean gets a special highlight but same structure */
+        .dean-card.current {
+            width: 300px;
+            /* Keep consistent size */
+            border: 2px solid #ffcc00;
+            /* Gold border for current */
+            background: #fffdf5;
+            padding: 0 0 20px 0;
+        }
+
+        /* Acting Dean Style (รักษาการ) */
+        .dean-card.acting {
+            background-color: #fafafa;
+        }
+
+        /* Image Styling matching personnel.html */
+        .dean-img-box {
+            width: 100%;
+            height: 320px;
+            /* Portrait aspect ratio from personnel.html */
+            margin-bottom: 0;
+            /* Reset */
+            position: relative;
+        }
+
+        /* Reset current specific img box */
+        .current .dean-img-box {
+            width: 100%;
+            height: 320px;
+        }
+
+        .dean-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            border-radius: 0;
+            /* Remove circle */
+            border: none;
+            /* Remove border */
+            box-shadow: none;
+            /* Remove shadow */
+            background-color: #f0f0f0;
+        }
+
+        .current .dean-img {
+            border-color: transparent;
+        }
+
+        /* Text Styling matching personnel.html */
+        .dean-info {
+            padding: 20px 15px 5px;
+        }
+
+        .dean-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            line-height: 1.4;
+            padding: 0 10px;
+        }
+
+        .current .dean-name {
+            font-size: 1.25rem;
+            /* Slightly larger for current */
+            color: #003366;
+        }
+
+        .dean-period {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 5px;
+            display: block;
+            background: none;
+            /* Remove badge style or keep if desired, let's keep simpler */
+            padding: 0;
+        }
+
+        .dean-position {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 300;
+            line-height: 1.4;
+            padding: 0 10px;
+        }
+
+        .dean-card.acting .dean-position {
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Section Title */
+        .era-title {
+            font-size: 20px;
+            color: #003366;
+            margin-bottom: 25px;
+            border-left: 5px solid #ffcc00;
+            padding-left: 15px;
+            font-weight: 700;
+            margin-left: 20px;
+        }
+    </style>
+
+    <div class="dean-hall-container">
+        <div class="dean-header">
+            <h2>ทำเนียบคณบดีคณะครุศาสตร์</h2>
         </div>
-    </section>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                if (typeof loadPageContent === 'function') {
-                    loadPageContent('ทำเนียบคณบดี', 'deans-list-content');
-                }
-            }, 500);
-        });
-    </script>
-
-    <footer id="contact">
-        <div class="container">
-            <div class="footer-content grid-4">
-                <div class="footer-col">
-                    <h3>ติดต่อเรา</h3>
-                    <p>คณะครุศาสตร์ <br>มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง</p>
-                    <p>46 หมู่ 3 ต.จอมบึง อ.จอมบึง <br>จ.ราชบุรี 70150</p>
+        <div class="current-dean-section">
+            <div class="dean-card current">
+                <div class="dean-img-box">
+                    <img src="/uploads/personnel/1768642550998-778994185.jpg" alt="Dr. Kriengwut" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
                 </div>
-                <div class="footer-col">
-                    <h3>ลิงก์ด่วน</h3>
-                    <ul>
-                        <li><a href="#">ระบบบริการการศึกษา</a></li>
-                        <li><a href="#">ห้องสมุด</a></li>
-                        <li><a href="#">ปฏิทินวิชาการ</a></li>
-                        <li><a href="#">ดาวน์โหลดเอกสาร</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h3>ติดตามเรา</h3>
-                    <div class="social-links">
-                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="#"><i class="fa-brands fa-line"></i></a>
-                        <a href="#"><i class="fa-brands fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="footer-col">
-                    <h3>สำหรับผู้ดูแลระบบ</h3>
-                    <a href="#" class="btn btn-outline text-white btn-sm">เข้าสู่ระบบ</a>
+                <div class="dean-info">
+                    <div class="dean-name">อาจารย์ ดร.เกรียงวุธ นีละคุปต์</div>
+                    <div class="dean-position">คณบดี</div>
+                    <div class="dean-period">30 ตุลาคม พ.ศ. 2568 - ปัจจุบัน</div>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Education Faculty, Muban Chombueng Rajabhat University. All Rights Reserved.
-                </p>
+        </div>
+
+        <div class="era-title">ทำเนียบอดีตคณบดี</div>
+        <div class="dean-grid">
+
+            <div class="dean-card acting">
+                <div class="dean-img-box">
+                    <img src="/uploads/1769065026605-469263388.png" alt="Asst. Prof. Dr. Santi" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">ผศ.ดร.สันติ รักษาวงศ์</div>
+                    <div class="dean-position">รักษาการคณบดี</div>
+                    <div class="dean-period">ก.ย. - ต.ค. 2568</div>
+                </div>
+            </div>
+
+            <div class="dean-card">
+                <div class="dean-img-box">
+                    <img src="/uploads/1769065026701-849659307.JPG" alt="Asst. Prof. Dr. Sujitra" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">ผศ.ดร.สุจิตตรา จันทร์ลอย</div>
+                    <div class="dean-position">คณบดี</div>
+                    <div class="dean-period">มี.ค. - ส.ค. พ.ศ. 2568</div>
+                </div>
+            </div>
+
+            <div class="dean-card">
+                <div class="dean-img-box">
+                    <img src="/uploads/personnel/1768642550998-778994185.jpg" alt="Dr. Kriengwut" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">อาจารย์ ดร.เกรียงวุธ นีละคุปต์</div>
+                    <div class="dean-position">คณบดี</div>
+                    <div class="dean-period">พ.ศ. 2564 – ก.พ. 2568</div>
+                </div>
+            </div>
+
+            <div class="dean-card acting">
+                <div class="dean-img-box">
+                    <img src="/uploads/1769065026600-490915570.png" alt="Asst. Prof. Dr. Chatchawan" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">ผศ.ดร.ชัชวาล แอร่มหล้า</div>
+                    <div class="dean-position">รักษาการคณบดี</div>
+                    <div class="dean-period">3 ธันวาคม 2563</div>
+                </div>
+            </div>
+
+            <div class="dean-card acting">
+                <div class="dean-img-box">
+                    <img src="/uploads/1769065361896-298627197.jpg" alt="Asst. Prof. Nathapornpat" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">ผศ.ณฐพรภัทร์ อินทร์ศิริพงษ์</div>
+                    <div class="dean-position">รักษาการคณบดี</div>
+                    <div class="dean-period">20 เมษายน 2562</div>
+                </div>
+            </div>
+
+            <div class="dean-card">
+                <div class="dean-img-box">
+                    <img src="/uploads/personnel/1768642550998-778994185.jpg" alt="Dr. Kriengwut" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">อาจารย์ ดร.เกรียงวุธ นีละคุปต์</div>
+                    <div class="dean-position">คณบดี</div>
+                    <div class="dean-period">พ.ศ. 2559 – 2562</div>
+                </div>
+            </div>
+
+            <div class="dean-card">
+                <div class="dean-img-box">
+                    <img src="assets/personnel/deansList/somboon_2556.jpg" alt="Asst. Prof. Dr. Somboon"
+                        class="dean-img" onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">ผศ.ดร.สมบูรณ์ ลิขิตยิ่งวรา</div>
+                    <div class="dean-position">คณบดี</div>
+                    <div class="dean-period">พ.ศ. 2556 – 2559</div>
+                </div>
+            </div>
+
+            <div class="dean-card">
+                <div class="dean-img-box">
+                    <img src="/uploads/1769064977390-673933240.JPG" alt="Dr. Thaworn" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">อาจารย์ ดร.ถาวร เส้งเอียด</div>
+                    <div class="dean-position">คณบดี</div>
+                    <div class="dean-period">พ.ศ. 2552 - 2556</div>
+                </div>
+            </div>
+
+            <div class="dean-card">
+                <div class="dean-img-box">
+                    <img src="assets/personnel/deansList/somboon_2548.jpg" alt="Asst. Prof. Somboon" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">ผศ.สมบูรณ์ ลิขิตยิ่งวรา</div>
+                    <div class="dean-position">คณบดี</div>
+                    <div class="dean-period">พ.ศ. 2548 – 2552</div>
+                </div>
+            </div>
+
+            <div class="dean-card">
+                <div class="dean-img-box">
+                    <img src="assets/personnel/deansList/sanae.jpg" alt="Asst. Prof. Sanae" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">ผศ.เสน่ห์ ระหว่างบ้าน</div>
+                    <div class="dean-position">คณบดี</div>
+                    <div class="dean-period">พ.ศ. 2546 – 2548</div>
+                </div>
+            </div>
+
+            <div class="dean-card">
+                <div class="dean-img-box">
+                    <img src="assets/personnel/deansList/sompong.jpg" alt="Ajarn Sompong" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">อาจารย์สมปอง สกุลทับ</div>
+                    <div class="dean-position">คณบดี</div>
+                    <div class="dean-period">พ.ศ. 2542 – 2546</div>
+                </div>
+            </div>
+
+            <div class="dean-card">
+                <div class="dean-img-box">
+                    <img src="assets/personnel/deansList/phasom.jpg" alt="Asst. Prof. Phasom" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">ผศ.ผสม จันทร์เทพย์</div>
+                    <div class="dean-position">คณบดี</div>
+                    <div class="dean-period">พ.ศ. 2538 – 2542</div>
+                </div>
             </div>
         </div>
-    </footer>
+
+        <div class="era-title">ยุคหัวหน้าคณะวิชา (พ.ศ. 2520 - 2538)</div>
+        <div class="dean-grid">
+            <div class="dean-card">
+                <div class="dean-img-box">
+                    <img src="assets/personnel/deansList/narong.jpg" alt="Ajarn Narong" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">อาจารย์ณรงค์ เทียมเมฆ</div>
+                    <div class="dean-position">หัวหน้าคณะวิชา</div>
+                    <div class="dean-period">พ.ศ. 2536 – 2538</div>
+                </div>
+            </div>
+
+            <div class="dean-card">
+                <div class="dean-img-box">
+                    <img src="assets/personnel/deansList/jirasak.jpg" alt="Asst. Prof. Jirasak" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">ผศ.จิรศักดิ์ เอี่ยมพงษ์ไพฑูรย์</div>
+                    <div class="dean-position">หัวหน้าคณะวิชา</div>
+                    <div class="dean-period">พ.ศ. 2532 – 2536</div>
+                </div>
+            </div>
+
+            <div class="dean-card">
+                <div class="dean-img-box">
+                    <img src="assets/personnel/deansList/kosol.jpg" alt="Asst. Prof. Dr. Kosol" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">ผศ.ดร.โกศล มีคุณ</div>
+                    <div class="dean-position">หัวหน้าคณะวิชา</div>
+                    <div class="dean-period">พ.ศ. 2531</div>
+                </div>
+            </div>
+
+            <div class="dean-card">
+                <div class="dean-img-box">
+                    <img src="assets/personnel/deansList/ekalak.jpg" alt="Ajarn Ekalak" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">อาจารย์เอกลักษณ์ ขำดี</div>
+                    <div class="dean-position">หัวหน้าคณะวิชา</div>
+                    <div class="dean-period">พ.ศ. 2527 – 2530</div>
+                </div>
+            </div>
+
+            <div class="dean-card">
+                <div class="dean-img-box">
+                    <img src="assets/personnel/deansList/prasit.jpg" alt="Ajarn Prasit" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">อาจารย์ประสิทธิ์ เทียมเดช</div>
+                    <div class="dean-position">หัวหน้าคณะวิชา</div>
+                    <div class="dean-period">พ.ศ. 2524 – 2526</div>
+                </div>
+            </div>
+
+            <div class="dean-card">
+                <div class="dean-img-box">
+                    <img src="assets/personnel/deansList/kanok.jpg" alt="Ajarn Kanok" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">อาจารย์กนก ใบบัว</div>
+                    <div class="dean-position">หัวหน้าคณะวิชา</div>
+                    <div class="dean-period">พ.ศ. 2523 – 2524</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="era-title">ยุคหัวหน้าหมวดวิชา (พ.ศ. 2519 - 2523)</div>
+        <div class="dean-grid">
+            <div class="dean-card">
+                <div class="dean-img-box">
+                    <img src="assets/personnel/deansList/paisan.jpg" alt="Ajarn Paisan" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">อาจารย์ไพศาล ไกรสิทธิ์</div>
+                    <div class="dean-position">หัวหน้าหมวดวิชา</div>
+                    <div class="dean-period">พ.ศ. 2520 – 2523</div>
+                </div>
+            </div>
+
+            <div class="dean-card">
+                <div class="dean-img-box">
+                    <img src="assets/personnel/deansList/maitree.jpg" alt="Ajarn Maitree" class="dean-img"
+                        onerror="this.src='assets/personnel/deansList/dean_placeholder.svg'">
+                </div>
+                <div class="dean-info">
+                    <div class="dean-name">อาจารย์ไมตรี วรรธกวิธา</div>
+                    <div class="dean-position">หัวหน้าหมวดวิชา</div>
+                    <div class="dean-period">พ.ศ. 2519 – 2520</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Footer -->
+    <div id="global-footer"></div>
+
+    <script src="js/global-loader.js"></script>
     <script src="script.js"></script>
 </body>
 

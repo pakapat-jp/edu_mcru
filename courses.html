@@ -43,29 +43,95 @@
 
             <!-- Bachelor's Degree -->
             <div id="bachelor" class="tab-content fade-in-up" style="display: block;">
-                <div id="bachelor-content">
-                    <p class="text-center">กำลังโหลดข้อมูล...</p>
+                <h2 class="course-section-title">หลักสูตรปริญญาตรี</h2>
+                <div class="grid-3">
+                    <!-- Card 1 -->
+                    <div class="course-card">
+                        <div class="course-icon" style="background-color: #e3f2fd; color: #1976d2;">
+                            <i class="fa-solid fa-child-reaching"></i>
+                        </div>
+                        <h3>สาขาวิชาการศึกษาปฐมวัย</h3>
+                        <div class="course-subtitle">ครุศาสตรบัณฑิต (ค.บ.) หลักสูตรปรับปรุง พ.ศ. 2566</div>
+                        <link href="https://drive.google.com/file/d/1G7AY0fVQw_s_c-yh8KwtyYUGSEMLC-1G/view?usp=sharing">
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="course-card">
+                        <div class="course-icon" style="background-color: #e8eaf6; color: #3f51b5;">
+                            <i class="fa-solid fa-desktop"></i>
+                        </div>
+                        <h3>สาขาวิชาเทคโนโลยีดิจิทัลเพื่อการศึกษา</h3>
+                        <div class="course-subtitle">ครุศาสตรบัณฑิต (ค.บ.) หลักสูตรปรับปรุง พ.ศ. 2566</div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="course-card active-border">
+                        <div class="course-icon" style="background-color: #e1f5fe; color: #0288d1;">
+                            <i class="fa-solid fa-language"></i>
+                        </div>
+                        <h3>สาขาวิชาภาษาอังกฤษ</h3>
+                        <div class="course-subtitle">ครุศาสตรบัณฑิต (ค.บ.) หลักสูตรปรับปรุง พ.ศ. 2566</div>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div class="course-card">
+                        <div class="course-icon" style="background-color: #e0f7fa; color: #00acc1;">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                        </div>
+                        <h3>สาขาวิชาการประถมศึกษา</h3>
+                        <div class="course-subtitle">ครุศาสตรบัณฑิต (ค.บ.) หลักสูตรใหม่ พ.ศ. 2565</div>
+                    </div>
+
+                    <!-- Card 5 -->
+                    <div class="course-card">
+                        <div class="course-icon" style="background-color: #f3e5f5; color: #8e24aa;">
+                            <i class="fa-solid fa-person-running"></i>
+                        </div>
+                        <h3>สาขาวิชาพลศึกษา</h3>
+                        <div class="course-subtitle">ครุศาสตรบัณฑิต (ค.บ.) หลักสูตรปรับปรุง พ.ศ. 2566</div>
+                    </div>
                 </div>
             </div>
 
             <!-- Master's Degree -->
             <div id="master" class="tab-content fade-in-up">
-                <div id="master-content">
-                    <p class="text-center">กำลังโหลดข้อมูล...</p>
+                <h2 class="course-section-title">หลักสูตรปริญญาโท</h2>
+
+                <!-- Single Card Full Width -->
+                <div class="course-card" style="display: block;">
+                    <div class="course-icon" style="background-color: #e3f2fd; color: #1565c0;">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <h3>สาขาวิชาการบริหารการศึกษา</h3>
+                    <div class="course-subtitle">ครุศาสตรมหาบัณฑิต (ค.ม.) พ.ศ. 2564</div>
                 </div>
             </div>
 
             <!-- Doctoral Degree -->
             <div id="doctoral" class="tab-content fade-in-up">
-                <div id="doctoral-content">
-                    <p class="text-center">กำลังโหลดข้อมูล...</p>
+                <h2 class="course-section-title">หลักสูตรปริญญาเอก</h2>
+
+                <!-- Single Card Full Width -->
+                <div class="course-card" style="display: block;">
+                    <div class="course-icon" style="background-color: #e3f2fd; color: #0d47a1;">
+                        <i class="fa-solid fa-user-doctor"></i>
+                    </div>
+                    <h3>สาขาวิชาการบริหารการศึกษา</h3>
+                    <div class="course-subtitle">ครุศาสตรดุษฎีบัณฑิต (ค.ด.)</div>
                 </div>
             </div>
 
             <!-- Diploma -->
             <div id="diploma" class="tab-content fade-in-up">
-                <div id="diploma-content">
-                    <p class="text-center">กำลังโหลดข้อมูล...</p>
+                <h2 class="course-section-title">หลักสูตรประกาศนียบัตร</h2>
+
+                <!-- Single Card Full Width -->
+                <div class="course-card" style="display: block;">
+                    <div class="course-icon" style="background-color: #e3f2fd; color: #0277bd;">
+                        <i class="fa-solid fa-certificate"></i>
+                    </div>
+                    <h3>วิชาชีพครู</h3>
+                    <div class="course-subtitle">ประกาศนียบัตรวิชาชีพครู (ป.บัณฑิต)</div>
                 </div>
             </div>
 
@@ -76,10 +142,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 if (typeof loadPageContent === 'function') {
-                    loadPageContent('หลักสูตรปริญญาตรี', 'bachelor-content');
-                    loadPageContent('หลักสูตรปริญญาโท', 'master-content');
-                    loadPageContent('หลักสูตรปริญญาเอก', 'doctoral-content');
-                    loadPageContent('หลักสูตรประกาศนียบัตร', 'diploma-content');
+                    // All courses are now static based on user design requests
                 }
             }, 500);
         });

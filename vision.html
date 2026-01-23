@@ -13,120 +13,394 @@
 
 <body>
 
-    <!-- Top Banner -->
-    <div class="page-banner">
-        <img src="assets/edu-topbanner.png" alt="Top Banner" style="width: 100%; height: auto; display: block;">
-    </div>
+    <!-- Global Header -->
+    <div id="global-header"></div>
 
-    <nav class="navbar">
-        <div class="container">
-            <a href="index.html" class="logo">
-                <img src="assets/logo-name.png" alt="EDU MCRU">
-            </a>
-            <div class="menu-toggle" id="mobile-menu">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="index.html" class="nav-link">หน้าหลัก</a></li>
-                <li class="dropdown">
-                    <a href="#" class="nav-link active">เกี่ยวกับคณะ <i class="fa-solid fa-chevron-down"></i></a>
-                    <ul class="dropdown-menu">
-                        <!-- 2.1 General Info -->
-                        <li class="dropdown-submenu">
-                            <a href="#" class="dropdown-item dropdown-submenu-toggle">ข้อมูลทั่วไป</a>
-                            <ul class="dropdown-menu">
-                                <li><a href="history.html">ประวัติความเป็นมา</a></li>
-                                <li><a href="vision.html">ปรัชญา วิสัยทัศน์ พันธกิจ</a></li>
-                            </ul>
-                        </li>
-                        <!-- 2.2 Administration -->
-                        <li class="dropdown-submenu">
-                            <a href="#" class="dropdown-item dropdown-submenu-toggle">การบริหาร</a>
-                            <ul class="dropdown-menu">
-                                <li><a href="structure.html">โครงสร้าง</a></li>
-                                <li><a href="board.html">คณะกรรมการประจำคณะ</a></li>
-                                <li><a href="deans_list.html">ทำเนียบคณบดี</a></li>
-                                <li><a href="personnel.html">ผู้บริหาร อาจารย์ บุคลากร</a></li>
-                            </ul>
-                        </li>
-                        <!-- Other Items -->
-                        <li><a href="operation_plan.html">แผนการดำเนินงาน</a></li>
-                        <li><a href="operation_results.html">ผลการดำเนินงาน</a></li>
-                        <li><a href="qa.html">ประกันคุณภาพการศึกษา</a></li>
-                        <li><a href="ita.html">ความโปร่งใส่ (ITA)</a></li>
-                    </ul>
-                </li>
-                <li><a href="courses.html" class="nav-link">หลักสูตร</a></li>
-                <li class="dropdown">
-                    <a href="#departments" class="nav-link">หน่วยงาน <i class="fa-solid fa-chevron-down"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="teacher_pro_dev.html">ศูนย์พัฒนาวิชาชีพครู</a></li>
-                        <li><a href="thantawan_school.html">โรงเรียนสาธิตอนุบาลทานตะวัน</a></li>
-                    </ul>
-                </li>
-                <li><a href="documents.html" class="nav-link">เอกสารเผยแพร่</a></li>
-                <li><a href="services.html" class="nav-link">บริการ</a></li>
-                <li><a href="index.html#contact" class="nav-link">ติดต่อเรา</a></li>
-
-            </ul>
+    <!-- Page Header -->
+    <header class="page-header"
+        style="background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); padding: 60px 0; color: white;">
+        <div class="container"
+            style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <h1 class="fade-in-up text-center">ปรัชญา วิสัยทัศน์ พันธกิจ</h1>
+            <p class="fade-in-up text-center" style="transition-delay: 0.1s;">คณะครุศาสตร์
+                มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง</p>
         </div>
-    </nav>
+    </header>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* Scoped CSS สำหรับส่วนนี้โดยเฉพาะ */
+        .edu-content-wrapper {
+            font-family: 'Prompt', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .edu-content-wrapper h2,
+        .edu-content-wrapper h3 {
+            margin-top: 0;
+            font-weight: 600;
+        }
+
+        /* Hero Section - ปรัชญา */
+        .edu-hero-card {
+            background: linear-gradient(135deg, #003366 0%, #004080 100%);
+            color: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(0, 51, 102, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .edu-hero-card::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            font-size: 150px;
+            color: rgba(255, 255, 255, 0.1);
+            font-family: serif;
+        }
+
+        .edu-hero-title {
+            color: #ffcc00;
+            /* สีเหลืองทอง */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .edu-hero-quote {
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        /* Grid Layout */
+        .edu-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .edu-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .edu-grid-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Cards Common Style */
+        .edu-card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #003366;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .edu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .edu-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .edu-card-icon {
+            background-color: #e6f0ff;
+            color: #003366;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+
+        .edu-card-title {
+            font-size: 1.4rem;
+            color: #003366;
+            margin: 0;
+        }
+
+        .edu-list {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .edu-list li {
+            margin-bottom: 8px;
+        }
+
+        /* Identity Section (อัตลักษณ์) */
+        .identity-box {
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid #ffcc00;
+        }
+
+        .identity-header {
+            background-color: #f4f4f4;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            color: #003366;
+            font-size: 1.2rem;
+        }
+
+        .identity-body {
+            padding: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Strategic Issues (ยุทธศาสตร์) */
+        .strategy-item {
+            background: #fff;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            align-items: start;
+        }
+
+        .strategy-number {
+            background: #003366;
+            color: #fff;
+            min-width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* Collapsible Duties (อำนาจหน้าที่) */
+        .duties-section {
+            background: #fff;
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid #ddd;
+        }
+
+        .duties-scroll {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        /* Scrollbar Styling */
+        .duties-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .duties-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .duties-scroll::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+
+        .duties-scroll::-webkit-scrollbar-thumb:hover {
+            background: #003366;
+        }
+    </style>
 
     <section id="page-content" class="section-padding">
-        <div class="container" id="vision-content">
-            <!-- Dynamic Content -->
-            <p class="text-center">กำลังโหลดข้อมูล...</p>
+        <div class="container">
+            <div class="edu-content-wrapper">
+
+                <div class="edu-hero-card">
+                    <div class="edu-hero-title">ปรัชญา (Philosophy)</div>
+                    <p class="edu-hero-quote">"ครุศาสตร์ สร้างครู ครูสร้างชาติเพื่อการพัฒนาที่ยั่งยืน"</p>
+                    <div style="margin-top: 20px; font-size: 1rem; color: #e0e0e0;">
+                        <i class="fas fa-bullseye"></i> ปรัชญาการศึกษาของมหาวิทยาลัย:
+                        จัดการศึกษาที่เน้นผลลลัพธ์การเรียนรู้ของผู้เรียน และส่งเสริมการเรียนรู้ตลอดชีวิต
+                        ด้วยแนวทางการจัดการเรียนรู้เชิงรุก เพื่อผลิตบัณฑิตนักปฏิบัติ บนฐานนวัตกรรมและภูมิปัญญาไทย
+                    </div>
+                </div>
+
+                <div class="edu-grid">
+                    <div class="edu-card">
+                        <div class="edu-card-header">
+                            <div class="edu-card-icon"><i class="fas fa-eye"></i></div>
+                            <h3 class="edu-card-title">วิสัยทัศน์ (Vision)</h3>
+                        </div>
+                        <p>เป็นองค์กรที่มุ่งผลิตและพัฒนาครูมืออาชีพที่เชี่ยวชาญศาสตร์และศิลป์สู่มาตรฐานสากล</p>
+                        <hr style="border: 0; border-top: 1px dashed #ccc; margin: 15px 0;">
+                        <div class="edu-card-header" style="border:none; padding-bottom:0;">
+                            <div class="edu-card-icon" style="background-color: #fff5cc; color: #997a00;"><i
+                                    class="fas fa-fingerprint"></i></div>
+                            <h3 class="edu-card-title" style="color:#997a00;">เอกลักษณ์</h3>
+                        </div>
+                        <p>จัดการเรียนรู้บนฐานนวัตกรรม</p>
+                    </div>
+
+                    <div class="edu-card">
+                        <div class="edu-card-header">
+                            <div class="edu-card-icon"><i class="fas fa-tasks"></i></div>
+                            <h3 class="edu-card-title">พันธกิจ (Mission)</h3>
+                        </div>
+                        <ol class="edu-list">
+                            <li>ผลิตและพัฒนาครูมืออาชีพ</li>
+                            <li>พัฒนางานวิจัยสู่การสร้างองค์ความรู้และนวัตกรรมทางการศึกษา</li>
+                            <li>สร้างความเข้มแข็งด้านการศึกษาด้วยการบริการวิชาการเพื่อการพัฒนาท้องถิ่น</li>
+                            <li>ทํานุบํารุงศิลปวัฒนธรรมความเป็นไทย และสืบสานโครงการพระราชดําริ</li>
+                            <li>บริหารจัดการองค์กรด้วยคุณภาพ</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <h3 style="color: #003366; margin-bottom: 20px; text-align: center;">
+                    <i class="fas fa-user-graduate"></i> อัตลักษณ์: ใฝ่ดี ใฝ่รู้ สู้งาน มีความเป็นนวัตกร
+                </h3>
+                <div class="edu-grid edu-grid-3">
+                    <div class="identity-box">
+                        <div class="identity-header">ใฝ่ดี (Goodness)</div>
+                        <div class="identity-body">
+                            <ol class="edu-list">
+                                <li>มีคุณลักษณะคนไทยที่พึงประสงค์ 4 ประการ และสามารถถ่ายทอดสู่ผู้เรียน</li>
+                                <li>มีความซื่อสัตย์</li>
+                                <li>แต่งกายดี</li>
+                                <li>มีจิตวิญญาณความเป็นครู</li>
+                                <li>มีทักษะสมองเพื่อชีวิตที่สําเร็จ</li>
+                                <li>มีสัมมาคารวะ</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="identity-box">
+                        <div class="identity-header">ใฝ่รู้ (Knowledge)</div>
+                        <div class="identity-body">
+                            <ol class="edu-list">
+                                <li>รอบรู้ในศาสตร์</li>
+                                <li>พร้อมเรียนรู้ (ผู้นําการเปลี่ยนแปลง)</li>
+                                <li>จัดการเรียนรู้แบบ Active Learning</li>
+                                <li>ใช้เทคโนโลยี วิทยาการคํานวณ และภาษาในการทํางานและการจัดการเรียนรู้</li>
+                                <li>ประยุกต์ใช้ Generic Skills และทักษะในศตวรรษที่ 21
+                                    สําหรับการประกอบวิชาชีพและการทํางาน</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="identity-box">
+                        <div class="identity-header">สู้งาน (Hard Work)</div>
+                        <div class="identity-body">
+                            <ol class="edu-list">
+                                <li>มีความอดทน</li>
+                                <li>รับผิดชอบ</li>
+                                <li>สามารถประยุกต์ภูมิปัญญาท้องถิ่น และหลักปรัชญาเศรษฐกิจพอเพียงในการทํางานและดํารงชีวิต
+                                </li>
+                                <li>เป็นนักปฏิบัติสามารถเข้าไปมี่ส่วนร่วมและปฏิสัมพันธ์ที่ดีกับผู้ปกครองและชุมชน</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="edu-card" style="margin-bottom: 30px; border-left-color: #ffcc00;">
+                    <div class="edu-card-header">
+                        <div class="edu-card-icon" style="background-color: #fff5cc; color: #b38f00;"><i
+                                class="fas fa-chess"></i></div>
+                        <h3 class="edu-card-title">ประเด็นยุทธศาสตร์ (Strategic Issues)</h3>
+                    </div>
+                    <div class="strategy-item">
+                        <div class="strategy-number">1</div>
+                        <div>การพัฒนาครูและการศึกษาในท้องถิ่น</div>
+                    </div>
+                    <div class="strategy-item">
+                        <div class="strategy-number">2</div>
+                        <div>การผลิตบัณฑิตครู</div>
+                    </div>
+                    <div class="strategy-item">
+                        <div class="strategy-number">3</div>
+                        <div>พัฒนางานวิจัยและนวัตกรรมเพื่อการพัฒนาท้องถิ่น</div>
+                    </div>
+                    <div class="strategy-item">
+                        <div class="strategy-number">4</div>
+                        <div>การทํานุบํารุงศิลปวัฒนธรรมความเป็นไทย และสืบสาน รักษา ต่อยอดโครงการตามพระราชดําริ</div>
+                    </div>
+                    <div class="strategy-item">
+                        <div class="strategy-number">5</div>
+                        <div>การบริหารจัดการองค์กรด้วยคุณภาพ</div>
+                    </div>
+                </div>
+
+                <div class="duties-section">
+                    <h3 style="color: #666; font-size: 1.1rem; margin-bottom: 15px;">
+                        <i class="fas fa-balance-scale"></i> อำนาจหน้าที่ (ตาม พ.ร.บ. มหาวิทยาลัยราชภัฏ พ.ศ.2547)
+                    </h3>
+                    <div class="duties-scroll">
+                        <ul class="edu-list" style="color: #555; font-size: 0.9rem;">
+                            <li>(1) แสวงหาความจริงเพื่อสู่ความเป็นเลิศทางวิชาการ บนพื้นฐานภูมิปัญญาท้องถิ่น ภูมิปัญญาไทย
+                                และภูมิปัญญาสากล</li>
+                            <li>(2) ผลิตบัณฑิตที่มีความรู้คู่คุณธรรม สำนึกในความเป็นไทย มีความรักและผูกพันต่อท้องถิ่น
+                                อีกทั้งส่งเสริมการเรียนรู้ตลอดชีวิตในชุมชน
+                                เพื่อช่วยให้คนในท้องถิ่นรู้เท่าทันการเปลี่ยนแปลง การผลิตบัณฑิตดังกล่าว
+                                จะต้องให้มีจำนวนและคุณภาพสอดคล้องกับแผนการผลิตบัณฑิตของประเทศ
+                            </li>
+                            <li>(3) เสริมสร้างความรู้ความเข้าใจในคุณค่า
+                                ความสำนึกและความภูมิใจในวัฒนธรรมของท้องถิ่นและของชาติ
+                            </li>
+                            <li>(4) เรียนรู้และเสริมสร้างความเข้มแข็งของผู้นำชุมชน
+                                ผู้นำศาสนาและนักการเมืองท้องถิ่นให้มีจิตสำนึกประชาธิปไตย คุณธรรม จริยธรรม
+                                และความสามารถในการบริหารงานพัฒนาชุมชนและท้องถิ่นเพื่อประโยชน์ของส่วนรวม</li>
+                            <li>(5) เสริมสร้างความเข้มแข็งของวิชาชีพครู
+                                ผลิตและพัฒนาครูและบุคลากรทางการศึกษาให้มีคุณภาพและมาตรฐานที่เหมาะสมกับการเป็นวิชาชีพชั้นสูง
+                            </li>
+                            <li>(6) ประสานความร่วมมือและช่วยเหลือเกื้อกูลกันระหว่างมหาวิทยาลัย ชุมชน
+                                และองค์กรปกครองส่วนท้องถิ่นและองค์กรอื่นทั้งในและต่างประเทศ เพื่อการพัฒนาท้องถิ่น</li>
+                            <li>(7)
+                                ศึกษาและแสวงหาแนวทางพัฒนาเทคโนโลยีพื้นบ้านและเทคโนโลยีสมัยใหม่ให้เหมาะสมกับการดำรงชีวิต
+                                และการประกอบอาชีพของคนในท้องถิ่น รวมถึงการแสวงหาแนวทางเพื่อส่งเสริมให้เกิดการจัดการ
+                                การบำรุงรักษา และการใช้ประโยชน์จากทรัพยากรธรรมชาติและสิ่งแวดล้อมอย่างสมดุลและยั่งยืน
+                            </li>
+                            <li>(8) ศึกษา วิจัย
+                                ส่งเสริมและสืบสานโครงการอันเนื่องมาจากแนวพระราชดำริในการปฏิบัติภารกิจของมหาวิทยาลัย
+                                เพื่อการพัฒนาท้องถิ่น</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </section>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                if (typeof loadPageContent === 'function') {
-                    loadPageContent('ปรัชญา วิสัยทัศน์ พันธกิจ', 'vision-content');
-                }
-            }, 500);
-        });
-    </script>
+
 
     <!-- Footer -->
-    <footer id="contact">
-        <div class="container">
-            <div class="footer-content grid-4">
-                <div class="footer-col">
-                    <h3>ติดต่อเรา</h3>
-                    <p>คณะครุศาสตร์ <br>มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง</p>
-                    <p>46 หมู่ 3 ต.จอมบึง อ.จอมบึง <br>จ.ราชบุรี 70150</p>
-                </div>
-                <div class="footer-col">
-                    <h3>ลิงก์ด่วน</h3>
-                    <ul>
-                        <li><a href="#">ระบบบริการการศึกษา</a></li>
-                        <li><a href="#">ห้องสมุด</a></li>
-                        <li><a href="#">ปฏิทินวิชาการ</a></li>
-                        <li><a href="#">ดาวน์โหลดเอกสาร</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h3>ติดตามเรา</h3>
-                    <div class="social-links">
-                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="#"><i class="fa-brands fa-line"></i></a>
-                        <a href="#"><i class="fa-brands fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="footer-col">
-                    <h3>สำหรับผู้ดูแลระบบ</h3>
-                    <a href="#" class="btn btn-outline text-white btn-sm">เข้าสู่ระบบ</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Education Faculty, Muban Chombueng Rajabhat University. All Rights Reserved.</p>
-            </div>
-        </div>
-    </footer>
+    <!-- Global Footer -->
+    <div id="global-footer"></div>
+
+    <script src="js/global-loader.js"></script>
     <script src="script.js"></script>
 </body>
 

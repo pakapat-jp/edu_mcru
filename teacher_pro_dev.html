@@ -15,66 +15,8 @@
 
 <body>
 
-    <!-- Top Banner -->
-    <div class="page-banner">
-        <img src="assets/edu-topbanner.png" alt="Top Banner" style="width: 100%; height: auto; display: block;">
-    </div>
-
-    <nav class="navbar">
-        <div class="container">
-            <a href="index.html" class="logo">
-                <img src="assets/logo-name.png" alt="EDU MCRU">
-            </a>
-            <div class="menu-toggle" id="mobile-menu">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="index.html" class="nav-link">หน้าหลัก</a></li>
-                <li class="dropdown">
-                    <a href="#" class="nav-link">เกี่ยวกับคณะ <i class="fa-solid fa-chevron-down"></i></a>
-                    <ul class="dropdown-menu">
-                        <!-- 2.1 General Info -->
-                        <li class="dropdown-submenu">
-                            <a href="#" class="dropdown-item dropdown-submenu-toggle">ข้อมูลทั่วไป</a>
-                            <ul class="dropdown-menu">
-                                <li><a href="history.html">ประวัติความเป็นมา</a></li>
-                                <li><a href="vision.html">ปรัชญา วิสัยทัศน์ พันธกิจ</a></li>
-                            </ul>
-                        </li>
-                        <!-- 2.2 Administration -->
-                        <li class="dropdown-submenu">
-                            <a href="#" class="dropdown-item dropdown-submenu-toggle">การบริหาร</a>
-                            <ul class="dropdown-menu">
-                                <li><a href="structure.html">โครงสร้าง</a></li>
-                                <li><a href="board.html">คณะกรรมการประจำคณะ</a></li>
-                                <li><a href="deans_list.html">ทำเนียบคณบดี</a></li>
-                                <li><a href="personnel.html">ผู้บริหาร อาจารย์ บุคลากร</a></li>
-                            </ul>
-                        </li>
-                        <!-- Other Items -->
-                        <li><a href="operation_plan.html">แผนการดำเนินงาน</a></li>
-                        <li><a href="operation_results.html">ผลการดำเนินงาน</a></li>
-                        <li><a href="qa.html">ประกันคุณภาพการศึกษา</a></li>
-                        <li><a href="ita.html">ความโปร่งใส่ (ITA)</a></li>
-                    </ul>
-                </li>
-                <li><a href="courses.html" class="nav-link">หลักสูตร</a></li>
-                <li class="dropdown">
-                    <a href="#departments" class="nav-link active">หน่วยงาน <i class="fa-solid fa-chevron-down"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="teacher_pro_dev.html">ศูนย์พัฒนาวิชาชีพครู</a></li>
-                        <li><a href="thantawan_school.html">โรงเรียนสาธิตอนุบาลทานตะวัน</a></li>
-                    </ul>
-                </li>
-                <li><a href="documents.html" class="nav-link">เอกสารเผยแพร่</a></li>
-                <li><a href="services.html" class="nav-link">บริการ</a></li>
-                <li><a href="index.html#contact" class="nav-link">ติดต่อเรา</a></li>
-
-            </ul>
-        </div>
-    </nav>
+    <!-- Global Header -->
+    <div id="global-header"></div>
 
     <header class="page-header"
         style="background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); padding: 60px 0; color: white;">
@@ -87,59 +29,72 @@
     </header>
 
     <section id="page-content" class="section-padding">
-        <div class="container" id="teacher-pro-dev-content">
-            <!-- Dynamic Content -->
-            <p class="text-center">กำลังโหลดข้อมูล...</p>
+        <div class="container">
+            <!-- Tabs -->
+            <div class="tab-nav fade-in-up">
+                <button class="tab-btn active" onclick="openTab(event, 'network')">ข้อมูลโรงเรียนเครือข่าย</button>
+                <button class="tab-btn" onclick="openTab(event, 'supervisors')">รายชื่ออาจารย์นิเทศ</button>
+            </div>
+
+            <!-- Network School Information -->
+            <div id="network" class="tab-content fade-in-up" style="display: block;">
+                <h3 class="text-center" style="margin-bottom: 20px; color: var(--primary-dark); font-size: 1.5rem;">
+                    ข้อมูลโรงเรียนเครือข่าย</h3>
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="fa-solid fa-school"></i>
+                    </div>
+                    <div class="empty-state-text">อยู่ระหว่างการรวบรวมข้อมูลโรงเรียนเครือข่าย</div>
+                </div>
+            </div>
+
+            <!-- Supervisors List -->
+            <div id="supervisors" class="tab-content fade-in-up">
+                <h3 class="text-center" style="margin-bottom: 20px; color: var(--primary-dark); font-size: 1.5rem;">
+                    รายชื่ออาจารย์นิเทศ</h3>
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <div class="empty-state-text">อยู่ระหว่างการรวบรวมรายชื่ออาจารย์นิเทศ</div>
+                </div>
+            </div>
+
         </div>
     </section>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        function openTab(evt, tabName) {
+            var i, tabContent, tabBtn;
+
+            // Hide all tab content
+            tabContent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].style.display = "none";
+                tabContent[i].classList.remove("active");
+            }
+
+            // Deactivate all buttons
+            tabBtn = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tabBtn.length; i++) {
+                tabBtn[i].className = tabBtn[i].className.replace(" active", "");
+            }
+
+            // Show the current tab and activate the button
+            document.getElementById(tabName).style.display = "block";
+            // Small delay to allow display:block to apply before adding active class for animation
             setTimeout(() => {
-                if (typeof loadPageContent === 'function') {
-                    loadPageContent('ศูนย์พัฒนาวิชาชีพครู', 'teacher-pro-dev-content');
-                }
-            }, 500);
-        });
+                document.getElementById(tabName).classList.add("active");
+            }, 10);
+
+            evt.currentTarget.className += " active";
+        }
     </script>
 
-    <footer id="contact">
-        <div class="container">
-            <div class="footer-content grid-4">
-                <div class="footer-col">
-                    <h3>ติดต่อเรา</h3>
-                    <p>คณะครุศาสตร์ <br>มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง</p>
-                    <p>46 หมู่ 3 ต.จอมบึง อ.จอมบึง <br>จ.ราชบุรี 70150</p>
-                </div>
-                <div class="footer-col">
-                    <h3>ลิงก์ด่วน</h3>
-                    <ul>
-                        <li><a href="#">ระบบบริการการศึกษา</a></li>
-                        <li><a href="#">ห้องสมุด</a></li>
-                        <li><a href="#">ปฏิทินวิชาการ</a></li>
-                        <li><a href="#">ดาวน์โหลดเอกสาร</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h3>ติดตามเรา</h3>
-                    <div class="social-links">
-                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="#"><i class="fa-brands fa-line"></i></a>
-                        <a href="#"><i class="fa-brands fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="footer-col">
-                    <h3>สำหรับผู้ดูแลระบบ</h3>
-                    <a href="#" class="btn btn-outline text-white btn-sm">เข้าสู่ระบบ</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Education Faculty, Muban Chombueng Rajabhat University. All Rights
-                    Reserved.
-                </p>
-            </div>
-        </div>
-    </footer>
+    <!-- Global Footer -->
+    <div id="global-footer"></div>
+
+    <script src="js/global-loader.js"></script>
     <script src="script.js"></script>
 </body>
 

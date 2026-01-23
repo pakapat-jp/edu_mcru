@@ -316,10 +316,10 @@ async function loadPageContent(categoryName, containerId = 'content-container') 
 
         const allNews = await res.json();
 
-        // Filter by Category ID = 10 (Menu) and match Title
+        // Filter by Category Name 'เมนู' and match Title
         // Taking the latest one
         const article = allNews
-            .filter(n => n.category_id == 10 && n.title === categoryName && n.status == 1)
+            .filter(n => n.category_name === 'เมนู' && n.title === categoryName && n.status == 1)
             .sort((a, b) => new Date(b.publish_date) - new Date(a.publish_date))[0];
 
         if (article) {
