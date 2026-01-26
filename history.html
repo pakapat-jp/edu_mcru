@@ -29,399 +29,693 @@
 
     <!-- Content Section -->
     <section id="page-content" class="section-padding">
-        <div class="container" id="history-content">
-            <style>
-                /* ตั้งค่า Font และพื้นฐาน */
-                @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@400;500;700&display=swap');
+        <style>
+            /* Google Fonts */
+            @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500&display=swap');
 
-                .history-wrapper {
-                    font-family: 'Sarabun', sans-serif;
-                    background-color: #f8faff;
-                    padding: 40px 0;
-                    box-sizing: border-box;
-                    color: #333;
-                    line-height: 1.6;
-                    border-radius: 10px;
-                    overflow: hidden;
+            :root {
+                --primary: #003399;
+                --primary-light: #0056b3;
+                --accent: #eeb528;
+                --text-dark: #333;
+                --text-light: #666;
+                --bg-gradient: linear-gradient(135deg, #f8faff 0%, #eef4ff 100%);
+            }
+
+            .history-wrapper {
+                font-family: 'Sarabun', sans-serif;
+                background: var(--bg-gradient);
+                padding: 60px 20px;
+                border-radius: 20px;
+                overflow: hidden;
+            }
+
+            .history-header {
+                text-align: center;
+                margin-bottom: 70px;
+                position: relative;
+            }
+
+            .history-header h2 {
+                font-family: 'Prompt', sans-serif;
+                color: var(--primary);
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin-bottom: 0px;
+                display: inline-block;
+                position: relative;
+                z-index: 1;
+            }
+
+            /* Decorative line behind header */
+            .history-header::before {
+                content: '';
+                position: absolute;
+                bottom: -20px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 80px;
+                height: 5px;
+                background: var(--accent);
+                border-radius: 10px;
+            }
+
+            .timeline-section {
+                position: relative;
+                max-width: 1000px;
+                margin: 0 auto;
+                padding: 20px 0;
+            }
+
+            /* Vertical Line */
+            .timeline-section::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 50%;
+                width: 4px;
+                background: #e0e0e0;
+                /* Non-active line color */
+                transform: translateX(-50%);
+                border-radius: 4px;
+            }
+
+            /* Active Gradient Line Layer */
+            .timeline-line-active {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 50%;
+                width: 4px;
+                background: linear-gradient(to bottom, var(--primary), var(--primary-light), var(--accent));
+                transform: translateX(-50%);
+                border-radius: 4px;
+                /* Adjust height based on progress if script added, currently full height for visual */
+                height: 100%;
+                z-index: 0;
+            }
+
+            .timeline-row {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 60px;
+                position: relative;
+                width: 100%;
+            }
+
+            .timeline-row:last-child {
+                margin-bottom: 0;
+            }
+
+            /* Clearfix for left/right alignment logic */
+            .timeline-row .col-left,
+            .timeline-row .col-right {
+                width: 45%;
+                position: relative;
+            }
+
+            .timeline-row .col-left {
+                text-align: right;
+            }
+
+            .timeline-row .col-right {
+                text-align: left;
+            }
+
+            /* Center Dot */
+            .timeline-dot {
+                position: absolute;
+                left: 50%;
+                top: 0;
+                width: 24px;
+                height: 24px;
+                background: #fff;
+                border: 5px solid var(--primary);
+                border-radius: 50%;
+                transform: translateX(-50%);
+                z-index: 2;
+                box-shadow: 0 0 0 5px rgba(238, 181, 40, 0.2);
+                transition: all 0.4s ease;
+            }
+
+            .timeline-row:hover .timeline-dot {
+                background: var(--accent);
+                border-color: #fff;
+                box-shadow: 0 0 0 8px rgba(238, 181, 40, 0.4);
+                transform: translateX(-50%) scale(1.2);
+            }
+
+            /* Content Card */
+            .timeline-card {
+                background: #fff;
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+                position: relative;
+                transition: transform 0.4s ease, box-shadow 0.4s ease;
+                border-left: 5px solid transparent;
+            }
+
+            /* Hover Effect Card */
+            .timeline-row:hover .timeline-card {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 40px rgba(0, 51, 153, 0.15);
+                border-left-color: var(--accent);
+            }
+
+            /* Arrow Pointers */
+            .timeline-row .col-left .timeline-card::after {
+                content: '';
+                position: absolute;
+                top: 10px;
+                right: -10px;
+                border-width: 10px 0 10px 10px;
+                border-style: solid;
+                border-color: transparent transparent transparent #fff;
+            }
+
+            .timeline-row .col-right .timeline-card::after {
+                content: '';
+                position: absolute;
+                top: 10px;
+                left: -10px;
+                border-width: 10px 10px 10px 0;
+                border-style: solid;
+                border-color: transparent #fff transparent transparent;
+            }
+
+            .year-label {
+                display: inline-block;
+                background: var(--accent);
+                color: #fff;
+                font-family: 'Prompt', sans-serif;
+                padding: 5px 15px;
+                border-radius: 20px;
+                font-weight: 600;
+                font-size: 0.95rem;
+                margin-bottom: 15px;
+                box-shadow: 0 4px 10px rgba(238, 181, 40, 0.4);
+            }
+
+            .timeline-card h3 {
+                font-family: 'Prompt', sans-serif;
+                color: var(--primary);
+                font-size: 1.4rem;
+                margin-bottom: 12px;
+                font-weight: 600;
+            }
+
+            .timeline-card p {
+                color: var(--text-light);
+                font-size: 1rem;
+                line-height: 1.7;
+                margin: 0;
+            }
+
+            /* Highlight Current Year specially */
+            .timeline-row.current .timeline-card {
+                background: linear-gradient(135deg, var(--primary), var(--primary-light));
+                color: #fff;
+            }
+
+            .timeline-row.current .timeline-card h3 {
+                color: #fff;
+            }
+
+            .timeline-row.current .timeline-card p {
+                color: rgba(255, 255, 255, 0.9);
+            }
+
+            .timeline-row.current .year-label {
+                background: #fff;
+                color: var(--primary);
+            }
+
+            .timeline-row.current .col-left .timeline-card::after {
+                border-color: transparent transparent transparent var(--primary-light);
+            }
+
+            .timeline-row.current .col-right .timeline-card::after {
+                border-color: transparent var(--primary-light) transparent transparent;
+            }
+
+            /* List inside current year */
+            .timeline-row.current ul {
+                list-style: none;
+                padding: 0;
+                margin-top: 15px;
+                text-align: left;
+            }
+
+            .timeline-row.current ul li {
+                margin-bottom: 8px;
+                position: relative;
+                padding-left: 20px;
+                color: rgba(255, 255, 255, 0.9);
+            }
+
+            .timeline-row.current ul li::before {
+                content: '•';
+                color: var(--accent);
+                position: absolute;
+                left: 0;
+                font-weight: bold;
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+
+                .timeline-section::before,
+                .timeline-line-active {
+                    left: 20px;
                 }
 
-                .history-wrapper h2,
-                .history-wrapper h3,
-                .history-wrapper h4 {
-                    font-family: 'Prompt', sans-serif;
+                .timeline-row {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    margin-bottom: 40px;
                 }
 
-                /* Header ของ Section */
-                .history-header {
-                    text-align: center;
-                    margin-bottom: 60px;
-                    padding: 0 20px;
+                .timeline-row .col-left,
+                .timeline-row .col-right {
+                    width: 100%;
+                    padding-left: 50px;
+                    text-align: left;
+                }
+
+                .timeline-dot {
+                    left: 20px;
+                    margin-left: 0;
+                    transform: translateX(-50%);
+                }
+
+                .timeline-row:hover .timeline-dot {
+                    transform: translateX(-50%) scale(1.2);
+                }
+
+                .timeline-row .col-left .timeline-card::after,
+                .timeline-row .col-right .timeline-card::after {
+                    left: -10px;
+                    right: auto;
+                    border-width: 10px 10px 10px 0;
+                    border-color: transparent #fff transparent transparent;
+                }
+
+                .timeline-row.current .col-left .timeline-card::after {
+                    border-color: transparent var(--primary-light) transparent transparent;
                 }
 
                 .history-header h2 {
-                    color: #003399;
-                    /* สีน้ำเงินคณะ */
-                    font-size: 2.2rem;
-                    font-weight: 600;
-                    margin-bottom: 10px;
-                    position: relative;
-                    display: inline-block;
+                    font-size: 2rem;
                 }
+            }
+        </style>
 
-                .history-header h2::after {
-                    content: "";
-                    display: block;
-                    width: 60px;
-                    height: 4px;
-                    background: #eeb528;
-                    /* สีเหลืองทอง */
-                    margin: 10px auto 0;
-                    border-radius: 2px;
-                }
+        <div class="history-wrapper">
+            <div class="history-header">
+                <h2>ประวัติความเป็นมา</h2>
+                <div style="font-size:1.1rem; color:#666; margin-top:10px;">เส้นทางแห่งการพัฒนา คณะครุศาสตร์
+                    มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง</div>
+            </div>
 
-                .history-header p {
-                    color: #666;
-                    font-size: 1.1rem;
-                }
+            <div class="timeline-section">
+                <!-- Background Line Gradient -->
+                <div class="timeline-line-active"></div>
 
-                /* Timeline Container */
-                .timeline {
-                    position: relative;
-                    max-width: 1000px;
-                    margin: 0 auto;
-                }
-
-                /* เส้นแกนกลาง */
-                .timeline::after {
-                    content: '';
-                    position: absolute;
-                    width: 4px;
-                    background-color: #e0e0e0;
-                    top: 0;
-                    bottom: 0;
-                    left: 50%;
-                    margin-left: -2px;
-                    border-radius: 2px;
-                }
-
-                /* กล่องข้อความ (Container ของแต่ละปี) */
-                .timeline-container {
-                    padding: 10px 25px;
-                    position: relative;
-                    background-color: inherit;
-                    width: 50%;
-                    box-sizing: border-box;
-                }
-
-                /* ด้านซ้าย */
-                .timeline-container.left {
-                    left: 0;
-                }
-
-                /* ด้านขวา */
-                .timeline-container.right {
-                    left: 50%;
-                }
-
-                /* จุดวงกลมบนเส้น */
-                .timeline-container::after {
-                    content: '';
-                    position: absolute;
-                    width: 20px;
-                    height: 20px;
-                    right: -11.5px;
-                    background-color: #fff;
-                    border: 4px solid #003399;
-                    top: 25px;
-                    border-radius: 50%;
-                    z-index: 10;
-                    transition: all 0.3s ease;
-                }
-
-                .timeline-container.right::after {
-                    left: -11.5px;
-                }
-
-                .timeline-container:hover::after {
-                    background-color: #eeb528;
-                    transform: scale(1.2);
-                }
-
-                /* กล่องเนื้อหา */
-                .content {
-                    padding: 25px;
-                    background-color: white;
-                    position: relative;
-                    border-radius: 8px;
-                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-                    transition: transform 0.3s ease;
-                    border-top: 4px solid #003399;
-                    text-align: left;
-                    /* บังคับให้ข้อความชิดซ้ายเสมอ */
-                }
-
-                .timeline-container:hover .content {
-                    transform: translateY(-5px);
-                }
-
-                /* ลูกศรชี้ไปที่เส้น */
-                /* ซ้าย */
-                .timeline-container.left .content::before {
-                    content: " ";
-                    height: 0;
-                    position: absolute;
-                    top: 25px;
-                    width: 0;
-                    z-index: 1;
-                    right: -10px;
-                    border: medium solid white;
-                    border-width: 10px 0 10px 10px;
-                    border-color: transparent transparent transparent white;
-                }
-
-                /* ขวา */
-                .timeline-container.right .content::before {
-                    content: " ";
-                    height: 0;
-                    position: absolute;
-                    top: 25px;
-                    width: 0;
-                    z-index: 1;
-                    left: -10px;
-                    border: medium solid white;
-                    border-width: 10px 10px 10px 0;
-                    border-color: transparent white transparent transparent;
-                }
-
-                .content h3 {
-                    color: #003399;
-                    font-size: 1.3rem;
-                    margin-top: 0;
-                    margin-bottom: 10px;
-                    font-weight: 600;
-                }
-
-                .year-badge {
-                    display: inline-block;
-                    background-color: #eeb528;
-                    color: #000;
-                    padding: 4px 12px;
-                    border-radius: 20px;
-                    font-weight: 600;
-                    font-size: 0.9rem;
-                    margin-bottom: 15px;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                }
-
-                .content p {
-                    margin-bottom: 0;
-                    color: #555;
-                    font-size: 0.95rem;
-                }
-
-                /* การเน้นปีปัจจุบัน */
-                .current-year .content {
-                    background: linear-gradient(135deg, #003399, #001f5c);
-                    color: white;
-                    border-top: none;
-                }
-
-                /* ปรับสีลูกศรปีปัจจุบัน */
-                .timeline-container.left.current-year .content::before {
-                    border-color: transparent transparent transparent #001f5c;
-                    /* สีใกล้เคียง gradient */
-                }
-
-                .current-year .content h3 {
-                    color: #eeb528;
-                }
-
-                .current-year .content p,
-                .current-year .course-list li {
-                    color: #e0e0e0;
-                }
-
-                .current-year .year-badge {
-                    background-color: #fff;
-                    color: #003399;
-                }
-
-                .current-year .course-list li::before {
-                    color: #eeb528;
-                }
-
-                /* รายการหลักสูตร */
-                .course-list {
-                    list-style: none;
-                    padding: 0;
-                    margin-top: 15px;
-                    text-align: left;
-                }
-
-                .course-list li {
-                    margin-bottom: 8px;
-                    padding-left: 20px;
-                    position: relative;
-                    font-size: 0.9rem;
-                }
-
-                .course-list li::before {
-                    content: "•";
-                    color: #eeb528;
-                    font-weight: bold;
-                    position: absolute;
-                    left: 0;
-                }
-
-                /* Responsive Design (มือถือ) */
-                @media screen and (max-width: 768px) {
-                    .timeline::after {
-                        left: 20px;
-                    }
-
-                    .timeline-container {
-                        width: 100%;
-                        padding-left: 50px;
-                        padding-right: 20px;
-                    }
-
-                    /* Reset container positions */
-                    .timeline-container.left,
-                    .timeline-container.right {
-                        left: 0;
-                    }
-
-                    /* Adjust dots */
-                    .timeline-container::after {
-                        left: 10px;
-                        /* Center at 20px */
-                        right: auto;
-                    }
-
-                    .timeline-container.left::after {
-                        left: 10px;
-                    }
-
-                    /* Adjust arrows to always point left */
-                    .timeline-container.left .content::before,
-                    .timeline-container.right .content::before {
-                        left: -10px;
-                        right: auto;
-                        border-width: 10px 10px 10px 0;
-                        border-color: transparent white transparent transparent;
-                    }
-
-                    .timeline-container.left.current-year .content::before {
-                        border-color: transparent #001f5c transparent transparent;
-                    }
-
-                    .history-header h2 {
-                        font-size: 1.8rem;
-                    }
-                }
-            </style>
-
-            <div class="history-wrapper">
-
-                <div class="history-header">
-                    <h2>ประวัติความเป็นมา</h2>
-                    <p>เส้นทางแห่งการพัฒนา คณะครุศาสตร์ มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง</p>
+                <!-- 2518 Left -->
+                <div class="timeline-row">
+                    <div class="col-left">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2518</span>
+                            <h3>จุดเริ่มต้น "วิทยาลัยครู"</h3>
+                            <p>คณะครุศาสตร์ มหาวิทยาลัยหมู่บ้านจอมบึง ตั้งขึ้นตามพระราชบัญญัติวิทยาลัยครู พุทธศักราช
+                                2518 และประกาศกระทรวงศึกษาธิการ ซึ่งออกตามพระราชบัญญัติฉบับดังกล่าว
+                                (เดิมเรียกว่าคณะวิชาครุศาสตร์) ในปีการศึกษา 2518
+                                วิทยาลัยครูหมู่บ้านจอมบึงได้เปิดสอนระดับปริญญาตรี สาขาวิชาการศึกษา (ค.บ.)
+                                โดยมีคณะเกิดขึ้น 3 คณะวิชา คือ คณะวิชาครุศาสตร์, คณะวิชาวิทยาศาสตร์และเทคโนโลยี,
+                                คณะวิชามนุษยศาสตร์และสังคมศาสตร์ โดยจะเรียกตำแหน่งผู้บริหารคณะวิชา เรียกว่า “หัวหน้าคณะ”
+                                คณะวิชาครุศาสตร์วิทยาลัยครูหมู่บ้านจอมบึง มี 6 ภาควิชา คือ ภาควิชาพื้นฐานการศึกษา,
+                                ภาควิชาหลักสูตรและการสอน, ภาควิชาจิตวิทยาและการแนะแนว, ภาควิชาพลศึกษาและนันทนาการ,
+                                ภาควิชาเทคโนโลยีและนวัตกรรมทางการศึกษา, ภาควิชาทดสอบและวิจัยการศึกษา</p>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right"></div>
                 </div>
 
-                <div class="timeline">
-
-                    <div class="timeline-container left">
-                        <div class="content">
-                            <span class="year-badge">พ.ศ. 2518</span>
-                            <h3>จุดเริ่มต้น "วิทยาลัยครู"</h3>
-                            <p>จัดตั้งขึ้นตาม พ.ร.บ. วิทยาลัยครู พ.ศ. 2518 โดยใช้ชื่อ "คณะวิชาครุศาสตร์"
-                                เปิดสอนปริญญาตรี สาขาวิชาการศึกษา (ค.บ.) ประกอบด้วย 6 ภาควิชา</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-container right">
-                        <div class="content">
-                            <span class="year-badge">พ.ศ. 2527</span>
+                <!-- 2527 Right -->
+                <div class="timeline-row">
+                    <div class="col-left"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2527</span>
                             <h3>ขยายโอกาสทางการศึกษา</h3>
-                            <p>ประกาศใช้ พ.ร.บ. วิทยาลัยครู ฉบับที่ 2 เปิดสอนสาขาวิชาอื่นเพิ่มเติม ได้แก่
-                                วิทยาศาสตรบัณฑิต (ว.ท.บ.) และศิลปศาสตรบัณฑิต (ศศ.บ.)</p>
+                            <p>ได้มีพระราชบัญญัติวิทยาลัยครูฉบับที่ 2 ขึ้น วิทยาลัยครูจึงสามารถเปิดสอนสาขาวิชาอื่นอีก 2
+                                สาขา คือ สาขาวิทยาศาสตรบัณฑิต (ว.ท.บ.) และสาขาศิลปศาสตรบัณฑิต (ศศ.บ.)
+                                และมีคณะใหม่เพิ่มขึ้นอีก 1 คณะ คือ คณะวิชาวิทยาการจัดการ</p>
                         </div>
                     </div>
+                </div>
 
-                    <div class="timeline-container left">
-                        <div class="content">
-                            <span class="year-badge">พ.ศ. 2535 - 2538</span>
-                            <h3>นามพระราชทาน "สถาบันราชภัฏ"</h3>
-                            <p>ในหลวงรัชกาลที่ 9 พระราชทานนาม "สถาบันราชภัฏ" เปลี่ยนชื่อหน่วยงานเป็น "คณะครุศาสตร์"
-                                และเปลี่ยนชื่อตำแหน่งผู้บริหารเป็น "คณบดี"</p>
+                <!-- 2535-2538 Left -->
+                <div class="timeline-row">
+                    <div class="col-left">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2535 - 2538</span>
+                            <h3>พระราชทานนาม "สถาบันราชภัฏ"</h3>
+                            <p>พระบาทสมเด็จพระเจ้าอยู่หัวรัชกาลที่ 9 โปรดเกล้าฯ พระราชทานชื่อ “สถาบันราชภัฏ”
+                                แทนชื่อวิทยาลัยครู และประกาศใช้พระราชบัญญัติสถาบันราชภัฏเมื่อปีการศึกษา 2538
+                                ได้เปลี่ยนชื่อ “คณะวิชาครุศาสตร์” เป็น “คณะครุศาสตร์” ตำแหน่งผู้บริหารคณะเปลี่ยนจาก
+                                “หัวหน้าคณะ” เป็น “คณบดี”</p>
                         </div>
                     </div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right"></div>
+                </div>
 
-                    <div class="timeline-container right">
-                        <div class="content">
-                            <span class="year-badge">พ.ศ. 2541 - 2542</span>
+                <!-- 2541 Right -->
+                <div class="timeline-row">
+                    <div class="col-left"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2541</span>
                             <h3>ก้าวสู่ระดับบัณฑิตศึกษา</h3>
-                            <p>เริ่มเปิดสอนระดับปริญญาโท "สาขาบริหารการศึกษา" (ปี 2541)
-                                และปรับโครงสร้างการบริหารจากภาควิชาเป็น "โปรแกรมวิชา" (ปี 2542) เพื่อเพิ่มประสิทธิภาพ
+                            <p>ได้เปิดสอนหลักสูตรปริญญาโท สาขาวิชาบริหารการศึกษา
+                                และต่อมาได้มีการประกาศใช้พระราชบัญญัติการศึกษาแห่งชาติ พ.ศ. 2542 ขึ้น
+                                กำหนดให้คณะครุศาสตร์ มีบทบาทในการพัฒนาครูและส่งเสริมวิทยฐานะครู
+                                คณะครุศาสตร์จึงเปิดสอนหลักสูตร ประกาศนียบัตรบัณฑิตวิชาชีพครูขึ้น
+                                เพื่อช่วยพัฒนาครูและส่งเสริมวิทยฐานะครูสำหรับครูที่ไม่มีวุฒิครูขึ้นรับ
+                                “ใบประกอบวิชาชีพครู” ตามพระราชบัญญัติการศึกษาแห่งชาติ พ.ศ.2542
+                                และต่อมาได้โอนให้ไปสังกัดบัณฑิตวิทยาลัยเพื่อดำเนินการต่อไป</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2542 Left -->
+                <div class="timeline-row">
+                    <div class="col-left">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2542</span>
+                            <h3>รวมพลังสร้างเอกภาพ</h3>
+                            <p>ได้มีการเปลี่ยนแปลงการบริหารงานวิชาการจากภาควิชาเป็นโปรแกรมวิชา
+                                เพื่อให้การปฏิบัติภารกิจด้านการจัดการศึกษาให้เกิดประสิทธิภาพ
+                                และเพื่อให้มีการใช้ทรัพยากรที่มีอยู่อย่างเต็มศักยภาพ
+                                คณะครุศาสตร์จึงจัดการบริหารแบบโปรแกรมวิชามี 4 โปรแกรมวิชา ได้แก่
+                                โปรแกรมวิชาการศึกษาปฐมวัย โปรแกรมวิชาประถมศึกษา โปรแกรมวิชาพลศึกษาและนันทนาการ
+                                และโปรแกรมวิชาเทคโนโลยีและนวัตกรรมทางการศึกษา</p>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right"></div>
+                </div>
+
+
+                <!-- 2545 Right -->
+                <div class="timeline-row">
+                    <div class="col-left"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2545</span>
+                            <h3>รวมพลังสร้างเอกภาพ"</h3>
+                            <p>จากการตรวจเยี่ยมการดำเนินงานประกันคุณภาพการศึกษาของสถาบัน ประธานคณะกรรมการตรวจเยี่ยม คือ
+                                ศาสตราจารย์ ดร.พจน์ สะเพียรชัย
+                                ให้คำแนะนำว่าเพื่อให้การบริหารจัดการผลิตบัณฑิตสาขาครุศาสตร์มีเอกภาพ
+                                สถาบันควรย้ายโปรแกรมวิชาทางด้าน ครุศาสตร์ (ค.บ.)
+                                ซึ่งสังกัดในคณะมนุษยศาสตร์และสังคมศาสตร์ และ
+                                คณะวิทยาศาสตร์และเทคโนโลยีไปสังกัดคณะครุศาสตร์
+                                คณะครุศาสตร์จึงได้เสนอสถาบันพิจารณาย้ายสังกัดของโปรแกรมวิชาทางครุศาสตร์ให้ไปสังกัดคณะครุศาสตร์
+                                ในปีการศึกษา 2545 โปรแกรมวิชาของคณะครุศาสตร์ จึงเพิ่มจากเดิม ซึ่งมี 4 โปรแกรมวิชา เป็น
+                                11 โปรแกรมวิชา คือ โปรแกรมวิชาประถมศึกษา โปรแกรมวิชาการศึกษาปฐมวัย
+                                โปรแกรมวิชาพลศึกษาและนันทนาการ โปรแกรมวิชาคอมพิวเตอร์ศึกษา โปรแกรมวิชาวิทยาศาสตร์ทั่วไป
+                                โปรแกรมวิชาฟิสิกส์ โปรแกรมวิชาคณิตศาสตร์ โปรแกรมวิชาสังคมศึกษา โปรแกรมวิชาดนตรีศึกษา
+                                โปรแกรมวิชาภาษาไทย โปรแกรมวิชาภาษาอังกฤษ ในระดับปริญญาโท ได้เปิดสอนหลักสูตรปริญญาโท
+                                สาขาหลักสูตรและการสอน</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 2546 Left -->
+                <div class="timeline-row">
+                    <div class="col-left">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2546</span>
+                            <h3>พัฒนาบัณฑิตศึกษา</h3>
+                            <p>คณะครุศาสตร์สถาบันราชภัฏหมู่บ้านจอมบึง ได้เปิดสอนหลักสูตรปริญญาโท
+                                สาขาวิจัยและประเมินผลการศึกษา และระดับประกาศนียบัตรบัณฑิตสาขาการบริการหารการศึกษา</p>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right"></div>
+                </div>
+
+                <!-- 2547 Right -->
+                <div class="timeline-row">
+                    <div class="col-left"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2547</span>
+                            <h3>สู่ "มหาวิทยาลัยราชภัฏ"</h3>
+                            <p>เปลี่ยนสถานภาพและชื่อจากสถาบันราชภัฏ เป็นมหาวิทยาลัยราชภัฏ คณะครุศาสตร์
+                                ได้เริ่มทำการเปิดสอนหลักสูตรครุศาสตร์ (ครู 5 ปี)
+                                ทั้งนี้เพื่อสนองต่อพระราชบัญญัติการศึกษาแห่งชาติ พ.ศ.2542 และแก้ไขเพิ่มเติม (ฉบับที่ 2)
+                                พ.ศ.2545 และพระราชบัญญัติสภาครู และบุคลากรทางการศึกษา พ.ศ.2546 จำนวนทั้งสิ้น 7
+                                โปรแกรมวิชา คือ โปรแกรมวิชาการศึกษาปฐมวัย โปรแกรมวิชาภาษาไทย โปรแกรมวิชาสังคมศึกษา
+                                โปรแกรมวิชาศิลปกรรม โปรแกรมวิชาวิทยาศาสตร์ทั่วไป โปรแกรมวิชาคณิตศาสตร์
+                                และโปรแกรมวิชาภาษาอังกฤษ</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 2549 Left -->
+                <div class="timeline-row">
+                    <div class="col-left">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2549</span>
+                            <h3>ปรับปรุงหลักสูตรด้านการศึกษาใหม่</h3>
+                            <p>ปรับปรุงหลักสูตรด้านการศึกษาใหม่ ประกอบด้วยหลักสูตรการศึกษาปฐมวัย และหลักสูตรพลศึกษา -
+                                เทคโนโลยีผู้สื่อข่าว ในระดับปริญญาโท
+                                คณะครุศาสตร์ได้เปิดสาขาการสอนภาษาอังกฤษในฐานะภาษาต่างประเทศเพิ่มขึ้น</p>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right"></div>
+                </div>
+
+                <!-- 2550 Right -->
+                <div class="timeline-row">
+                    <div class="col-left"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2550</span>
+                            <h3>รับรองมาตรฐานหลักสูตรโดยคุรุสภา</h3>
+                            <p>คุรุสภาประกาศรับรองมาตรฐานหลักสูตรและมาตรฐานการผลิตปริญญาครุศาสตรบัณฑิต สาขาวิชาการศึกษา
+                                พุทธศักราช 2547 ของมหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง ตั้งแต่ปีการศึกษา 2547 จำนวน 5
+                                โปรแกรมวิชา ลงวันที่ 31 มีนาคม 2552 ดังนี้ โปรแกรมวิชาคณิตศาสตร์,
+                                โปรแกรมวิชาการศึกษาปฐมวัย, โปรแกรมวิชาศิลปกรรมดนตรี, โปรแกรมวิชาภาษาอังกฤษ,
+                                โปรแกรมวิชาวิทยาศาสตร์ทั่วไป</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2552 Left -->
+                <div class="timeline-row">
+                    <div class="col-left">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2552</span>
+                            <h3>รับรองมาตรฐานหลักสูตรโดยคุรุสภา</h3>
+                            <p>คุรุสภาประกาศรับรองมาตรฐานหลักสูตรและมาตรฐานการผลิตปริญญาครุศาสตรบัณฑิต สาขาวิชาการศึกษา
+                                ลงวันที่ 22 มิถุนายน 2552 ดังนี้ โปรแกรมวิชาภาษาไทย, โปรแกรมวิชาสังคมศึกษา,
+                                โปรแกรมวิชาวิทยาศาสตร์ทั่วไป, โปรแกรมวิชาเทคโนโลยีการศึกษา, โปรแกรมวิชาภาษาอังกฤษ,
+                                โปรแกรมวิชาการศึกษาปฐมวัย, โปรแกรมวิชาคอมพิวเตอร์ศึกษา,
+                                โปรแกรมวิชาพลศึกษา-เทคโนโลยีผู้สื่อข่าวกีฬา</p>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right"></div>
+                </div>
+
+                <!-- 2557 Right -->
+                <div class="timeline-row">
+                    <div class="col-left"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2557</span>
+                            <h3>รับรองมาตรฐานหลักสูตรโดยคุรุสภา</h3>
+                            <p>คุรุสภาประกาศรับรองมาตรฐานหลักสูตรและมาตรฐานการผลิต
+                                ปริญญาครุศาสตร์บัณฑิต (หลักสูตร 5 ปี) ประกาศ ณ วันที่ 1 เมษายน พ.ศ. 2557 ดังนี้
+                                สาขาวิชาพลศึกษา, สาขาวิชาภาษาอังกฤษ, สาขาวิชาการศึกษาปฐมวัย
+                                และสาขาวิชาเทคโนโลยีการศึกษาและคอมพิวเตอร์การศึกษา</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2558 Left -->
+                <div class="timeline-row">
+                    <div class="col-left">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2558</span>
+                            <h3>เห็นชอบหลักสูตร สาขาวิชาการศึกษาปฐมวัย (5 ปี)</h3>
+                            <p>สำนักงานคณะกรรมการการอุดมศึกษา รับทราบการให้ความเห็นชอบหลักสูตร สาขาวิชาการศึกษาปฐมวัย (5
+                                ปี) เมื่อวันที่ 1 ตุลาคม 2558</p>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right"></div>
+                </div>
+                <!-- 2559 Right -->
+                <div class="timeline-row">
+                    <div class="col-left"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2559</span>
+                            <h3>เห็นชอบหลักสูตร สาขาวิชาเทคโนโลยีการศึกษาและคอมพิวเตอร์การศึกษา (5 ปี)</h3>
+                            <p>สำนักงานคณะกรรมการการอุดมศึกษา รับทราบการให้ความ
+                                เห็นชอบหลักสูตร สาขาวิชาเทคโนโลยีการศึกษาและคอมพิวเตอร์การศึกษา (5 ปี) เมื่อวันที่ 2
+                                มีนาคม 2559 สาขาวิชาภาษาอังกฤษ (5 ปี) และสาขาวิชาเทคโนโลยีการศึกษาและคอมพิวเตอร์การศึกษา
+                                (5 ปี) เมื่อวันที่ 13 มิถุนายน 2559</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2558 - 2561 Left -->
+                <div class="timeline-row">
+                    <div class="col-left">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2558 - 2561</span>
+                            <h3>ปรับปรุงหลักสูตรระดับปริญญาตรี (5 ปี) 4 สาขาวิชา</h3>
+                            <p>ปรับปรุงหลักสูตรระดับปริญญาตรี (5 ปี) 4 สาขาวิชา ได้แก่ สาขาวิชาการศึกษาปฐมวัย,
+                                สาขาวิชาพลศึกษา, สาขาวิชาภาษาอังกฤษ และสาขาวิชาเทคโนโลยีและคอมพิวเตอร์การศึกษา</p>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right"></div>
+                </div>
+
+                <!-- 2560 Right -->
+                <div class="timeline-row">
+                    <div class="col-left"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2560</span>
+                            <h3>ปิดการเรียนการสอนหลักสูตรปริญญาโท</h3>
+                            <p>ปิดการเรียนการสอนหลักสูตรปริญญาโท สาขาการสอนภาษาอังกฤษในฐานะภาษาต่างประเทศ
+                                และสาขาหลักสูตรและการสอน</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2562 Left -->
+                <div class="timeline-row">
+                    <div class="col-left">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2562</span>
+                            <h3>รับรองมาตรฐานหลักสูตรโดยคุรุสภา</h3>
+                            <p>คุรุสภาประกาศรับรองมาตรฐานหลักสูตรและมาตรฐานการผลิต
+                                ปริญญาครุศาสตร์บัณฑิต (หลักสูตร 4 ปี) เมื่อวันที่ 29 ตุลาคม 2564 จ านวน 4
+                                สาขาวิชาประกอบด้วย สาขาวิชาพลศึกษา, สาขาวิชามวยไทยศึกษาและพลศึกษา,
+                                สาขาวิชาเทคโนโลยีดิจิทัลเพื่อการศึกษาและคณิตศาสตร์, สาขาวิชาภาษาอังกฤษ,
+                                สาขาวิชาการศึกษาปฐมวัย</p>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right"></div>
+                </div>
+
+                <!-- 2563 Right -->
+                <div class="timeline-row">
+                    <div class="col-left"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2563</span>
+                            <h3>โครงการ "ครูรัก(ษ์)ถิ่น"</h3>
+                            <p>ปิดการเรียนการสอนหลักสูตรปริญญาโท สาขาวิจัยและประเมินผลการศึกษา
+                                และในปีการศึกษา 2563 กองทุนเพื่อความเสมอภาคทางการศึกษา (กสศ.)
+                                ได้จัดทำโครงการสร้างโอกาสทางการศึกษาสาหรับนักเรียนในพื้นที่ห่างไกลเป็นครูรุ่นใหม่เพื่อพัฒนาคุณภาพโรงเรียนของชุมชน
+                                โครงการครูรัก(ษ์)ถิ่น
+                                เพื่อดาเนินงานให้บรรลุวัตถุประสงค์ของพระราชบัญญัติกองทุนเพื่อความเสมอภาคทางการศึกษา
+                                มาตรา 5 (3) และ (6)
+                                เพื่อลดความเหลื่อมล้ำในการศึกษาและพัฒนาโรงเรียนขนาดเล็กในพื้นที่ห่างไกล
+                                โดยดำเนินการค้นหา คัดกรอง
+                                และคัดเลือกนักศึกษาผู้รับทุนในโครงการให้เป็นไปตามคุณสมบัติและเกณฑ์การคัดกรองของ กสศ.
+                                จัดการเรียนการสอนระดับปริญญาตรีในระบบปิด สาขาวิชาการศึกษาปฐมวัย
+                                ให้มีคุณลักษณะที่เหมาะสมในการเป็นครูของชุมชน มีจิตสำนึกความเป็นครู จิตสำนึกชุมชน
+                                มีความเป็นผู้นำการเปลี่ยนแปลง มีความรู้ มีทักษะ การจัดการเรียนรู้ ทักษะอาชีพ ทักษะชีวิต
+                                เมื่อสำเร็จการศึกษาจะได้รับการบรรจุกลับไปเป็นครูในโรงเรียนพื้นที่ห่างไกลซึ่งเป็นท้องถิ่นของตน
                             </p>
                         </div>
                     </div>
+                </div>
 
-                    <div class="timeline-container left">
-                        <div class="content">
-                            <span class="year-badge">พ.ศ. 2545</span>
-                            <h3>รวมพลังสร้างเอกภาพ</h3>
-                            <p>ย้ายโปรแกรมวิชาทางครุศาสตร์ (ค.บ.) จากคณะอื่นมารวมที่คณะครุศาสตร์
-                                ทำให้มีโปรแกรมวิชาเพิ่มเป็น 11 สาขา เพื่อความเป็นเอกภาพในการผลิตครู</p>
+                <!-- 2565 Left -->
+                <div class="timeline-row">
+                    <div class="col-left">
+                        <div class="timeline-card">
+                            <span class="year-label">พ.ศ. 2565</span>
+                            <h3>เปิดสอน "ประถมศึกษา"</h3>
+                            <p>กลับมาเปิดสอนหลักสูตรปริญญาตรี สาขา
+                                ประถมศึกษา คณะครุศาสตร์ได้เปิดสอนนักศึกษาสาขาวิชาการศึกษา 4 ระดับการศึกษา คือ
+
+                            <p><strong>ระดับปริญญาตรี (ค.บ.) 4 ปี และ(ค.บ.) 5 ปี 5 สาขาวิชา ได้แก่</strong></p>
+                            <p>สาขาวิชาเทคโนโลยีดิจิทัลและคณิตศาสตร์ (หลักสูตร 4 ปี),
+                                สาขาวิชาเทคโนโลยีการศึกษาและคอมพิวเตอร์การศึกษา (หลักสูตร 5 ปี),
+                                สาขาวิชาการศึกษาปฐมวัย (หลักสูตร 4 และ 5 ปี),
+                                สาขาวิชาภาษาอังกฤษ (หลักสูตร 4 และ 5 ปี),
+                                สาขาวิชาพลศึกษา (หลักสูตร 4 และ 5 ปี),
+                                สาขาวิชาประถมศึกษา (หลักสูตร 4 ปี)</p>
+                            <p><strong>ระดับประกาศนียบัตรวิชาชีพครู (ป.บัณฑิต)</strong></p>
+                            <p><strong>ระดับปริญญาโท (ค.ม.) 2 สาขาวิชา ได้แก่</strong></p>
+                            <p>สาขาวิชาบริหารการศึกษา,สาขาวิชานวัตกรรมการจัดการเรียนรู้คณิตศาสตร์</p>
+                            <p><strong>ระดับปริญญาเอก (ปร.ด.) 1 สาขาวิชา ได้แก่</strong></p>
+                            <p> สาขาบริหารการศึกษา</p>
                         </div>
                     </div>
+                    <div class="timeline-dot"></div>
+                    <div class="col-right"></div>
+                </div>
 
-                    <div class="timeline-container right">
-                        <div class="content">
-                            <span class="year-badge">พ.ศ. 2547</span>
-                            <h3>สู่ "มหาวิทยาลัยราชภัฏ"</h3>
-                            <p>ยกฐานะเป็น "มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง" และเริ่มเปิดสอนหลักสูตรครุศาสตร์ (ครู 5 ปี)
-                                ตาม พ.ร.บ. สภาครูและบุคลากรทางการศึกษา</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-container left">
-                        <div class="content">
-                            <span class="year-badge">พ.ศ. 2563</span>
-                            <h3>โครงการ "ครูรัก(ษ์)ถิ่น"</h3>
-                            <p>ร่วมมือกับ กสศ. สร้างโอกาสให้นักเรียนในพื้นที่ห่างไกลเรียนครู
-                                เพื่อกลับไปพัฒนาโรงเรียนในท้องถิ่น (Community Teacher)</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-container right">
-                        <div class="content">
-                            <span class="year-badge">พ.ศ. 2565</span>
-                            <h3>เปิดสอน "สาขาวิชาประถมศึกษา"</h3>
-                            <p>คณะครุศาสตร์ได้กลับมาเปิดสอนหลักสูตรปริญญาตรี สาขาวิชาประถมศึกษา
-                                อีกครั้งเพื่อตอบสนองความต้องการบุคลากรครูขั้นพื้นฐาน</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-container left current-year">
-                        <div class="content">
-                            <span class="year-badge">ปัจจุบัน (ปีการศึกษา 2566)</span>
+                <!-- Present right (Current) -->
+                <div class="timeline-row current">
+                    <div class="col-left"></div>
+                    <div class="timeline-dot" style="background:var(--accent); border-color:#fff;"></div>
+                    <div class="col-right">
+                        <div class="timeline-card">
+                            <span class="year-label">ปัจจุบัน</span>
                             <h3>หลักสูตรที่เปิดสอน (4 ระดับ)</h3>
-                            <p>ปัจจุบันมีการปรับปรุงหลักสูตรเพื่อผลิตครูคุณภาพสู่สังคม ดังนี้:</p>
-                            <ul class="course-list">
-                                <li><strong>ป.ตรี (4 ปี):</strong> เทคโนโลยีดิจิทัลเพื่อการศึกษา,
-                                    เทคโนโลยีดิจิทัลและคณิตศาสตร์, การศึกษาปฐมวัย, ภาษาอังกฤษ, พลศึกษา, ประถมศึกษา</li>
+                            <p>มุ่งเน้นผลิตบัณฑิตครูมืออาชีพ พร้อมด้วยทักษะในศตวรรษที่ 21</p>
+                            <ul>
+                                <li><strong>ป.ตรี (4 ปี):</strong>
+                                    <ul>
+                                        <li>เทคโนโลยีดิจิทัลเพื่อการศึกษา (หลักสูตร 4 ปี)</li>
+                                        <li>เทคโนโลยีดิจิทัลและคณิตศาสตร์ (หลักสูตร 4 ปี)</li>
+                                        <li>การศึกษาปฐมวัย (หลักสูตร 4 ปี)</li>
+                                        <li>ภาษาอังกฤษ (หลักสูตร 4 ปี)</li>
+                                        <li>พลศึกษา (หลักสูตร 4 ปี)</li>
+                                        <li>ประถมศึกษา (หลักสูตร 4 ปี)</li>
+                                    </ul>
+                                </li>
                                 <li><strong>ป.บัณฑิต:</strong> วิชาชีพครู</li>
                                 <li><strong>ป.โท:</strong> บริหารการศึกษา, นวัตกรรมการจัดการเรียนรู้คณิตศาสตร์</li>
                                 <li><strong>ป.เอก:</strong> บริหารการศึกษา</li>
                             </ul>
                         </div>
                     </div>
-
                 </div>
+
+
+
             </div>
         </div>
     </section>
+
+
 
 
 
