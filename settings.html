@@ -39,17 +39,17 @@
                 <h1 class="page-title">ตั้งค่าทั่วไป (Global Configuration)</h1>
 
                 <div class="widget-card">
-                    <form>
+                    <form id="settingsForm">
                         <div style="margin-bottom: 20px;">
                             <label style="display: block; margin-bottom: 10px; font-weight: 500;">ชื่อเว็บไซต์ (Site
                                 Name)</label>
-                            <input type="text" value="คณะครุศาสตร์ มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง"
+                            <input type="text" name="site_name" value="คณะครุศาสตร์ มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง"
                                 style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: 'Kanit';">
                         </div>
                         <div style="margin-bottom: 20px;">
                             <label style="display: block; margin-bottom: 10px; font-weight: 500;">คำอธิบายเว็บไซต์ (Meta
                                 Description)</label>
-                            <textarea
+                            <textarea name="meta_description"
                                 style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: 'Kanit';"
                                 rows="3">เว็บไซต์คณะครุศาสตร์ มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง</textarea>
                         </div>
@@ -57,8 +57,8 @@
                             <label style="display: block; margin-bottom: 10px; font-weight: 500;">สถานะเว็บไซต์ (Site
                                 Offline)</label>
                             <div style="display: flex; gap: 20px;">
-                                <label><input type="radio" name="offline" value="0" checked> ออนไลน์</label>
-                                <label><input type="radio" name="offline" value="1"> ปิดปรับปรุง</label>
+                                <label><input type="radio" name="site_offline" value="0" checked> ออนไลน์</label>
+                                <label><input type="radio" name="site_offline" value="1"> ปิดปรับปรุง</label>
                             </div>
                         </div>
                         <button type="submit" class="btn-login"
@@ -95,13 +95,19 @@
                 });
                 const settings = await res.json();
 
-                // Map settings to inputs (by name or ID if aligned, here manual mapping)
-                if (settings.site_name) document.querySelector('input[name="site_name"]').value = settings.site_name;
-                if (settings.meta_description) document.querySelector('textarea[name="meta_description"]').value = settings.meta_description;
+                // Map settings to inputs
+                if (settings.site_name) {
+                    const el = document.querySelector('input[name="site_name"]');
+                    if (el) el.value = settings.site_name;
+                }
+                if (settings.meta_description) {
+                    const el = document.querySelector('textarea[name="meta_description"]');
+                    if (el) el.value = settings.meta_description;
+                }
                 if (settings.site_offline) {
                     const radios = document.getElementsByName('site_offline');
                     for (let r of radios) {
-                        if (r.value === settings.site_offline) r.checked = true;
+                        if (r.value === String(settings.site_offline)) r.checked = true;
                     }
                 }
             } catch (error) {
@@ -114,7 +120,8 @@
             const form = e.target;
             const site_name = form.querySelector('input[name="site_name"]').value;
             const meta_description = form.querySelector('textarea[name="meta_description"]').value;
-            const site_offline = form.querySelector('input[name="site_offline"]:checked').value;
+            const offlineRadio = form.querySelector('input[name="site_offline"]:checked');
+            const site_offline = offlineRadio ? offlineRadio.value : "0";
 
             // Prepare payload
             const payload = {
@@ -136,25 +143,22 @@
                 if (res.ok) {
                     alert('บันทึกการตั้งค่าเรียบร้อยแล้ว');
                 } else {
-                    alert('เกิดข้อผิดพลาดในการบันทึก');
+                    if (res.status === 401 || res.status === 403) {
+                        alert('Session expired. Please login again.');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    const errorData = await res.json();
+                    alert('Error saving settings: ' + (errorData.error || res.statusText));
                 }
             } catch (error) {
                 console.error(error);
-                alert('Connection error');
+                alert('Connection error: ' + error.message);
             }
         }
 
-        // Helper to add names to static HTML form (since original didn't have name attributes)
         document.addEventListener('DOMContentLoaded', () => {
-            // Inject name attributes for easier access
-            const inputs = document.querySelectorAll('.widget-card input[type="text"]');
-            if (inputs[0]) inputs[0].name = "site_name";
-            const textareas = document.querySelectorAll('.widget-card textarea');
-            if (textareas[0]) textareas[0].name = "meta_description";
-            const radios = document.querySelectorAll('input[name="offline"]'); // Original was "offline"
-            radios.forEach(r => r.name = "site_offline");
-
-            document.querySelector('.widget-card form').addEventListener('submit', saveSettings);
+            document.getElementById('settingsForm').addEventListener('submit', saveSettings);
             loadSettings();
         });
     </script>

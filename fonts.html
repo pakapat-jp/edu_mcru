@@ -39,11 +39,11 @@
                 <h1 class="page-title">ตั้งค่าฟ้อนต์ (Fonts)</h1>
 
                 <div class="widget-card">
-                    <form>
+                    <form id="fontForm">
                         <div style="margin-bottom: 20px;">
                             <label style="display: block; margin-bottom: 10px; font-weight: 500;">ฟ้อนต์หลัก (Main
                                 Font)</label>
-                            <select
+                            <select id="fontMain"
                                 style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: 'Kanit';">
                                 <option value="Kanit" selected>Kanit (แนะนำ)</option>
                                 <option value="Sarabun">Sarabun</option>
@@ -54,7 +54,7 @@
                         <div style="margin-bottom: 20px;">
                             <label style="display: block; margin-bottom: 10px; font-weight: 500;">ขนาดตัวอักษรพื้นฐาน
                                 (Base Font Size)</label>
-                            <input type="number" value="16"
+                            <input type="number" id="fontSizeBase" value="16"
                                 style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: 'Kanit';">
                         </div>
                         <button type="submit" class="btn-login"
@@ -84,6 +84,74 @@
                 }
             }
         }
+
+        // --- API Integration ---
+        const token = localStorage.getItem('cms_token');
+        if (!token) window.location.href = 'login.html';
+
+        async function loadFontSettings() {
+            try {
+                const res = await fetch('/api/settings', { headers: { 'Authorization': `Bearer ${token}` } });
+                const settings = await res.json();
+
+                if (settings.font_main) {
+                    const select = document.getElementById('fontMain');
+                    if (select) select.value = settings.font_main;
+                    // Update font preview immediately
+                    if (select) select.style.fontFamily = settings.font_main;
+                }
+                if (settings.font_size_base) {
+                    const input = document.getElementById('fontSizeBase');
+                    if (input) input.value = settings.font_size_base;
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function saveFontSettings(e) {
+            e.preventDefault();
+            const fontMain = document.getElementById('fontMain').value;
+            const fontSize = document.getElementById('fontSizeBase').value;
+
+            try {
+                const res = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({
+                        font_main: fontMain,
+                        font_size_base: fontSize
+                    })
+                });
+
+                if (res.ok) {
+                    alert('บันทึกการตั้งค่าฟ้อนต์เรียบร้อยแล้ว');
+                } else {
+                    if (res.status === 401 || res.status === 403) {
+                        alert('Session expired. Please login again.');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    const errorData = await res.json();
+                    alert('Error saving settings: ' + (errorData.error || res.statusText));
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Connection error: ' + e.message);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('fontForm').addEventListener('submit', saveFontSettings);
+
+            // Font preview change
+            const select = document.getElementById('fontMain');
+            if (select) {
+                select.addEventListener('change', (e) => {
+                    e.target.style.fontFamily = e.target.value;
+                });
+            }
+
+            loadFontSettings();
+        });
     </script>
     <script src="js/global-loader.js"></script>
 </body>

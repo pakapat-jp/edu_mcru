@@ -105,7 +105,18 @@ async function initializeDatabase() {
             )
         `;
         await pool.query(createSlidersTableQuery);
-        console.log("Verified 'articles' and 'hero_sliders' tables.");
+        await pool.query(createSlidersTableQuery);
+
+        // Site Settings Table
+        const createSettingsTableQuery = `
+            CREATE TABLE IF NOT EXISTS site_settings (
+                setting_key VARCHAR(100) PRIMARY KEY,
+                setting_value TEXT
+            )
+        `;
+        await pool.query(createSettingsTableQuery);
+
+        console.log("Verified 'articles', 'hero_sliders', and 'site_settings' tables.");
 
         // 2. Personnel
         await ensurePersonnelTable(); // Call the function defined later
@@ -580,14 +591,16 @@ app.post('/api/settings', authenticateToken, async (req, res) => {
     try {
         const settings = req.body; // Expect { key: value, key2: value2 }
         const promises = Object.keys(settings).map(key => {
+            const val = (settings[key] === null || settings[key] === undefined) ? '' : String(settings[key]);
             return pool.query(
-                'INSERT INTO site_settings (setting_key, setting_value) VALUES (?) ON DUPLICATE KEY UPDATE setting_value = ?',
-                [key, settings[key], settings[key]]
+                'INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?',
+                [key, val, val]
             );
         });
         await Promise.all(promises);
         res.json({ message: 'Settings saved' });
     } catch (error) {
+        console.error("Error saving settings:", error);
         res.status(500).json({ error: error.message });
     }
 });

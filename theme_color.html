@@ -39,23 +39,23 @@
                 <h1 class="page-title">ตั้งค่าธีมสี (Theme Colors)</h1>
 
                 <div class="widget-card">
-                    <form>
+                    <form id="themeForm">
                         <div style="margin-bottom: 20px;">
                             <label style="display: block; margin-bottom: 10px; font-weight: 500;">สีหลัก (Primary
                                 Color)</label>
                             <div style="display: flex; align-items: center; gap: 10px;">
-                                <input type="color" value="#2255a4"
+                                <input type="color" id="primaryColor" value="#2255a4"
                                     style="height: 40px; width: 60px; padding: 0; border: none;">
-                                <span>#2255a4</span>
+                                <span id="primaryColorText">#2255a4</span>
                             </div>
                         </div>
                         <div style="margin-bottom: 20px;">
                             <label style="display: block; margin-bottom: 10px; font-weight: 500;">สีรอง (Secondary
                                 Color)</label>
                             <div style="display: flex; align-items: center; gap: 10px;">
-                                <input type="color" value="#6c757d"
+                                <input type="color" id="secondaryColor" value="#6c757d"
                                     style="height: 40px; width: 60px; padding: 0; border: none;">
-                                <span>#6c757d</span>
+                                <span id="secondaryColorText">#6c757d</span>
                             </div>
                         </div>
                         <button type="submit" class="btn-login"
@@ -120,30 +120,38 @@
                     })
                 });
 
-                if (res.ok) alert('บันทึกสีเรียบร้อยแล้ว');
-                else alert('Error');
-            } catch (e) { console.error(e); }
+                if (res.ok) {
+                    alert('บันทึกสีเรียบร้อยแล้ว');
+                } else {
+                    if (res.status === 401 || res.status === 403) {
+                        alert('Session expired. Please login again.');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    const errorData = await res.json();
+                    alert('Error saving settings: ' + (errorData.error || res.statusText));
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Connection error: ' + e.message);
+            }
         }
 
         // Bind updates for color picker text
         document.addEventListener('DOMContentLoaded', () => {
-            const inputs = document.querySelectorAll('input[type="color"]');
-            const spans = document.querySelectorAll('.widget-card span'); // Ensure this selects the text spans next to inputs
+            const primaryInput = document.getElementById('primaryColor');
+            const secondaryInput = document.getElementById('secondaryColor');
+            const primaryText = document.getElementById('primaryColorText');
+            const secondaryText = document.getElementById('secondaryColorText');
 
-            if (inputs.length >= 2) {
-                inputs[0].id = 'primaryColor';
-                inputs[1].id = 'secondaryColor';
-
-                inputs[0].addEventListener('input', (e) => spans[0].innerText = e.target.value);
-                inputs[1].addEventListener('input', (e) => spans[1].innerText = e.target.value);
-
-                if (spans.length >= 2) {
-                    spans[0].id = 'primaryColorText';
-                    spans[1].id = 'secondaryColorText';
-                }
+            if (primaryInput && primaryText) {
+                primaryInput.addEventListener('input', (e) => primaryText.innerText = e.target.value);
+            }
+            if (secondaryInput && secondaryText) {
+                secondaryInput.addEventListener('input', (e) => secondaryText.innerText = e.target.value);
             }
 
-            document.querySelector('form').addEventListener('submit', saveThemeSettings);
+            document.getElementById('themeForm').addEventListener('submit', saveThemeSettings);
             loadThemeSettings();
         });
     </script>
